@@ -1,0 +1,44 @@
+{
+  "name": "@crestproject/contracts",
+  "version": "0.0.0",
+  "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
+  "license": "MIT",
+  "homepage": "https://github.com/crestproject",
+  "publishConfig": {
+    "directory": "dist",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crestproject/poc"
+  },
+  "bugs": {
+    "url": "https://github.com/crestproject/poc/issues"
+  },
+  "contributors": [
+    "Sebastian Siemssen <fubhy@fubhy.com>"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf dist coverage",
+    "prebuild": "rimraf dist",
+    "build": "tsc --project tsconfig.json",
+    "postbuild": "cp package.json ../../LICENSE ../../README.md dist && chmod +x dist/index.js",
+    "format": "prettier --write src/{*,**/*}.ts",
+    "lint": "yarn prettier --list-different src/{*,**/*}.ts",
+    "test": "jest",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "preversion": "yarn typecheck && yarn lint && yarn build",
+    "postversion": "cp package.json dist"
+  },
+  "devDependencies": {
+    "ethers": "^5.0.5"
+  },
+  "peerDependencies": {
+    "ethers": "^5.0.5"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "rootDir": "src"
+  }
+}

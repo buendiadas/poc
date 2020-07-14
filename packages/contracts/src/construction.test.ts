@@ -1,4 +1,4 @@
-import { ethers, providers } from 'ethers';
+import { ethers } from 'ethers';
 import { contract } from './construction';
 import { Functions } from './types';
 import { Contract } from './contract';
