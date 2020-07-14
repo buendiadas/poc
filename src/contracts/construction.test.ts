@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { ethers, providers } from 'ethers';
 import { contract } from './construction';
 import { Functions } from './types';
 import { Contract } from './contract';
@@ -56,5 +56,24 @@ describe('contract tagged template literals', () => {
 
     const not = token['allowance(address,uint)'].fragment.format();
     expect(actual).not.toEqual(not);
+  });
+
+  it('does not allow attaching a function instance to an imcompatible contract', () => {
+    const incompatible = new contract`
+      function other(address) view returns (string)
+    `('0x', provider);
+
+    const allowance = token.allowance;
+    expect(() => allowance.attach(incompatible)).toThrow('Failed to attach function to incompatible contract');
+  });
+
+  it('does allow attaching a function instance to a compatible contract', () => {
+    const compatible = new contract`
+      function allowance(address owner, address spender) view returns (uint256)
+    `('0x', provider);
+
+    const allowance = token.allowance;
+    expect(() => allowance.attach(compatible)).not.toThrow();
+    expect(allowance.attach(compatible)).toBeInstanceOf(ContractFunction);
   });
 });

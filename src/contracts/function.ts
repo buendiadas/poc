@@ -91,7 +91,7 @@ export class ContractFunction<TArgs extends any[] = unknown[], TReturn = any> {
   public attach(contract: AnyContract): this {
     const formatted = this.fragment.format();
     if (!contract.abi.functions.hasOwnProperty(formatted)) {
-      throw new Error('Invalid contract');
+      throw new Error('Failed to attach function to incompatible contract');
     }
 
     return new (this.constructor as any)(contract, this.fragment, this.payload);
