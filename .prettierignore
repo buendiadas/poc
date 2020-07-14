@@ -1,0 +1,3 @@
+# Currently, typescript v4 is not supported by prettier due to our use of tuple labels.
+# @see https://github.com/prettier/prettier/issues/8646
+**/*.test.ts
