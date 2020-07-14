@@ -16,12 +16,6 @@ export class Contract<TFunctions extends Functions> {
     return this._provider ?? this.signer?.provider;
   }
 
-  /**
-   * Constructs a new contract instance.
-   *
-   * @param address The address or name of the contract.
-   * @param signerOrProvider The ethers.js signer or provider instance to use.
-   */
   constructor(
     public readonly abi: ethers.utils.Interface,
     public readonly name: string,
