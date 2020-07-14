@@ -34,9 +34,20 @@ export class Contract<TFunctions extends Functions> {
       this._provider = providerOrSigner;
     }
 
+    const uniques = Object.values(this.abi.functions).reduce(
+      (carry, current) => {
+        if (!carry[current.name]) {
+          carry[current.name] = current;
+        }
+
+        return carry;
+      },
+      {} as { [name: string]: ethers.utils.FunctionFragment },
+    );
+
     const functions = new Proxy(this, {
       get: (target, prop: string) => {
-        const fn = target.abi.getFunction(prop);
+        const fn = uniques[prop] ?? target.abi.getFunction(prop);
         const ctor = (...args: any) => {
           return ContractFunction.create(target, fn, ...args);
         };

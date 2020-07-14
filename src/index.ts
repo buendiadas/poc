@@ -1,6 +1,4 @@
-import { freemem } from 'os';
+import * as contracts from './contracts';
 
-export * from './construction';
-export * from './contract';
-export * from './function';
-export * from './types';
+export { contracts };
+export { contract } from './contracts/construction';

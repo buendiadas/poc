@@ -30,8 +30,18 @@ describe('contract tagged template literals', () => {
     function transfer(address recipient, uint256 amount) returns (bool)
   `;
 
+  const provider = new ethers.providers.JsonRpcProvider();
+  const token = new Token('0x', provider);
+
   it('factory creates a contract instance', () => {
-    const provider = new ethers.providers.JsonRpcProvider();
-    expect(new Token('0x', provider)).toBeInstanceOf(Contract);
+    expect(token).toBeInstanceOf(Contract);
+  });
+
+  it('shortcut directly invokes call for transactions', () => {
+    expect(token.allowance('0x', '0x')).toBeInstanceOf(Promise);
+  });
+
+  it('shortcut directly invokes send for transactions', () => {
+    expect(token.transfer('0x', 123)).toBeInstanceOf(Promise);
   });
 });
