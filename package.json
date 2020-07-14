@@ -1,0 +1,55 @@
+{
+  "name": "crestproject",
+  "version": "0.0.0",
+  "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
+  "license": "MIT",
+  "homepage": "https://github.com/crestproject",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crestproject/poc"
+  },
+  "bugs": {
+    "url": "https://github.com/crestproject/poc/issues"
+  },
+  "contributors": [
+    "Sebastian Siemssen <fubhy@fubhy.com>"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf dist coverage",
+    "prebuild": "rimraf dist",
+    "build": "tsc --project tsconfig.json",
+    "postbuild": "cp package.json LICENSE README.md dist && chmod +x dist/index.js",
+    "dev": "cross-env NODE_ENV=development ts-node --transpile-only src",
+    "watch": "tsc --watch --project tsconfig.json",
+    "format": "prettier --write src/{*,**/*}.ts",
+    "lint": "yarn prettier --list-different src/{*,**/*}.ts",
+    "test": "jest",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "preversion": "yarn typecheck && yarn lint && yarn build",
+    "postversion": "cp package.json dist",
+    "prerelease": "yarn version",
+    "release": "git push --tags && yarn publish dist --new-version $npm_package_version",
+    "postrelease": "git push"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.4",
+    "@types/node": "^14.0.22",
+    "cross-env": "^7.0.2",
+    "ethers": "^5.0.5",
+    "husky": "^4.2.5",
+    "jest": "^26.1.0",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.1.1",
+    "typescript": "^4.0.0-beta"
+  },
+  "dependencies": {},
+  "jest": {
+    "preset": "ts-jest"
+  }
+}

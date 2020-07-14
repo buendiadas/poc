@@ -1,0 +1,11 @@
+# Ignore build output and dependencies
+node_modules/
+dist/
+
+# Ignore log files
+*.log
+
+# Ignore all dotfiles except those listed
+.*
+!.gitignore
+!.prettierrc
