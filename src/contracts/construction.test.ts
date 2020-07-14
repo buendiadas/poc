@@ -1,8 +1,8 @@
+import { ethers } from 'ethers';
 import { contract } from './construction';
 import { Functions } from './types';
-import { SendFunction, ContractFunction } from './function';
-import { ethers } from 'ethers';
 import { Contract } from './contract';
+import { SendFunction, ContractFunction } from './function';
 
 describe('contract tagged template literals', () => {
   interface TokenFunctions extends Functions {
@@ -43,5 +43,18 @@ describe('contract tagged template literals', () => {
 
   it('shortcut directly invokes send for transactions', () => {
     expect(token.transfer('0x', 123)).toBeInstanceOf(Promise);
+  });
+
+  it('shortcut syntax allows chaining methods', () => {
+    expect(token.transfer.args('0x', 123)).toBeInstanceOf(SendFunction);
+  });
+
+  it('shortcut syntax returns the first function fragment', () => {
+    const actual = token.allowance.fragment.format();
+    const expected = token['allowance(address,address)'].fragment.format();
+    expect(actual).toEqual(expected);
+
+    const not = token['allowance(address,uint)'].fragment.format();
+    expect(actual).not.toEqual(not);
   });
 });
