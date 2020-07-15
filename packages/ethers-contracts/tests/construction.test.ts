@@ -1,8 +1,8 @@
 import { ethers } from 'ethers';
-import { contract } from './construction';
-import { Functions } from './types';
-import { Contract } from './contract';
-import { SendFunction, ContractFunction } from './function';
+import { contract } from '../src/construction';
+import { Functions } from '../src/types';
+import { Contract } from '../src/contract';
+import { SendFunction, ContractFunction } from '../src/function';
 
 describe('contract tagged template literals', () => {
   interface TokenFunctions extends Functions {

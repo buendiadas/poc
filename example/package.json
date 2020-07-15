@@ -1,16 +1,28 @@
 {
-  "name": "@ethersproject/examples",
+  "name": "@crestproject/example",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "clean": "rimraf dist coverage",
-    "format": "prettier --write tests/{*,**/*}.ts",
-    "lint": "yarn prettier --list-different tests/{*,**/*}.ts",
+    "format": "prettier --write {tests,contracts}/{*,**/*}.{ts,sol}",
+    "lint": "yarn prettier --list-different {tests,contracts}/{*,**/*}.{ts,sol}",
     "test": "jest",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "devDependencies": {
     "@crestproject/ethers-contracts": "^0.0.0",
-    "@nomiclabs/buidler": "^1.3.8"
+    "@nomiclabs/buidler": "^1.3.8",
+    "@openzeppelin/contracts": "^3.1.0",
+    "ethereum-waffle": "^3.0.2",
+    "prettier": "^2.0.5",
+    "prettier-plugin-solidity": "^1.0.0-alpha.54",
+    "jest": "^26.1.0",
+    "ts-jest": "^26.1.2"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "roots": [
+      "<rootDir>/tests"
+    ]
   }
 }
