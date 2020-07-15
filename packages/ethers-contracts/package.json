@@ -40,7 +40,7 @@
   "jest": {
     "preset": "ts-jest",
     "roots": [
-      "<rootDir>/tests"
+      "<rootDir>/src"
     ]
   }
 }
