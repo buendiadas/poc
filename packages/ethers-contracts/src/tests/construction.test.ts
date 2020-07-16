@@ -2,25 +2,26 @@ import { ethers } from 'ethers';
 import { contract } from '../construction';
 import { Functions } from '../types';
 import { Contract } from '../contract';
-import { SendFunction, ContractFunction } from '../function';
+import { SendFunction, CallFunction, ConstructorFunction } from '../function';
 
 describe('contract tagged template literals', () => {
   interface TokenFunctions extends Functions {
-    'allowance': TokenFunctions['allowance(address,address)'];
-    'allowance(address,address)': ContractFunction<[owner: string, spender: string], ethers.BigNumber>;
-    'allowance(address,uint)': ContractFunction<[owner: string, how: number], ethers.BigNumber>;
+    'constructor': ConstructorFunction;
+    'allowance': CallFunction<[owner: string, spender: string], ethers.BigNumber>;
+    'allowance(address,address)': CallFunction<[owner: string, spender: string], ethers.BigNumber>;
+    'allowance(address,uint)': CallFunction<[owner: string, how: number], ethers.BigNumber>;
     'approve(address,uint)': SendFunction<[spender: string, amount: number], boolean>;
-    'decimals': TokenFunctions['decimals()']
-    'decimals()': ContractFunction<never, ethers.BigNumber>;
-    'name': TokenFunctions['name()']
-    'name()': ContractFunction<never, string>;
-    'symbol': TokenFunctions['symbol()']
-    'symbol()': ContractFunction<never, string>;
-    'transfer': TokenFunctions['transfer(address,uint256)'];
+    'decimals': CallFunction<never, ethers.BigNumber>;
+    'decimals()': CallFunction<never, ethers.BigNumber>;
+    'name': CallFunction<never, string>;
+    'name()': CallFunction<never, string>;
+    'symbol': CallFunction<never, string>;
+    'symbol()': CallFunction<never, string>;
+    'transfer': SendFunction<[to: string, amount: number]>;
     'transfer(address,uint256)': SendFunction<[to: string, amount: number]>;
   }
 
-  const Token = contract<TokenFunctions>`
+  const Token = contract()<TokenFunctions>`
     function allowance(address owner, address spender) view returns (uint256)
     function allowance(address owner, uint how) view returns (uint256)
     function approve(address spender, uint256 amount) returns (bool)
@@ -59,21 +60,23 @@ describe('contract tagged template literals', () => {
   });
 
   it('does not allow attaching a function instance to an imcompatible contract', () => {
-    const incompatible = new contract`
+    const IncompatibleContract = contract()`
       function other(address) view returns (string)
-    `('0x', provider);
+    `;
 
+    const incompatible = new IncompatibleContract('0x', provider);
     const allowance = token.allowance;
     expect(() => allowance.attach(incompatible)).toThrow('Failed to attach function to incompatible contract');
   });
 
-  it('does allow attaching a function instance to a compatible contract', () => {
-    const compatible = new contract`
+  it('does allow attaching a function instance to a compatible contract', async () => {
+    const CompatibleContract = contract()`
       function allowance(address owner, address spender) view returns (uint256)
-    `('0x', provider);
-
+    `;
+    
+    const compatible = new CompatibleContract('0x', provider);
     const allowance = token.allowance;
     expect(() => allowance.attach(compatible)).not.toThrow();
-    expect(allowance.attach(compatible)).toBeInstanceOf(ContractFunction);
+    expect(allowance.attach(compatible)).toBeInstanceOf(CallFunction);
   });
 });

@@ -1,5 +1,10 @@
 import { ethers } from 'ethers';
-import { ContractFunction, SendFunction } from './function';
+import {
+  CallFunction,
+  ConstructorFunction,
+  ContractFunction,
+  SendFunction,
+} from './function';
 import { ProxyContract, Functions } from './types';
 
 // TODO: Add types and proxies for event handling.
@@ -18,7 +23,6 @@ export class Contract<TFunctions extends Functions> {
 
   constructor(
     public readonly abi: ethers.utils.Interface,
-    public readonly name: string,
     public readonly address: string,
     providerOrSigner: ethers.providers.Provider | ethers.Signer,
   ) {
@@ -41,9 +45,9 @@ export class Contract<TFunctions extends Functions> {
 
     const functions = new Proxy(this, {
       get: (target, prop: string) => {
-        const fn = uniques[prop] ?? target.abi.getFunction(prop);
+        const fragment = uniques[prop] ?? target.abi.getFunction(prop);
         const ctor = (...args: any) => {
-          return ContractFunction.create(target, fn, ...args);
+          return ContractFunction.create(target, fragment, ...args);
         };
 
         return new Proxy(ctor, {
@@ -54,7 +58,18 @@ export class Contract<TFunctions extends Functions> {
           // Shortcut for directly using call/send (e.g. token.function.transfer('0x', 123))
           apply: (target, thiz, args) => {
             const fn = target.apply(thiz, args);
-            return fn instanceof SendFunction ? fn.send() : fn.call();
+
+            if (fn instanceof CallFunction) {
+              return fn.call();
+            }
+
+            if (fn instanceof SendFunction) {
+              return fn.send();
+            }
+
+            if (fn instanceof ConstructorFunction) {
+              return fn.send();
+            }
           },
         });
       },
@@ -76,5 +91,10 @@ export class Contract<TFunctions extends Functions> {
 
   public event(signature: string) {
     return this.abi.getEvent(signature);
+  }
+
+  public attach(address: string): this {
+    const provider = this.signer ?? this.provider;
+    return new (this.constructor as any)(this.abi, address, provider);
   }
 }

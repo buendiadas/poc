@@ -1,6 +1,11 @@
 import { ethers } from 'ethers';
 import { Contract } from './contract';
-import { ContractFunction, SendFunction } from './function';
+import {
+  CallFunction,
+  ConstructorFunction,
+  ContractFunction,
+  SendFunction,
+} from './function';
 
 export type AnyContract = Contract<any>;
 
@@ -10,31 +15,43 @@ export interface Functions {
 
 export type FunctionShortcutReturnType<
   TFunction extends ContractFunction,
-  TResponse extends ethers.ContractReceipt | ethers.ContractTransaction
-> = TFunction extends SendFunction ? TResponse : ReturnType<TFunction['call']>;
+  TParent extends AnyContract
+> = TFunction extends CallFunction
+  ? ReturnType<TFunction['call']>
+  : TFunction extends SendFunction
+  ? ethers.ContractReceipt
+  : TFunction extends ConstructorFunction
+  ? Promise<TParent>
+  : never;
 
 export type FunctionArgs<TFunction extends ContractFunction> = Required<
-  TFunction['payload']
+  TFunction['options']
 >['args'] extends any[]
-  ? Required<TFunction['payload']>['args']
+  ? Required<TFunction['options']>['args']
   : never;
 
 export type FunctionWithShortcut<
-  TFunction extends ContractFunction
+  TFunction extends ContractFunction,
+  TParent extends AnyContract
 > = TFunction & {
+  contract: TParent;
+
   // TODO: Do not add the args overload if there are no args.
-  (payload: TFunction['payload']): FunctionShortcutReturnType<
+  (options: TFunction['options']): FunctionShortcutReturnType<
     TFunction,
-    ethers.ContractReceipt
+    TParent
   >;
 
   (...args: FunctionArgs<TFunction>): FunctionShortcutReturnType<
     TFunction,
-    ethers.ContractReceipt
+    TParent
   >;
 };
 
 export type ProxyContract<TFunctions extends Functions> = Contract<TFunctions> &
   {
-    [TKey in keyof TFunctions]: FunctionWithShortcut<TFunctions[TKey]>;
+    [TKey in keyof TFunctions]: FunctionWithShortcut<
+      TFunctions[TKey],
+      ProxyContract<TFunctions>
+    >;
   };

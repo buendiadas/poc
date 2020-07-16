@@ -2,17 +2,24 @@ import { ethers } from 'ethers';
 import { propertyOf } from './utils';
 import { AnyContract } from './types';
 
-export interface FunctionPayload<TArgs extends any[] = unknown[]> {
+export interface ConstructoFragment extends ethers.utils.Fragment {
+  stateMutability: string;
+  payable: boolean;
+  gas?: ethers.BigNumber;
+  format(format?: string): string;
+}
+
+export interface FunctionOptions<TArgs extends any[] = unknown[]> {
   args?: TArgs;
   value?: ethers.BigNumberish;
-  data?: string;
   nonce?: ethers.BigNumberish;
   gas?: ethers.BigNumberish;
   price?: ethers.BigNumberish;
   block?: ethers.providers.BlockTag;
+  bytecode?: ethers.BytesLike;
 }
 
-export function isFunctionPayload(value: any): value is FunctionPayload {
+export function isFunctionOptions(value: any): value is FunctionOptions {
   if (typeof value === 'object' && !Array.isArray(value)) {
     return true;
   }
@@ -20,90 +27,69 @@ export function isFunctionPayload(value: any): value is FunctionPayload {
   return false;
 }
 
-export function resolveFunctionPayload(...args: any): FunctionPayload {
+export function resolveFunctionOptions(...args: any): FunctionOptions {
   const [first, ...rest] = args || [];
-  if (rest.length === 0 && isFunctionPayload(first)) {
+  if (rest.length === 0 && isFunctionOptions(first)) {
     return first;
   }
 
   return { args };
 }
 
-export class ContractFunction<TArgs extends any[] = unknown[], TReturn = any> {
+export class ContractFunction<
+  TArgs extends any[] = unknown[],
+  TContract extends AnyContract = AnyContract,
+  TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
+> {
   public static create<TArgs extends any[] = unknown[]>(
     contract: AnyContract,
-    fragment: ethers.utils.FunctionFragment,
+    fragment: ethers.utils.Fragment,
     ...args: [...TArgs]
   ): ContractFunction;
+
   public static create<TArgs extends any[] = unknown[]>(
     contract: AnyContract,
-    fragment: ethers.utils.FunctionFragment,
-    payload: FunctionPayload<TArgs>,
+    fragment: ethers.utils.Fragment,
+    options: FunctionOptions<TArgs>,
   ): ContractFunction;
+
   public static create<TArgs extends any[] = unknown[]>(
     contract: AnyContract,
-    fragment: ethers.utils.FunctionFragment,
+    fragment: ethers.utils.Fragment,
     ...args: any
   ) {
-    const payload = resolveFunctionPayload(...args) as FunctionPayload<TArgs>;
-    if (fragment.constant) {
-      return new ContractFunction<TArgs>(contract, fragment, payload);
+    const options = resolveFunctionOptions(...args) as FunctionOptions<TArgs>;
+    if (ethers.utils.FunctionFragment.isFunctionFragment(fragment)) {
+      if (fragment.constant) {
+        return new CallFunction<TArgs>(contract, fragment, options);
+      }
+
+      return new SendFunction<TArgs>(contract, fragment, options);
     }
 
-    return new SendFunction<TArgs>(contract, fragment, payload);
+    if (ethers.utils.FunctionFragment.isConstructorFragment(fragment)) {
+      return new ConstructorFunction<TArgs>(contract, fragment, options);
+    }
+
+    throw new Error('Invalid fragment');
   }
 
   constructor(
-    public readonly contract: AnyContract,
-    public readonly fragment: ethers.utils.FunctionFragment,
-    public readonly payload: FunctionPayload<TArgs> = {},
+    public readonly contract: TContract,
+    public readonly fragment: TFragment,
+    public readonly options: FunctionOptions<TArgs> = {},
   ) {}
-
-  public async call(): Promise<TReturn> {
-    // TODO: Actually call the function.
-    return {} as TReturn;
-  }
 
   public args(...args: TArgs) {
     return this.refine({ args });
   }
 
-  public refine(payload: FunctionPayload<TArgs> = {}): this {
-    const args = propertyOf('args', [payload, this.payload]);
-    const value = propertyOf('value', [payload, this.payload]);
-    const data = propertyOf('data', [payload, this.payload]);
-    const gas = propertyOf('gas', [payload, this.payload]);
-    const price = propertyOf('price', [payload, this.payload]);
-    const nonce = propertyOf('nonce', [payload, this.payload]);
-    const block = propertyOf('block', [payload, this.payload]);
-
-    return new (this.constructor as any)(this.contract, this.fragment, {
-      args,
-      value,
-      data,
-      gas,
-      price,
-      nonce,
-      block,
-    });
-  }
-
-  public attach(contract: AnyContract): this {
-    const formatted = this.fragment.format();
-    if (!contract.abi.functions.hasOwnProperty(formatted)) {
-      throw new Error('Failed to attach function to incompatible contract');
-    }
-
-    return new (this.constructor as any)(contract, this.fragment, this.payload);
-  }
-}
-
-export class SendFunction<
-  TArgs extends any[] = unknown[],
-  TReturn extends any = void
-> extends ContractFunction<TArgs, TReturn> {
   public value(value?: ethers.BigNumberish) {
     return this.refine({ value });
+  }
+
+  public bytecode(bytecode?: ethers.BytesLike) {
+    return this.refine({ bytecode });
   }
 
   public nonce(nonce?: number) {
@@ -114,25 +100,162 @@ export class SendFunction<
     return this.refine({ gas: limit, price });
   }
 
-  public async estimate(): Promise<ethers.BigNumber> {
-    // TODO: Actually call estimate.
-    return ethers.BigNumber.from(10);
+  public refine(options: FunctionOptions<TArgs> = {}): this {
+    const args = propertyOf('args', [options, this.options]);
+    const value = propertyOf('value', [options, this.options]);
+    const gas = propertyOf('gas', [options, this.options]);
+    const price = propertyOf('price', [options, this.options]);
+    const nonce = propertyOf('nonce', [options, this.options]);
+    const block = propertyOf('block', [options, this.options]);
+    const bytecode = propertyOf('bytecode', [options, this.options]);
+
+    return new (this.constructor as any)(this.contract, this.fragment, {
+      args,
+      value,
+      gas,
+      price,
+      nonce,
+      block,
+      bytecode,
+    });
+  }
+}
+
+export class CallFunction<
+  TArgs extends any[] = unknown[],
+  TReturn extends any = unknown,
+  TContract extends AnyContract = AnyContract
+> extends ContractFunction<TArgs, TContract, ethers.utils.FunctionFragment> {
+  public async call(): Promise<TReturn> {
+    const tx = this.populate();
+    const provider = this.contract.signer || this.contract.provider;
+    if (provider == null) {
+      throw new Error('Missing provider');
+    }
+
+    const response = await provider.call(tx);
+    const result = this.contract.abi.decodeFunctionResult(
+      this.fragment,
+      response,
+    );
+
+    if (this.fragment.outputs?.length === 1) {
+      return result[0];
+    }
+
+    return (result as any) as TReturn;
   }
 
-  public send(wait?: false): Promise<ethers.ContractReceipt>;
-  public send(wait?: true): Promise<ethers.ContractTransaction>;
+  public attach(contract: AnyContract): this {
+    const formatted = this.fragment.format();
+    if (!contract.abi.functions.hasOwnProperty(formatted)) {
+      throw new Error('Failed to attach function to incompatible contract');
+    }
+
+    return new (this.constructor as any)(contract, this.fragment, this.options);
+  }
+
+  protected populate() {
+    const data = this.contract.abi.encodeFunctionData(
+      this.fragment,
+      this.options.args,
+    );
+
+    const tx: ethers.PopulatedTransaction = {
+      to: this.contract.address,
+      data,
+    };
+
+    return tx;
+  }
+}
+
+export class SendFunction<
+  TArgs extends any[] = unknown[],
+  TReturn extends any = void,
+  TContract extends AnyContract = AnyContract
+> extends CallFunction<TArgs, TReturn, TContract> {
+  public async estimate(): Promise<ethers.BigNumber> {
+    const tx = this.populate();
+    const provider = this.contract.signer || this.contract.provider;
+    if (provider == null) {
+      throw new Error('Missing provider');
+    }
+
+    return provider.estimateGas(tx);
+  }
+
+  public send(wait?: true): Promise<ethers.ContractReceipt>;
+  public send(wait?: false): Promise<ethers.ContractTransaction>;
   public async send(
-    wait: boolean = false,
+    wait: boolean = true,
   ): Promise<ethers.ContractReceipt | ethers.ContractTransaction> {
-    if (this.fragment.constant) {
-      throw new Error(`This is a view and thus can't be sent`);
-    }
-
     if (!this.contract.signer) {
-      throw new Error('Missing required signer for sending');
+      throw new Error('Missing signer');
     }
 
-    // TODO: Actually create the tx and send it.
-    return {} as ethers.ContractTransaction;
+    const tx = this.populate();
+    const response = await this.contract.signer.sendTransaction(tx);
+    return wait ? response.wait() : response;
+  }
+}
+
+export class ConstructorFunction<
+  TArgs extends any[] = unknown[],
+  TContract extends AnyContract = AnyContract
+> extends ContractFunction<TArgs, TContract, ConstructoFragment> {
+  public async call(): Promise<void> {
+    throw new Error('Call not implemented yet');
+  }
+
+  public async estimate(): Promise<ethers.BigNumber> {
+    const tx = this.populate();
+    const provider = this.contract.signer || this.contract.provider;
+    if (provider == null) {
+      throw new Error('Missing provider');
+    }
+
+    return provider.estimateGas(tx);
+  }
+
+  public send(wait?: true): Promise<this['contract']>;
+  public send(wait?: false): Promise<ethers.ContractTransaction>;
+  public async send(
+    wait: boolean = true,
+  ): Promise<this['contract'] | ethers.ContractTransaction> {
+    if (!this.contract.signer) {
+      throw new Error('Missing signer');
+    }
+
+    const tx = this.populate();
+    const response = await this.contract.signer.sendTransaction(tx);
+
+    if (!wait) {
+      return response;
+    }
+
+    const receipt = await response.wait();
+    return this.contract.attach(receipt.contractAddress);
+  }
+
+  protected populate() {
+    if (!this.options.bytecode) {
+      throw new Error('Missing bytecode');
+    }
+
+    // Set the data to the bytecode + the encoded constructor arguments
+    const data = ethers.utils.hexlify(
+      ethers.utils.concat([
+        this.options.bytecode,
+        this.contract.abi.encodeDeploy(this.options.args),
+      ]),
+    );
+
+    const tx: ethers.PopulatedTransaction = {
+      to: this.contract.address,
+      data,
+    };
+
+    return tx;
   }
 }
