@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "clean": "rimraf dist coverage",
+    "clean": "rimraf build coverage",
+    "build": "waffle compile",
     "format": "prettier --write {tests,contracts}/{*,**/*}.{ts,sol}",
     "lint": "yarn prettier --list-different {tests,contracts}/{*,**/*}.{ts,sol}",
     "test": "jest",
