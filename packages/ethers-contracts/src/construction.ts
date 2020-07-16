@@ -1,7 +1,11 @@
 import { ethers } from 'ethers';
 import { Contract } from './contract';
-import { ConstructorFunction } from './function';
-import { Functions, ConcreteContract } from './types';
+import {
+  ConstructorFunction,
+  FunctionOptions,
+  resolveFunctionOptions,
+} from './function';
+import { Functions, ConcreteContract, AnyFunction } from './types';
 
 export type DeferrableByteCode = string | Promise<string>;
 export type ByteCodeLoader = DeferrableByteCode | (() => DeferrableByteCode);
@@ -17,20 +21,33 @@ function ensureInterface(
 }
 
 export class ContractFactory {
-  public create<TFunctions extends Functions>(
+  public create<
+    TFunctions extends Functions = {},
+    TConstructor extends AnyFunction = () => void
+  >(
     fragments: string | (ethers.utils.Fragment | string)[],
     load?: ByteCodeLoader,
   ) {
     const ConcreteContract = class {
-      public static async deploy(signer: ethers.Signer) {
+      public static async deploy(
+        signer: ethers.Signer,
+        ...args: Parameters<TConstructor>
+      ): Promise<ConcreteContract<TFunctions>>;
+      public static async deploy(
+        signer: ethers.Signer,
+        options: FunctionOptions<Parameters<TConstructor>>,
+      ): Promise<ConcreteContract<TFunctions>>;
+      public static async deploy(signer: ethers.Signer, ...args: any) {
         const bytecode = await (typeof load === 'function' ? load() : load);
         if (!bytecode?.startsWith('0x')) {
           throw new Error('Invalid bytecode');
         }
 
+        const options = resolveFunctionOptions(...args);
         const contract = new ConcreteContract('0x', signer) as Contract;
         const constructor = contract.abi.deploy;
-        return new ConstructorFunction(contract, constructor) as any;
+        const fn = new ConstructorFunction(contract, constructor, options);
+        return fn.bytecode(bytecode).send();
       }
 
       constructor(
@@ -42,28 +59,43 @@ export class ContractFactory {
       }
     };
 
-    return ConcreteContract as ConcreteContractFactory<TFunctions>;
+    return ConcreteContract as ConcreteContractFactory<
+      TFunctions,
+      TConstructor
+    >;
   }
 
   public contract(bytecode?: ByteCodeLoader) {
     const factory = this;
 
-    return function contract<TFunctions extends Functions>(
-      signatures: TemplateStringsArray,
-    ) {
+    return function contract<
+      TFunctions extends Functions = {},
+      TConstructor extends AnyFunction = () => void
+    >(signatures: TemplateStringsArray) {
       const trimmed = signatures
         .join('')
         .trim()
         .split('\n')
         .map((item) => item.trim());
 
-      return factory.create<TFunctions>(trimmed, bytecode);
+      return factory.create<TFunctions, TConstructor>(trimmed, bytecode);
     };
   }
 }
 
-export interface ConcreteContractFactory<TFunctions extends Functions> {
-  deploy: (signer: ethers.Signer) => Promise<ConcreteContract<TFunctions>>;
+export interface ConcreteContractFactory<
+  TFunctions extends Functions = {},
+  TConstructor extends AnyFunction = () => void
+> {
+  deploy(
+    signer: ethers.Signer,
+    ...args: Parameters<TConstructor>
+  ): Promise<ConcreteContract<TFunctions>>;
+  deploy(
+    signer: ethers.Signer,
+    options: FunctionOptions<Parameters<TConstructor>>,
+  ): Promise<ConcreteContract<TFunctions>>;
+
   new (
     address: string,
     provider: ethers.Signer | ethers.providers.Provider,

@@ -1,27 +1,17 @@
 import { ethers } from 'ethers';
 import { Contract } from './contract';
-import {
-  CallFunction,
-  ConstructorFunction,
-  FunctionOptions,
-  SendFunction,
-} from './function';
+import { CallFunction, FunctionOptions, SendFunction } from './function';
+
+export type AnyFunction = (...args: any) => any;
 
 export interface FunctionDefinition {
-  type: 'call' | 'send' | 'construct';
+  type: 'call' | 'send';
   signature: (...args: any) => any;
   input: any[];
   output: any;
 }
 
-export type Deploy<TSignature extends (...args: any) => any = any> = {
-  type: 'construct';
-  signature: TSignature;
-  input: Parameters<TSignature>;
-  output: ReturnType<TSignature>;
-};
-
-export type Call<TSignature extends (...args: any) => any = any> = {
+export type Call<TSignature extends AnyFunction = any> = {
   type: 'call';
   signature: TSignature;
   input: Parameters<TSignature>;
@@ -29,7 +19,7 @@ export type Call<TSignature extends (...args: any) => any = any> = {
 };
 
 export type Send<
-  TSignature extends (...args: any) => any = any,
+  TSignature extends AnyFunction = any,
   TPayable extends boolean = false
 > = {
   type: 'send';
@@ -50,19 +40,14 @@ export type FullFunction<
   ? CallFunction<TFunction['input'], TFunction['output'], TParent>
   : TFunction extends Send
   ? SendFunction<TFunction['input'], TFunction['output'], TParent>
-  : TFunction extends Deploy
-  ? ConstructorFunction<TFunction['input']>
   : never;
 
 export type ShortcutFunctionOutput<
-  TFunction extends FunctionDefinition,
-  TParent extends Contract = Contract
+  TFunction extends FunctionDefinition
 > = TFunction extends Call
   ? Promise<TFunction['output']>
   : TFunction extends Send
   ? Promise<ethers.ContractReceipt>
-  : TFunction extends Deploy
-  ? Promise<TParent>
   : never;
 
 export type ProxiedFunction<
@@ -70,7 +55,7 @@ export type ProxiedFunction<
   TParent extends Contract = Contract
 > = {
   contract: TParent;
-  (...args: TFunction['input']): ShortcutFunctionOutput<TFunction, TParent>;
+  (...args: TFunction['input']): ShortcutFunctionOutput<TFunction>;
   (options: FunctionOptions<TFunction['input']>): FullFunction<
     TFunction,
     TParent

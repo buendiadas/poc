@@ -1,20 +1,21 @@
-import {
-  contract,
-  ConstructorFunction,
-  ContractFunction,
-  Functions,
-} from '@crestproject/ethers-contracts';
+import { contract, Functions, Call } from '@crestproject/ethers-contracts';
 
-// prettier-ignore
-export interface AmIRichAlreadyFunctions extends Functions {
-  'constructor': ConstructorFunction;
-  'constructor()': ConstructorFunction;
-  'check': ContractFunction;
-  'check()': ContractFunction;
+function bytecode(name: string) {
+  const json = require(`../../build/${name}.json`);
+  return `0x${json.bytecode}`;
 }
 
 // prettier-ignore
-export const AmIRichAlready = contract()<AmIRichAlreadyFunctions>`
+export type ContractConstructor = (tokenContract: string) => void;
+
+// prettier-ignore
+export interface ContractFunctions extends Functions {
+  'check': Call<() => boolean>;
+  'check()': Call<() => boolean>;
+}
+
+// prettier-ignore
+export const AmIRichAlready = contract(bytecode('AmIRichAlready'))<ContractFunctions, ContractConstructor>`
   constructor(address tokenContract)
   function check() view returns (bool)
 `;

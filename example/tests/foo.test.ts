@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { AmIRichAlready } from './contracts/AmIRichAlready';
 import { network } from '@nomiclabs/buidler';
 import { IEthereumProvider } from '@nomiclabs/buidler/types';
+import { BasicToken } from './contracts/BasicToken';
 
 export class BuidlerEthersProvider extends ethers.providers.JsonRpcProvider {
   constructor(public readonly provider: IEthereumProvider) {
@@ -32,7 +33,10 @@ describe('foo', () => {
   const provider = new BuidlerEthersProvider(network.provider);
 
   it('bar', async () => {
-    const contract = new AmIRichAlready('0x', provider);
-    await expect(contract.check()).resolves.toBeTruthy();
+    const signer = provider.getSigner(0);
+    const balance = ethers.utils.parseEther('99999');
+    const token = await BasicToken.deploy(signer, balance);
+    const contract = await AmIRichAlready.deploy(signer, token.address);
+    await expect(contract.check.call()).resolves.toBeFalsy();
   });
 });

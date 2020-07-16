@@ -23,7 +23,14 @@ export function isFunctionOptions<TArgs extends any[] = []>(
   value: any,
 ): value is FunctionOptions<TArgs> {
   if (typeof value === 'object' && !Array.isArray(value)) {
-    return true;
+    if (ethers.BigNumber.isBigNumber(value)) {
+      return false;
+    }
+
+    const keys = Object.keys(value);
+    if (keys.length === 0) {
+      return true;
+    }
   }
 
   return false;
@@ -268,7 +275,6 @@ export class ConstructorFunction<
     );
 
     const tx: ethers.PopulatedTransaction = {
-      to: this.contract.address,
       data,
     };
 

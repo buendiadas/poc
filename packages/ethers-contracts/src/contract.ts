@@ -31,20 +31,23 @@ export class Contract {
       this._provider = providerOrSigner;
     }
 
-    const uniques = Object.values(this.abi.functions).reduce(
-      (carry, current) => {
-        if (!carry[current.name]) {
-          carry[current.name] = current;
-        }
+    const names = Object.values(this.abi.functions).reduce((carry, current) => {
+      if (!carry[current.name]) {
+        carry[current.name] = current;
+      }
 
-        return carry;
-      },
-      {} as { [name: string]: ethers.utils.FunctionFragment },
-    );
+      return carry;
+    }, {} as { [name: string]: ethers.utils.FunctionFragment });
 
     const functions = new Proxy(this, {
       get: (target, prop: string) => {
-        const fragment = uniques[prop] ?? target.abi.getFunction(prop);
+        if (prop === 'then' || prop === 'catch' || prop === 'finally') {
+          if (!names[prop]) {
+            return target;
+          }
+        }
+
+        const fragment = names[prop] ?? target.abi.getFunction(prop);
         const ctor = (...args: any) => {
           return ContractFunction.create(target, fragment, ...args);
         };

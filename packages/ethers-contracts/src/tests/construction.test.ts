@@ -1,14 +1,12 @@
 import { ethers } from 'ethers';
 import { contract } from '../construction';
-import { Functions, Call, Send, Deploy } from '../types';
+import { Functions, Call, Send } from '../types';
 import { Contract } from '../contract';
 import { SendFunction, CallFunction } from '../function';
 
 describe('contract tagged template literals', () => {
   // prettier-ignore
   interface TokenFunctions extends Functions {
-    'constructor': Deploy;
-    'constructor()': Deploy;
     'allowance': Call<(owner: string, spender: string) => ethers.BigNumber>;
     'allowance(address,address)': Call<(owner: string, spender: string) => ethers.BigNumber>;
     'allowance(address,uint)': Call<(owner: string, how: number) => ethers.BigNumber>;
