@@ -5,20 +5,28 @@ import { Contract } from '../contract';
 import { SendFunction, CallFunction, ConstructorFunction } from '../function';
 
 describe('contract tagged template literals', () => {
+  // prettier-ignore
   interface TokenFunctions extends Functions {
     'constructor': ConstructorFunction;
-    'allowance': CallFunction<[owner: string, spender: string], ethers.BigNumber>;
-    'allowance(address,address)': CallFunction<[owner: string, spender: string], ethers.BigNumber>;
-    'allowance(address,uint)': CallFunction<[owner: string, how: number], ethers.BigNumber>;
-    'approve(address,uint)': SendFunction<[spender: string, amount: number], boolean>;
+    'constructor()': ConstructorFunction;
+    // 'allowance': CallFunction<[owner: string, spender: string], ethers.BigNumber>;
+    'allowance': CallFunction<[string, string], ethers.BigNumber>;
+    // 'allowance(address,address)': CallFunction<[owner: string, spender: string], ethers.BigNumber>;
+    'allowance(address,address)': CallFunction<[string, string], ethers.BigNumber>;
+    // 'allowance(address,uint)': CallFunction<[owner: string, how: number], ethers.BigNumber>;
+    'allowance(address,uint)': CallFunction<[string, number], ethers.BigNumber>;
+    // 'approve(address,uint)': SendFunction<[spender: string, amount: number], boolean>;
+    'approve(address,uint)': SendFunction<[string, number], boolean>;
     'decimals': CallFunction<never, ethers.BigNumber>;
     'decimals()': CallFunction<never, ethers.BigNumber>;
     'name': CallFunction<never, string>;
     'name()': CallFunction<never, string>;
     'symbol': CallFunction<never, string>;
     'symbol()': CallFunction<never, string>;
-    'transfer': SendFunction<[to: string, amount: number]>;
-    'transfer(address,uint256)': SendFunction<[to: string, amount: number]>;
+    // 'transfer': SendFunction<[to: string, amount: number]>;
+    'transfer': SendFunction<[string, number]>;
+    // 'transfer(address,uint256)': SendFunction<[to: string, amount: number]>;
+    'transfer(address,uint256)': SendFunction<[string, number]>;
   }
 
   const Token = contract()<TokenFunctions>`
@@ -66,14 +74,16 @@ describe('contract tagged template literals', () => {
 
     const incompatible = new IncompatibleContract('0x', provider);
     const allowance = token.allowance;
-    expect(() => allowance.attach(incompatible)).toThrow('Failed to attach function to incompatible contract');
+    expect(() => allowance.attach(incompatible)).toThrow(
+      'Failed to attach function to incompatible contract',
+    );
   });
 
   it('does allow attaching a function instance to a compatible contract', async () => {
     const CompatibleContract = contract()`
       function allowance(address owner, address spender) view returns (uint256)
     `;
-    
+
     const compatible = new CompatibleContract('0x', provider);
     const allowance = token.allowance;
     expect(() => allowance.attach(compatible)).not.toThrow();

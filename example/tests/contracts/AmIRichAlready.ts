@@ -1,11 +1,15 @@
 import {
   contract,
+  ConstructorFunction,
   ContractFunction,
   Functions,
 } from '@crestproject/ethers-contracts';
 
+// prettier-ignore
 export interface AmIRichAlreadyFunctions extends Functions {
-  check: AmIRichAlreadyFunctions['check()'];
+  'constructor': ConstructorFunction;
+  'constructor()': ConstructorFunction;
+  'check': ContractFunction;
   'check()': ContractFunction;
 }
 
