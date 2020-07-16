@@ -13,7 +13,7 @@ export interface AmIRichAlreadyFunctions extends Functions {
   'check()': ContractFunction;
 }
 
-export const AmIRichAlready = contract<AmIRichAlreadyFunctions>`
+export const AmIRichAlready = contract()<AmIRichAlreadyFunctions>`
   constructor(address tokenContract)
   function check() view returns (bool)
 `;
