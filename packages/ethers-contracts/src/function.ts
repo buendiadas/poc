@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
+import { Contract } from './contract';
 import { propertyOf } from './utils';
-import { AnyContract } from './types';
 
 export interface ConstructoFragment extends ethers.utils.Fragment {
   stateMutability: string;
@@ -9,7 +9,7 @@ export interface ConstructoFragment extends ethers.utils.Fragment {
   format(format?: string): string;
 }
 
-export interface FunctionOptions<TArgs extends any[] = unknown[]> {
+export interface FunctionOptions<TArgs extends any[] = []> {
   args?: TArgs;
   value?: ethers.BigNumberish;
   nonce?: ethers.BigNumberish;
@@ -19,7 +19,9 @@ export interface FunctionOptions<TArgs extends any[] = unknown[]> {
   bytecode?: ethers.BytesLike;
 }
 
-export function isFunctionOptions(value: any): value is FunctionOptions {
+export function isFunctionOptions<TArgs extends any[] = []>(
+  value: any,
+): value is FunctionOptions<TArgs> {
   if (typeof value === 'object' && !Array.isArray(value)) {
     return true;
   }
@@ -27,36 +29,50 @@ export function isFunctionOptions(value: any): value is FunctionOptions {
   return false;
 }
 
-export function resolveFunctionOptions(...args: any): FunctionOptions {
+export function resolveFunctionOptions<TArgs extends any[] = []>(
+  ...args: [FunctionOptions<TArgs>] | TArgs
+): FunctionOptions<TArgs> {
   const [first, ...rest] = args || [];
-  if (rest.length === 0 && isFunctionOptions(first)) {
+  if (rest.length === 0 && isFunctionOptions<TArgs>(first)) {
     return first;
   }
 
-  return { args };
+  return { args } as FunctionOptions<TArgs>;
 }
 
 export class ContractFunction<
-  TArgs extends any[] = unknown[],
-  TContract extends AnyContract = AnyContract,
+  TArgs extends any[] = [],
+  TContract extends Contract = Contract,
   TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
 > {
-  public static create<TArgs extends any[] = unknown[]>(
-    contract: AnyContract,
-    fragment: ethers.utils.Fragment,
-    ...args: [...TArgs]
-  ): ContractFunction;
+  public static create<
+    TArgs extends any[] = [],
+    TContract extends Contract = Contract,
+    TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
+  >(
+    contract: TContract,
+    fragment: TFragment,
+    ...args: TArgs
+  ): ContractFunction<TArgs, TContract, TFragment>;
 
-  public static create<TArgs extends any[] = unknown[]>(
-    contract: AnyContract,
-    fragment: ethers.utils.Fragment,
+  public static create<
+    TArgs extends any[] = [],
+    TContract extends Contract = Contract,
+    TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
+  >(
+    contract: TContract,
+    fragment: TFragment,
     options: FunctionOptions<TArgs>,
-  ): ContractFunction;
+  ): ContractFunction<TArgs, TContract, TFragment>;
 
-  public static create<TArgs extends any[] = unknown[]>(
-    contract: AnyContract,
-    fragment: ethers.utils.Fragment,
-    ...args: any
+  public static create<
+    TArgs extends any[] = [],
+    TContract extends Contract = Contract,
+    TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
+  >(
+    contract: TContract,
+    fragment: TFragment,
+    ...args: [FunctionOptions<TArgs>] | TArgs
   ) {
     const options = resolveFunctionOptions(...args) as FunctionOptions<TArgs>;
     if (ethers.utils.FunctionFragment.isFunctionFragment(fragment)) {
@@ -122,9 +138,9 @@ export class ContractFunction<
 }
 
 export class CallFunction<
-  TArgs extends any[] = unknown[],
+  TArgs extends any[] = [],
   TReturn extends any = unknown,
-  TContract extends AnyContract = AnyContract
+  TContract extends Contract = Contract
 > extends ContractFunction<TArgs, TContract, ethers.utils.FunctionFragment> {
   public async call(): Promise<TReturn> {
     const tx = this.populate();
@@ -146,7 +162,7 @@ export class CallFunction<
     return (result as any) as TReturn;
   }
 
-  public attach(contract: AnyContract): this {
+  public attach(contract: Contract): this {
     const formatted = this.fragment.format();
     if (!contract.abi.functions.hasOwnProperty(formatted)) {
       throw new Error('Failed to attach function to incompatible contract');
@@ -171,9 +187,9 @@ export class CallFunction<
 }
 
 export class SendFunction<
-  TArgs extends any[] = unknown[],
+  TArgs extends any[] = [],
   TReturn extends any = void,
-  TContract extends AnyContract = AnyContract
+  TContract extends Contract = Contract
 > extends CallFunction<TArgs, TReturn, TContract> {
   public async estimate(): Promise<ethers.BigNumber> {
     const tx = this.populate();
@@ -201,8 +217,8 @@ export class SendFunction<
 }
 
 export class ConstructorFunction<
-  TArgs extends any[] = unknown[],
-  TContract extends AnyContract = AnyContract
+  TArgs extends any[] = [],
+  TContract extends Contract = Contract
 > extends ContractFunction<TArgs, TContract, ConstructoFragment> {
   public async call(): Promise<void> {
     throw new Error('Call not implemented yet');

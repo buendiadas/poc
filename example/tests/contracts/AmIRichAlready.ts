@@ -13,6 +13,7 @@ export interface AmIRichAlreadyFunctions extends Functions {
   'check()': ContractFunction;
 }
 
+// prettier-ignore
 export const AmIRichAlready = contract()<AmIRichAlreadyFunctions>`
   constructor(address tokenContract)
   function check() view returns (bool)

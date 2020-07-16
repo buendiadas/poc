@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Contract } from './contract';
 import { ConstructorFunction } from './function';
-import { Functions, ProxyContract } from './types';
+import { Functions, ConcreteContract } from './types';
 
 export type DeferrableByteCode = string | Promise<string>;
 export type ByteCodeLoader = DeferrableByteCode | (() => DeferrableByteCode);
@@ -28,10 +28,7 @@ export class ContractFactory {
           throw new Error('Invalid bytecode');
         }
 
-        const contract = new ConcreteContract('0x', signer) as Contract<
-          TFunctions
-        >;
-
+        const contract = new ConcreteContract('0x', signer) as Contract;
         const constructor = contract.abi.deploy;
         return new ConstructorFunction(contract, constructor) as any;
       }
@@ -41,7 +38,7 @@ export class ContractFactory {
         provider: ethers.Signer | ethers.providers.Provider,
       ) {
         const abi = ensureInterface(fragments);
-        return new Contract<TFunctions>(abi, address, provider);
+        return new Contract(abi, address, provider);
       }
     };
 
@@ -66,13 +63,15 @@ export class ContractFactory {
 }
 
 export interface ConcreteContractFactory<TFunctions extends Functions> {
-  deploy: (signer: ethers.Signer) => Promise<ProxyContract<TFunctions>>;
+  deploy: (signer: ethers.Signer) => Promise<ConcreteContract<TFunctions>>;
   new (
     address: string,
     provider: ethers.Signer | ethers.providers.Provider,
-  ): ProxyContract<TFunctions>;
+  ): ConcreteContract<TFunctions>;
 }
 
 // Expose a default contract factory for convenience.
 const factory = new ContractFactory();
-export const contract = factory.contract.bind(factory);
+export const contract = factory.contract.bind(
+  factory,
+) as ContractFactory['contract'];

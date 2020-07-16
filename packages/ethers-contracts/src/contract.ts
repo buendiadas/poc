@@ -5,11 +5,10 @@ import {
   ContractFunction,
   SendFunction,
 } from './function';
-import { ProxyContract, Functions } from './types';
 
 // TODO: Add types and proxies for event handling.
 
-export class Contract<TFunctions extends Functions> {
+export class Contract {
   private readonly _signer?: ethers.Signer = undefined;
   private readonly _provider?: ethers.providers.Provider = undefined;
 
@@ -75,7 +74,7 @@ export class Contract<TFunctions extends Functions> {
       },
     });
 
-    const proxy = new Proxy(this, {
+    return new Proxy(this, {
       get: (target, prop: string, receiver) => {
         if (Reflect.has(target, prop)) {
           return Reflect.get(target, prop, receiver);
@@ -85,8 +84,6 @@ export class Contract<TFunctions extends Functions> {
         return (functions as any)[prop];
       },
     });
-
-    return (proxy as any) as ProxyContract<TFunctions>;
   }
 
   public event(signature: string) {

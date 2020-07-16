@@ -3,55 +3,83 @@ import { Contract } from './contract';
 import {
   CallFunction,
   ConstructorFunction,
-  ContractFunction,
+  FunctionOptions,
   SendFunction,
 } from './function';
 
-export type AnyContract = Contract<any>;
-
-export interface Functions {
-  [signature: string]: ContractFunction;
+export interface FunctionDefinition {
+  type: 'call' | 'send' | 'construct';
+  signature: (...args: any) => any;
+  input: any[];
+  output: any;
 }
 
-export type FunctionShortcutReturnType<
-  TFunction extends ContractFunction,
-  TParent extends AnyContract
-> = TFunction extends CallFunction
-  ? ReturnType<TFunction['call']>
-  : TFunction extends SendFunction
-  ? ethers.ContractReceipt
-  : TFunction extends ConstructorFunction
+export type Deploy<TSignature extends (...args: any) => any = any> = {
+  type: 'construct';
+  signature: TSignature;
+  input: Parameters<TSignature>;
+  output: ReturnType<TSignature>;
+};
+
+export type Call<TSignature extends (...args: any) => any = any> = {
+  type: 'call';
+  signature: TSignature;
+  input: Parameters<TSignature>;
+  output: ReturnType<TSignature>;
+};
+
+export type Send<
+  TSignature extends (...args: any) => any = any,
+  TPayable extends boolean = false
+> = {
+  type: 'send';
+  payable: TPayable;
+  signature: TSignature;
+  input: Parameters<TSignature>;
+  output: ReturnType<TSignature>;
+};
+
+export interface Functions {
+  [signature: string]: FunctionDefinition;
+}
+
+export type FullFunction<
+  TFunction extends FunctionDefinition,
+  TParent extends Contract = Contract
+> = TFunction extends Call
+  ? CallFunction<TFunction['input'], TFunction['output'], TParent>
+  : TFunction extends Send
+  ? SendFunction<TFunction['input'], TFunction['output'], TParent>
+  : TFunction extends Deploy
+  ? ConstructorFunction<TFunction['input']>
+  : never;
+
+export type ShortcutFunctionOutput<
+  TFunction extends FunctionDefinition,
+  TParent extends Contract = Contract
+> = TFunction extends Call
+  ? Promise<TFunction['output']>
+  : TFunction extends Send
+  ? Promise<ethers.ContractReceipt>
+  : TFunction extends Deploy
   ? Promise<TParent>
   : never;
 
-export type FunctionArgs<TFunction extends ContractFunction> = Required<
-  TFunction['options']
->['args'] extends any[]
-  ? Required<TFunction['options']>['args']
-  : never;
-
-export type FunctionWithShortcut<
-  TFunction extends ContractFunction,
-  TParent extends AnyContract
-> = TFunction & {
+export type ProxiedFunction<
+  TFunction extends FunctionDefinition,
+  TParent extends Contract = Contract
+> = {
   contract: TParent;
-
-  // TODO: Do not add the args overload if there are no args.
-  (options: TFunction['options']): FunctionShortcutReturnType<
+  (...args: TFunction['input']): ShortcutFunctionOutput<TFunction, TParent>;
+  (options: FunctionOptions<TFunction['input']>): FullFunction<
     TFunction,
     TParent
   >;
+} & FullFunction<TFunction>;
 
-  (...args: FunctionArgs<TFunction>): FunctionShortcutReturnType<
-    TFunction,
-    TParent
-  >;
-};
-
-export type ProxyContract<TFunctions extends Functions> = Contract<TFunctions> &
+export type ConcreteContract<TFunctions extends Functions> = Contract &
   {
-    [TKey in keyof TFunctions]: FunctionWithShortcut<
-      TFunctions[TKey],
-      ProxyContract<TFunctions>
-    >;
+    [TKey in keyof TFunctions]: TKey extends keyof Contract
+      ? Contract[TKey]
+      : ProxiedFunction<TFunctions[TKey], ConcreteContract<TFunctions>>;
   };

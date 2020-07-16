@@ -1,34 +1,30 @@
 import { ethers } from 'ethers';
 import { contract } from '../construction';
-import { Functions } from '../types';
+import { Functions, Call, Send, Deploy } from '../types';
 import { Contract } from '../contract';
-import { SendFunction, CallFunction, ConstructorFunction } from '../function';
+import { SendFunction, CallFunction } from '../function';
 
 describe('contract tagged template literals', () => {
   // prettier-ignore
   interface TokenFunctions extends Functions {
-    'constructor': ConstructorFunction;
-    'constructor()': ConstructorFunction;
-    // 'allowance': CallFunction<[owner: string, spender: string], ethers.BigNumber>;
-    'allowance': CallFunction<[string, string], ethers.BigNumber>;
-    // 'allowance(address,address)': CallFunction<[owner: string, spender: string], ethers.BigNumber>;
-    'allowance(address,address)': CallFunction<[string, string], ethers.BigNumber>;
-    // 'allowance(address,uint)': CallFunction<[owner: string, how: number], ethers.BigNumber>;
-    'allowance(address,uint)': CallFunction<[string, number], ethers.BigNumber>;
-    // 'approve(address,uint)': SendFunction<[spender: string, amount: number], boolean>;
-    'approve(address,uint)': SendFunction<[string, number], boolean>;
-    'decimals': CallFunction<never, ethers.BigNumber>;
-    'decimals()': CallFunction<never, ethers.BigNumber>;
-    'name': CallFunction<never, string>;
-    'name()': CallFunction<never, string>;
-    'symbol': CallFunction<never, string>;
-    'symbol()': CallFunction<never, string>;
-    // 'transfer': SendFunction<[to: string, amount: number]>;
-    'transfer': SendFunction<[string, number]>;
-    // 'transfer(address,uint256)': SendFunction<[to: string, amount: number]>;
-    'transfer(address,uint256)': SendFunction<[string, number]>;
+    'constructor': Deploy;
+    'constructor()': Deploy;
+    'allowance': Call<(owner: string, spender: string) => ethers.BigNumber>;
+    'allowance(address,address)': Call<(owner: string, spender: string) => ethers.BigNumber>;
+    'allowance(address,uint)': Call<(owner: string, how: number) => ethers.BigNumber>;
+    'approve': Send<(spender: string, amount: number) => boolean>;
+    'approve(address,uint)': Send<(spender: string, amount: number) => boolean>;
+    'decimals': Call<() => ethers.BigNumber>;
+    'decimals()': Call<() => ethers.BigNumber>;
+    'name': Call<() => string>;
+    'name()': Call<() => string>;
+    'symbol': Call<() => string>;
+    'symbol()': Call<() => string>;
+    'transfer': Send<(to: string, amount: number) => void>;
+    'transfer(address,uint256)': Send<(to: string, amount: number) => void>;
   }
 
+  // prettier-ignore
   const Token = contract()<TokenFunctions>`
     function allowance(address owner, address spender) view returns (uint256)
     function allowance(address owner, uint how) view returns (uint256)
@@ -79,7 +75,7 @@ describe('contract tagged template literals', () => {
     );
   });
 
-  it('does allow attaching a function instance to a compatible contract', async () => {
+  it('does allow attaching a function instance to a compatible contract', () => {
     const CompatibleContract = contract()`
       function allowance(address owner, address spender) view returns (uint256)
     `;
