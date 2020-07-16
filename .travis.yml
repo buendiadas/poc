@@ -9,10 +9,9 @@ install: yarn --frozen-lockfile
 script:
   - node --version
   - yarn --version
-  - yarn typecheck
+  - yarn lint
   - yarn build
   - yarn test
-  - yarn lint
 
 notifications:
   email:
