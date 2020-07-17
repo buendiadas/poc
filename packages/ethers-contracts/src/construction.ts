@@ -20,14 +20,15 @@ function ensureInterface(
   return new ethers.utils.Interface(fragments);
 }
 
+function ensureBytecode(bytecode: string) {
+  const prefixed = bytecode.startsWith('0x') ? bytecode : `0x${bytecode}`;
+}
+
 export class ContractFactory {
-  public create<
+  public createFactory<
     TFunctions extends Functions = {},
     TConstructor extends AnyFunction = () => void
-  >(
-    fragments: string | (ethers.utils.Fragment | string)[],
-    load?: ByteCodeLoader,
-  ) {
+  >(fragments: string | (ethers.utils.Fragment | string)[], bytecode?: string) {
     const ConcreteContract = class {
       public static async deploy(
         signer: ethers.Signer,
@@ -37,17 +38,12 @@ export class ContractFactory {
         signer: ethers.Signer,
         options: FunctionOptions<Parameters<TConstructor>>,
       ): Promise<ConcreteContract<TFunctions>>;
-      public static async deploy(signer: ethers.Signer, ...args: any) {
-        const bytecode = await (typeof load === 'function' ? load() : load);
-        if (!bytecode?.startsWith('0x')) {
-          throw new Error('Invalid bytecode');
-        }
-
+      public static deploy(signer: ethers.Signer, ...args: any) {
         const options = resolveFunctionOptions(...args);
         const contract = new ConcreteContract('0x', signer) as Contract;
         const constructor = contract.abi.deploy;
         const fn = new ConstructorFunction(contract, constructor, options);
-        return fn.bytecode(bytecode).send();
+        return fn.bytecode(ensureBytecode(bytecode ?? '')).send();
       }
 
       constructor(
@@ -65,13 +61,26 @@ export class ContractFactory {
     >;
   }
 
-  public contract(bytecode?: ByteCodeLoader) {
+  public fromSignature<
+    TFunctions extends Functions = {},
+    TConstructor extends AnyFunction = () => void
+  >(signatures: TemplateStringsArray) {
+    const trimmed = signatures
+      .join('')
+      .trim()
+      .split('\n')
+      .map((item) => item.trim());
+
+    return this.createFactory<TFunctions, TConstructor>(trimmed);
+  }
+
+  public async fromCallback<
+    TFunctions extends Functions = {},
+    TConstructor extends AnyFunction = () => void
+  >(artifactLoader: ArtifactLoader) {
     const factory = this;
 
-    return function contract<
-      TFunctions extends Functions = {},
-      TConstructor extends AnyFunction = () => void
-    >(signatures: TemplateStringsArray) {
+    return function contract(signatures: TemplateStringsArray) {
       const trimmed = signatures
         .join('')
         .trim()
