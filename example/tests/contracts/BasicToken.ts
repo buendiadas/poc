@@ -39,7 +39,7 @@ export const BasicToken = contract(bytecode('BasicToken'))<ContractFunctions, Co
   function allowance(address owner, address spender) view returns (uint256)
   function allowance(address owner, uint how) view returns (uint256)
   function approve(address spender, uint256 amount) returns (bool)
-  function balanceOf(address account) returns (uint256)
+  function balanceOf(address account) view returns (uint256)
   function decimals() view returns (uint8)
   function name() view returns (string)
   function symbol() view returns (string)

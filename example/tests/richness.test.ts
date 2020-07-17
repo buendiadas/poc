@@ -40,11 +40,21 @@ describe('example', () => {
 
     const rich = await signer.getAddress();
     const poor = await provider.getSigner(1).getAddress();
-    await expect(contract.check({ from: rich })).resolves.toBeTruthy();
-    await expect(contract.check.from(poor).call()).resolves.toBeFalsy();
+    const check = contract.check;
+    await expect(check.from(rich).call()).resolves.toBeTruthy();
+    await expect(check.from(poor).call()).resolves.toBeFalsy();
 
     const richness = ethers.utils.parseEther('10000000');
     await token.transfer(poor, richness);
-    await expect(contract.check.from(poor).call()).resolves.toBeTruthy();
+    await expect(check.from(poor).call()).resolves.toBeTruthy();
+    await expect(check.from(rich).call()).resolves.toBeTruthy();
+
+    await expect(token.transfer(poor, balance)).rejects.toBeRevertedWith(
+      'transfer amount exceeds balance',
+    );
+
+    const remaining = balance.sub(richness);
+    await expect(token.transfer(poor, remaining)).resolves.toBeReceipt();
+    await expect(token.balanceOf(rich)).resolves.toEqBigNumber('0');
   });
 });
