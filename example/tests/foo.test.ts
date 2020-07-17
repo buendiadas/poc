@@ -29,14 +29,22 @@ export class BuidlerEthersProvider extends ethers.providers.JsonRpcProvider {
   }
 }
 
-describe('foo', () => {
+describe('example', () => {
   const provider = new BuidlerEthersProvider(network.provider);
 
-  it('bar', async () => {
+  it('makes the poor rich', async () => {
     const signer = provider.getSigner(0);
-    const balance = ethers.utils.parseEther('99999');
+    const balance = ethers.utils.parseEther('100000000000000');
     const token = await BasicToken.deploy(signer, balance);
     const contract = await AmIRichAlready.deploy(signer, token.address);
-    await expect(contract.check.call()).resolves.toBeFalsy();
+
+    const rich = await signer.getAddress();
+    const poor = await provider.getSigner(1).getAddress();
+    await expect(contract.check({ from: rich })).resolves.toBeTruthy();
+    await expect(contract.check.from(poor).call()).resolves.toBeFalsy();
+
+    const richness = ethers.utils.parseEther('10000000');
+    await token.transfer(poor, richness);
+    await expect(contract.check.from(poor).call()).resolves.toBeTruthy();
   });
 });

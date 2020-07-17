@@ -16,6 +16,7 @@ export interface FunctionOptions<TArgs extends any[] = []> {
   gas?: ethers.BigNumberish;
   price?: ethers.BigNumberish;
   block?: ethers.providers.BlockTag;
+  from?: string;
   bytecode?: ethers.BytesLike;
 }
 
@@ -28,9 +29,22 @@ export function isFunctionOptions<TArgs extends any[] = []>(
     }
 
     const keys = Object.keys(value);
-    if (keys.length === 0) {
-      return true;
+    const allowed = [
+      'args',
+      'value',
+      'nonce',
+      'gas',
+      'price',
+      'block',
+      'from',
+      'bytecode',
+    ];
+
+    if (!keys.every((key) => allowed.includes(key))) {
+      throw new Error('Invalid options');
     }
+
+    return true;
   }
 
   return false;
@@ -123,6 +137,10 @@ export class ContractFunction<
     return this.refine({ gas: limit, price });
   }
 
+  public from(from?: string) {
+    return this.refine({ from });
+  }
+
   public refine(options: FunctionOptions<TArgs> = {}): this {
     const args = propertyOf('args', [options, this.options]);
     const value = propertyOf('value', [options, this.options]);
@@ -131,6 +149,7 @@ export class ContractFunction<
     const nonce = propertyOf('nonce', [options, this.options]);
     const block = propertyOf('block', [options, this.options]);
     const bytecode = propertyOf('bytecode', [options, this.options]);
+    const from = propertyOf('from', [options, this.options]);
 
     return new (this.constructor as any)(this.contract, this.fragment, {
       args,
@@ -140,6 +159,7 @@ export class ContractFunction<
       nonce,
       block,
       bytecode,
+      from,
     });
   }
 }
@@ -150,13 +170,12 @@ export class CallFunction<
   TContract extends Contract = Contract
 > extends ContractFunction<TArgs, TContract, ethers.utils.FunctionFragment> {
   public async call(): Promise<TReturn> {
-    const tx = this.populate();
-    const provider = this.contract.signer || this.contract.provider;
-    if (provider == null) {
+    const tx = await this.populate();
+    if (this.contract.provider == null) {
       throw new Error('Missing provider');
     }
 
-    const response = await provider.call(tx);
+    const response = await this.contract.provider.call(tx);
     const result = this.contract.abi.decodeFunctionResult(
       this.fragment,
       response,
@@ -178,7 +197,7 @@ export class CallFunction<
     return new (this.constructor as any)(contract, this.fragment, this.options);
   }
 
-  protected populate() {
+  protected async populate() {
     const data = this.contract.abi.encodeFunctionData(
       this.fragment,
       this.options.args,
@@ -187,6 +206,7 @@ export class CallFunction<
     const tx: ethers.PopulatedTransaction = {
       to: this.contract.address,
       data,
+      ...(this.options.from && { from: this.options.from }),
     };
 
     return tx;
@@ -199,13 +219,12 @@ export class SendFunction<
   TContract extends Contract = Contract
 > extends CallFunction<TArgs, TReturn, TContract> {
   public async estimate(): Promise<ethers.BigNumber> {
-    const tx = this.populate();
-    const provider = this.contract.signer || this.contract.provider;
-    if (provider == null) {
+    const tx = await this.populate();
+    if (this.contract.provider == null) {
       throw new Error('Missing provider');
     }
 
-    return provider.estimateGas(tx);
+    return this.contract.provider.estimateGas(tx);
   }
 
   public send(wait?: true): Promise<ethers.ContractReceipt>;
@@ -217,7 +236,7 @@ export class SendFunction<
       throw new Error('Missing signer');
     }
 
-    const tx = this.populate();
+    const tx = await this.populate();
     const response = await this.contract.signer.sendTransaction(tx);
     return wait ? response.wait() : response;
   }
@@ -232,13 +251,12 @@ export class ConstructorFunction<
   }
 
   public async estimate(): Promise<ethers.BigNumber> {
-    const tx = this.populate();
-    const provider = this.contract.signer || this.contract.provider;
-    if (provider == null) {
+    const tx = await this.populate();
+    if (this.contract.provider == null) {
       throw new Error('Missing provider');
     }
 
-    return provider.estimateGas(tx);
+    return this.contract.provider.estimateGas(tx);
   }
 
   public send(wait?: true): Promise<this['contract']>;
@@ -250,7 +268,7 @@ export class ConstructorFunction<
       throw new Error('Missing signer');
     }
 
-    const tx = this.populate();
+    const tx = await this.populate();
     const response = await this.contract.signer.sendTransaction(tx);
 
     if (!wait) {
@@ -261,7 +279,7 @@ export class ConstructorFunction<
     return this.contract.attach(receipt.contractAddress);
   }
 
-  protected populate() {
+  protected async populate() {
     if (!this.options.bytecode) {
       throw new Error('Missing bytecode');
     }
@@ -276,6 +294,7 @@ export class ConstructorFunction<
 
     const tx: ethers.PopulatedTransaction = {
       data,
+      ...(this.options.from && { from: this.options.from }),
     };
 
     return tx;

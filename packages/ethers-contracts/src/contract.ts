@@ -61,16 +61,16 @@ export class Contract {
           apply: (target, thiz, args) => {
             const fn = target.apply(thiz, args);
 
-            if (fn instanceof CallFunction) {
-              return fn.call();
+            if (fn instanceof ConstructorFunction) {
+              return fn.send();
             }
 
             if (fn instanceof SendFunction) {
               return fn.send();
             }
 
-            if (fn instanceof ConstructorFunction) {
-              return fn.send();
+            if (fn instanceof CallFunction) {
+              return fn.call();
             }
           },
         });
@@ -96,5 +96,9 @@ export class Contract {
   public attach(address: string): this {
     const provider = this.signer ?? this.provider;
     return new (this.constructor as any)(this.abi, address, provider);
+  }
+
+  public connect(provider: ethers.Signer | ethers.providers.Provider): this {
+    return new (this.constructor as any)(this.abi, this.address, provider);
   }
 }

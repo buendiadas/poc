@@ -10,7 +10,8 @@
     "format": "lerna run format",
     "lint": "lerna run lint",
     "typecheck": "lerna run typecheck",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "watch": "lerna run watch --stream"
   },
   "devDependencies": {
     "@types/jest": "^26.0.4",
