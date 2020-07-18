@@ -56,9 +56,8 @@ export type ProxiedFunction<
 > = {
   contract: TParent;
   (...args: TFunction['input']): ShortcutFunctionOutput<TFunction>;
-  (options: FunctionOptions<TFunction['input']>): FullFunction<
-    TFunction,
-    TParent
+  (options: FunctionOptions<TFunction['input']>): ShortcutFunctionOutput<
+    TFunction
   >;
 } & FullFunction<TFunction>;
 

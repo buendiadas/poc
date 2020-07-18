@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { JsonFragment } from '@ethersproject/abi';
 import { Contract } from './contract';
 import {
   ConstructorFunction,
@@ -6,17 +7,33 @@ import {
   resolveFunctionOptions,
 } from './function';
 import { Functions, ConcreteContract, AnyFunction } from './types';
+import { ensureInterface } from './utils';
 
-export type Artifact = {};
+export interface SolidityCompilerOutput {
+  abi: JsonFragment;
+  bytecode?: string;
+  evm?: {
+    bytecode?: string;
+  };
+}
 
-function ensureInterface(
-  fragments: string | (ethers.utils.Fragment | string)[],
-) {
-  if (ethers.utils.Interface.isInterface(fragments)) {
-    return fragments;
-  }
+export interface ConcreteContractFactory<
+  TFunctions extends Functions = {},
+  TConstructor extends AnyFunction = () => void
+> {
+  deploy(
+    signer: ethers.Signer,
+    ...args: Parameters<TConstructor>
+  ): Promise<ConcreteContract<TFunctions>>;
+  deploy(
+    signer: ethers.Signer,
+    options: FunctionOptions<Parameters<TConstructor>>,
+  ): Promise<ConcreteContract<TFunctions>>;
 
-  return new ethers.utils.Interface(fragments);
+  new (
+    address?: string,
+    provider?: ethers.Signer | ethers.providers.Provider,
+  ): ConcreteContract<TFunctions>;
 }
 
 export class ContractFactory {
@@ -81,7 +98,10 @@ export class ContractFactory {
   public fromSolidity<
     TFunctions extends Functions = {},
     TConstructor extends AnyFunction = () => void
-  >(artifact: Artifact, provider?: ethers.Signer | ethers.providers.Provider) {
+  >(
+    artifact: SolidityCompilerOutput,
+    provider?: ethers.Signer | ethers.providers.Provider,
+  ) {
     const json = typeof artifact === 'string' ? JSON.parse(artifact) : artifact;
     const abi = json?.abi;
     const bytecode = json?.bytecode ?? json?.evm?.bytecode;
@@ -92,25 +112,6 @@ export class ContractFactory {
       provider,
     );
   }
-}
-
-export interface ConcreteContractFactory<
-  TFunctions extends Functions = {},
-  TConstructor extends AnyFunction = () => void
-> {
-  deploy(
-    signer: ethers.Signer,
-    ...args: Parameters<TConstructor>
-  ): Promise<ConcreteContract<TFunctions>>;
-  deploy(
-    signer: ethers.Signer,
-    options: FunctionOptions<Parameters<TConstructor>>,
-  ): Promise<ConcreteContract<TFunctions>>;
-
-  new (
-    address?: string,
-    provider?: ethers.Signer | ethers.providers.Provider,
-  ): ConcreteContract<TFunctions>;
 }
 
 // Expose a default contract factory for convenience.

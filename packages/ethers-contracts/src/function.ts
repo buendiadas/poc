@@ -2,7 +2,9 @@ import { ethers } from 'ethers';
 import { Contract } from './contract';
 import { propertyOf } from './utils';
 
-export interface ConstructoFragment extends ethers.utils.Fragment {
+// TODO: Properly limit the available options based on the function type and signature.
+
+export interface ConstructorFragment extends ethers.utils.Fragment {
   stateMutability: string;
   payable: boolean;
   gas?: ethers.BigNumber;
@@ -133,6 +135,10 @@ export class ContractFunction<
     return this.refine({ nonce });
   }
 
+  public block(block?: ethers.providers.BlockTag) {
+    return this.refine({ block });
+  }
+
   public gas(limit?: ethers.BigNumberish, price?: ethers.BigNumberish) {
     return this.refine({ gas: limit, price });
   }
@@ -207,6 +213,18 @@ export class CallFunction<
       to: this.contract.address,
       data,
       ...(this.options.from && { from: this.options.from }),
+      ...(this.options.nonce && {
+        nonce: ethers.BigNumber.from(this.options.nonce).toNumber(),
+      }),
+      ...(this.options.value && {
+        value: ethers.BigNumber.from(this.options.value),
+      }),
+      ...(this.options.price && {
+        gasPrice: ethers.BigNumber.from(this.options.price),
+      }),
+      ...(this.options.gas && {
+        gasLimit: ethers.BigNumber.from(this.options.gas),
+      }),
     };
 
     return tx;
@@ -245,7 +263,7 @@ export class SendFunction<
 export class ConstructorFunction<
   TArgs extends any[] = [],
   TContract extends Contract = Contract
-> extends ContractFunction<TArgs, TContract, ConstructoFragment> {
+> extends ContractFunction<TArgs, TContract, ConstructorFragment> {
   public async call(): Promise<void> {
     throw new Error('Call not implemented yet');
   }
@@ -294,7 +312,15 @@ export class ConstructorFunction<
 
     const tx: ethers.PopulatedTransaction = {
       data,
-      ...(this.options.from && { from: this.options.from }),
+      ...(this.options.nonce && {
+        nonce: ethers.BigNumber.from(this.options.nonce).toNumber(),
+      }),
+      ...(this.options.price && {
+        gasPrice: ethers.BigNumber.from(this.options.price),
+      }),
+      ...(this.options.gas && {
+        gasLimit: ethers.BigNumber.from(this.options.gas),
+      }),
     };
 
     return tx;

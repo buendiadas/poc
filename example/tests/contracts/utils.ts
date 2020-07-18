@@ -1,5 +1,5 @@
-import { Artifact } from '@crestproject/ethers-contracts';
+import { SolidityCompilerOutput } from '@crestproject/ethers-contracts';
 
-export function loadArtifact(name: string): Artifact {
+export function loadArtifact(name: string): SolidityCompilerOutput {
   return require(`../../build/${name}.json`);
 }
