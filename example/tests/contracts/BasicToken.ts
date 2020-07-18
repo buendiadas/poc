@@ -5,11 +5,7 @@ import {
   Send,
 } from '@crestproject/ethers-contracts';
 import { ethers } from 'ethers';
-
-function bytecode(name: string) {
-  const json = require(`../../build/${name}.json`);
-  return `0x${json.bytecode}`;
-}
+import { loadArtifact } from './utils';
 
 // prettier-ignore
 export type ContractConstructor = (initialBalance: ethers.BigNumberish) => void;
@@ -33,15 +29,7 @@ export interface ContractFunctions extends Functions {
   'transfer(address,uint256)': Send<(to: string, amount: ethers.BigNumberish) => void>;
 }
 
-// prettier-ignore
-export const BasicToken = contract(bytecode('BasicToken'))<ContractFunctions, ContractConstructor>`
-  constructor(uint256 initialBalance)
-  function allowance(address owner, address spender) view returns (uint256)
-  function allowance(address owner, uint how) view returns (uint256)
-  function approve(address spender, uint256 amount) returns (bool)
-  function balanceOf(address account) view returns (uint256)
-  function decimals() view returns (uint8)
-  function name() view returns (string)
-  function symbol() view returns (string)
-  function transfer(address recipient, uint256 amount) returns (bool)
-`;
+export const BasicToken = contract.fromSolidity<
+  ContractFunctions,
+  ContractConstructor
+>(loadArtifact('BasicToken'));

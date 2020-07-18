@@ -7,8 +7,7 @@ import {
 } from './function';
 import { Functions, ConcreteContract, AnyFunction } from './types';
 
-export type DeferrableByteCode = string | Promise<string>;
-export type ByteCodeLoader = DeferrableByteCode | (() => DeferrableByteCode);
+export type Artifact = {};
 
 function ensureInterface(
   fragments: string | (ethers.utils.Fragment | string)[],
@@ -20,15 +19,15 @@ function ensureInterface(
   return new ethers.utils.Interface(fragments);
 }
 
-function ensureBytecode(bytecode: string) {
-  const prefixed = bytecode.startsWith('0x') ? bytecode : `0x${bytecode}`;
-}
-
 export class ContractFactory {
   public createFactory<
     TFunctions extends Functions = {},
     TConstructor extends AnyFunction = () => void
-  >(fragments: string | (ethers.utils.Fragment | string)[], bytecode?: string) {
+  >(
+    fragments: string | (ethers.utils.Fragment | string)[],
+    bytecode?: string,
+    defaultProvider?: ethers.Signer | ethers.providers.Provider,
+  ) {
     const ConcreteContract = class {
       public static async deploy(
         signer: ethers.Signer,
@@ -40,18 +39,23 @@ export class ContractFactory {
       ): Promise<ConcreteContract<TFunctions>>;
       public static deploy(signer: ethers.Signer, ...args: any) {
         const options = resolveFunctionOptions(...args);
-        const contract = new ConcreteContract('0x', signer) as Contract;
+        const contract = new ConcreteContract(undefined, signer) as Contract;
         const constructor = contract.abi.deploy;
         const fn = new ConstructorFunction(contract, constructor, options);
-        return fn.bytecode(ensureBytecode(bytecode ?? '')).send();
+
+        const hex = ethers.utils.hexlify(bytecode ?? '', {
+          allowMissingPrefix: true,
+        });
+
+        return fn.bytecode(hex).send();
       }
 
       constructor(
-        address: string,
-        provider: ethers.Signer | ethers.providers.Provider,
+        address: string = '0x',
+        provider?: ethers.Signer | ethers.providers.Provider,
       ) {
         const abi = ensureInterface(fragments);
-        return new Contract(abi, address, provider);
+        return new Contract(abi, address, provider ?? defaultProvider);
       }
     };
 
@@ -74,21 +78,19 @@ export class ContractFactory {
     return this.createFactory<TFunctions, TConstructor>(trimmed);
   }
 
-  public async fromCallback<
+  public fromSolidity<
     TFunctions extends Functions = {},
     TConstructor extends AnyFunction = () => void
-  >(artifactLoader: ArtifactLoader) {
-    const factory = this;
+  >(artifact: Artifact, provider?: ethers.Signer | ethers.providers.Provider) {
+    const json = typeof artifact === 'string' ? JSON.parse(artifact) : artifact;
+    const abi = json?.abi;
+    const bytecode = json?.bytecode ?? json?.evm?.bytecode;
 
-    return function contract(signatures: TemplateStringsArray) {
-      const trimmed = signatures
-        .join('')
-        .trim()
-        .split('\n')
-        .map((item) => item.trim());
-
-      return factory.create<TFunctions, TConstructor>(trimmed, bytecode);
-    };
+    return this.createFactory<TFunctions, TConstructor>(
+      abi,
+      bytecode,
+      provider,
+    );
   }
 }
 
@@ -106,13 +108,10 @@ export interface ConcreteContractFactory<
   ): Promise<ConcreteContract<TFunctions>>;
 
   new (
-    address: string,
-    provider: ethers.Signer | ethers.providers.Provider,
+    address?: string,
+    provider?: ethers.Signer | ethers.providers.Provider,
   ): ConcreteContract<TFunctions>;
 }
 
 // Expose a default contract factory for convenience.
-const factory = new ContractFactory();
-export const contract = factory.contract.bind(
-  factory,
-) as ContractFactory['contract'];
+export const contract = new ContractFactory();

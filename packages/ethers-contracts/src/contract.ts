@@ -22,13 +22,13 @@ export class Contract {
 
   constructor(
     public readonly abi: ethers.utils.Interface,
-    public readonly address: string,
-    providerOrSigner: ethers.providers.Provider | ethers.Signer,
+    public readonly address: string = '0x',
+    provider?: ethers.providers.Provider | ethers.Signer,
   ) {
-    if (ethers.Signer.isSigner(providerOrSigner)) {
-      this._signer = providerOrSigner;
-    } else if (ethers.providers.Provider.isProvider(providerOrSigner)) {
-      this._provider = providerOrSigner;
+    if (ethers.Signer.isSigner(provider)) {
+      this._signer = provider;
+    } else if (ethers.providers.Provider.isProvider(provider)) {
+      this._provider = provider;
     }
 
     const names = Object.values(this.abi.functions).reduce((carry, current) => {

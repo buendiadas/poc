@@ -1,9 +1,5 @@
 import { contract, Functions, Call } from '@crestproject/ethers-contracts';
-
-function bytecode(name: string) {
-  const json = require(`../../build/${name}.json`);
-  return `0x${json.bytecode}`;
-}
+import { loadArtifact } from './utils';
 
 // prettier-ignore
 export type ContractConstructor = (tokenContract: string) => void;
@@ -14,8 +10,7 @@ export interface ContractFunctions extends Functions {
   'check()': Call<() => boolean>;
 }
 
-// prettier-ignore
-export const AmIRichAlready = contract(bytecode('AmIRichAlready'))<ContractFunctions, ContractConstructor>`
-  constructor(address tokenContract)
-  function check() view returns (bool)
-`;
+export const AmIRichAlready = contract.fromSolidity<
+  ContractFunctions,
+  ContractConstructor
+>(loadArtifact('AmIRichAlready'));

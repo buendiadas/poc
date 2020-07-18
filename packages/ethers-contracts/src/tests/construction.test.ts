@@ -25,7 +25,7 @@ describe('contract tagged template literals', () => {
   }
 
   // prettier-ignore
-  const Token = contract()<TokenFunctions>`
+  const Token = contract.fromSignature<TokenFunctions>`
     function allowance(address owner, address spender) view returns (uint256)
     function allowance(address owner, uint how) view returns (uint256)
     function approve(address spender, uint256 amount) returns (bool)
@@ -65,11 +65,11 @@ describe('contract tagged template literals', () => {
   });
 
   it('does not allow attaching a function instance to an imcompatible contract', () => {
-    const IncompatibleContract = contract()`
+    const IncompatibleContract = contract.fromSignature`
       function other(address) view returns (string)
     `;
 
-    const incompatible = new IncompatibleContract('0x', provider);
+    const incompatible = new IncompatibleContract(undefined, provider);
     const allowance = token.allowance;
     expect(() => allowance.attach(incompatible)).toThrow(
       'Failed to attach function to incompatible contract',
@@ -77,11 +77,11 @@ describe('contract tagged template literals', () => {
   });
 
   it('does allow attaching a function instance to a compatible contract', () => {
-    const CompatibleContract = contract()`
+    const CompatibleContract = contract.fromSignature`
       function allowance(address owner, address spender) view returns (uint256)
     `;
 
-    const compatible = new CompatibleContract('0x', provider);
+    const compatible = new CompatibleContract(undefined, provider);
     const allowance = token.allowance;
     expect(() => allowance.attach(compatible)).not.toThrow();
     expect(allowance.attach(compatible)).toBeInstanceOf(CallFunction);
