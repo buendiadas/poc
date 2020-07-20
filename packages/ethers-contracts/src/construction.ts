@@ -10,7 +10,7 @@ import { Functions, ConcreteContract, AnyFunction } from './types';
 import { ensureInterface } from './utils';
 
 export interface SolidityCompilerOutput {
-  abi: JsonFragment;
+  abi: JsonFragment[];
   bytecode?: string;
   evm?: {
     bytecode?: string;

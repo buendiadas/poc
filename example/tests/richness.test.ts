@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
-import { AmIRichAlready } from './contracts/AmIRichAlready';
 import { network } from '@nomiclabs/buidler';
 import { IEthereumProvider } from '@nomiclabs/buidler/types';
+import { AmIRichAlready } from './contracts/AmIRichAlready';
 import { BasicToken } from './contracts/BasicToken';
 
 export class BuidlerEthersProvider extends ethers.providers.JsonRpcProvider {

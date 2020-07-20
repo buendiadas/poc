@@ -109,7 +109,7 @@ export function generateFunctions(fragments: ethers.utils.FunctionFragment[]) {
 
     // Only create a shortcut for the first function overload.
     if (index === found) {
-      carry.push(`'${fragment.name}': ${type};`);
+      carry.push(`${fragment.name}: ${type};`);
     }
 
     const signature = fragment.format();
@@ -135,11 +135,14 @@ export function generateContract(
   const constructor = generateConstructor(abi.deploy);
 
   const output = `
-    import { contract, Call, Send, Construct, Functions } from '@crestproject/ethers-contracts';
+    /* eslint-disable */
+    import { ethers } from 'ethers';
+    import { contract, Call, Send, Functions } from '@crestproject/ethers-contracts';
 
     export type ${name}Constructor = ${constructor};
+
     export interface ${name}Functions extends Functions {
-      ${functions}
+      ${functions || '// No external functions'}
     }
 
     export const ${name} = contract.fromSolidity<${name}Functions, ${name}Constructor>(${source});

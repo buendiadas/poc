@@ -1,5 +1,5 @@
 {
-  "name": "@crestproject/typescript-generator",
+  "name": "crestproject",
   "version": "0.0.0",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
@@ -19,8 +19,12 @@
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
   "main": "index.js",
+  "bin": {
+    "crestproject": "cli.js"
+  },
   "scripts": {
     "clean": "rimraf dist coverage",
+    "cli": "ts-node src/cli",
     "prebuild": "rimraf dist",
     "build": "tsc --project tsconfig.json",
     "postbuild": "cp package.json ../../LICENSE ../../README.md dist && chmod +x dist/index.js",
@@ -32,12 +36,14 @@
     "preversion": "yarn typecheck && yarn lint && yarn build",
     "postversion": "cp package.json dist"
   },
-  "devDependencies": {
-    "ethers": "^5.0.5"
-  },
-  "peerDependencies": {
-    "ethers": "^5.0.5",
-    "prettier": "^2.0.5"
+  "dependencies": {
+    "@crestproject/ethers-contracts": "^0.0.0",
+    "@crestproject/jest-matchers": "^0.0.0",
+    "@crestproject/typescript-generator": "^0.0.0",
+    "glob": "^7.1.6",
+    "jest-worker": "^26.1.0",
+    "throat": "^5.0.0",
+    "yargs": "^15.4.1"
   },
   "jest": {
     "preset": "ts-jest",
