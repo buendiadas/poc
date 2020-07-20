@@ -1,1 +1,1 @@
-import '@crestproject/jest-matchers';
+import 'crestproject/jest-matchers';

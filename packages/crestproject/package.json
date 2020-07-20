@@ -27,10 +27,10 @@
     "cli": "ts-node src/cli",
     "prebuild": "rimraf dist",
     "build": "tsc --project tsconfig.json",
-    "postbuild": "cp package.json ../../LICENSE ../../README.md dist && chmod +x dist/index.js",
+    "postbuild": "cp package.json ../../LICENSE ../../README.md dist && chmod +x dist/cli.js",
     "watch": "yarn build --watch",
     "format": "prettier --write src/{*,**/*}.{ts,sol}",
-    "lint": "yarn prettier --list-different src/{*,**/*}.{ts,sol}",
+    "lint": "prettier --list-different src/{*,**/*}.{ts,sol}",
     "test": "jest",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "preversion": "yarn typecheck && yarn lint && yarn build",
@@ -44,6 +44,9 @@
     "jest-worker": "^26.1.0",
     "throat": "^5.0.0",
     "yargs": "^15.4.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.5"
   },
   "jest": {
     "preset": "ts-jest",

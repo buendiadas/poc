@@ -130,6 +130,7 @@ export function generateContract(
   name: string,
   source: string,
   abi: ethers.utils.Interface,
+  crestproject: string = '@crestproject/ethers-contracts',
 ) {
   const functions = generateFunctions(Object.values(abi.functions));
   const constructor = generateConstructor(abi.deploy);
@@ -137,7 +138,7 @@ export function generateContract(
   const output = `
     /* eslint-disable */
     import { ethers } from 'ethers';
-    import { contract, Call, Send, Functions } from '@crestproject/ethers-contracts';
+    import { contract, Call, Send, Functions } from '${crestproject}';
 
     export type ${name}Constructor = ${constructor};
 
@@ -155,6 +156,7 @@ export function generateContractFile(
   name: string,
   abi: ethers.utils.Interface,
   source: string,
+  crestproject: string = '@crestproject/ethers-contracts',
 ) {
-  return formatOutput(generateContract(name, source, abi));
+  return formatOutput(generateContract(name, source, abi, crestproject));
 }

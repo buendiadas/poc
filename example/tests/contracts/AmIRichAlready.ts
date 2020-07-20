@@ -1,16 +1,15 @@
-import { contract, Functions, Call } from '@crestproject/ethers-contracts';
-import { loadArtifact } from './utils';
+/* eslint-disable */
+import { ethers } from 'ethers';
+import { contract, Call, Send, Functions } from 'crestproject';
 
-// prettier-ignore
-export type ContractConstructor = (tokenContract: string) => void;
+export type AmIRichAlreadyConstructor = (_tokenContract: string) => void;
 
-// prettier-ignore
-export interface ContractFunctions extends Functions {
-  'check': Call<() => boolean>;
+export interface AmIRichAlreadyFunctions extends Functions {
+  check: Call<() => boolean>;
   'check()': Call<() => boolean>;
 }
 
 export const AmIRichAlready = contract.fromSolidity<
-  ContractFunctions,
-  ContractConstructor
->(loadArtifact('AmIRichAlready'));
+  AmIRichAlreadyFunctions,
+  AmIRichAlreadyConstructor
+>(require('../../build/AmIRichAlready.json'));

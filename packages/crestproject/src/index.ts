@@ -1,1 +1,1 @@
-export * from '@crestproject/jest-matchers';
+export * from '@crestproject/ethers-contracts';

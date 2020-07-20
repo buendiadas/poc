@@ -4,17 +4,18 @@
   "private": true,
   "scripts": {
     "clean": "rimraf build coverage",
-    "build": "waffle compile",
+    "compile": "waffle compile",
+    "codegen": "crestproject codegen \"build/**.json\" tests/contracts",
+    "build": "yarn compile && yarn codegen",
     "format": "prettier --write {tests,contracts}/{*,**/*}.{ts,sol}",
-    "lint": "yarn prettier --list-different {tests,contracts}/{*,**/*}.{ts,sol}",
+    "lint": "prettier --list-different {tests,contracts}/{*,**/*}.{ts,sol}",
     "test": "jest",
     "typecheck": "tsc --project tsconfig.json --noEmit"
   },
   "devDependencies": {
-    "@crestproject/ethers-contracts": "^0.0.0",
-    "@crestproject/jest-matchers": "^0.0.0",
     "@nomiclabs/buidler": "^1.3.8",
     "@openzeppelin/contracts": "^3.1.0",
+    "crestproject": "^0.0.0",
     "ethereum-waffle": "^3.0.2",
     "jest": "^26.1.0",
     "prettier": "^2.0.5",

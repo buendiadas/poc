@@ -2,11 +2,9 @@
 import { ethers } from 'ethers';
 import { contract, Call, Send, Functions } from 'crestproject';
 
-export type BasicTokenConstructor = (
-  initialBalance: ethers.BigNumberish,
-) => void;
+export type ERC20Constructor = (name: string, symbol: string) => void;
 
-export interface BasicTokenFunctions extends Functions {
+export interface ERC20Functions extends Functions {
   allowance: Call<(owner: string, spender: string) => ethers.BigNumber>;
   'allowance(address,address)': Call<
     (owner: string, spender: string) => ethers.BigNumber
@@ -49,7 +47,6 @@ export interface BasicTokenFunctions extends Functions {
   >;
 }
 
-export const BasicToken = contract.fromSolidity<
-  BasicTokenFunctions,
-  BasicTokenConstructor
->(require('../../build/BasicToken.json'));
+export const ERC20 = contract.fromSolidity<ERC20Functions, ERC20Constructor>(
+  require('../../build/ERC20.json'),
+);

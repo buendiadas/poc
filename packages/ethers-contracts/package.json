@@ -23,7 +23,7 @@
     "clean": "rimraf dist coverage",
     "prebuild": "rimraf dist",
     "build": "tsc --project tsconfig.json",
-    "postbuild": "cp package.json ../../LICENSE ../../README.md dist && chmod +x dist/index.js",
+    "postbuild": "cp package.json ../../LICENSE ../../README.md dist",
     "watch": "yarn build --watch",
     "format": "prettier --write src/{*,**/*}.{ts,sol}",
     "lint": "yarn prettier --list-different src/{*,**/*}.{ts,sol}",

@@ -1,15 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`code generator generates code 1`] = `
-"import {
+"/* eslint-disable */
+import { ethers } from 'ethers';
+import {
   contract,
   Call,
   Send,
-  Construct,
   Functions,
 } from '@crestproject/ethers-contracts';
 
 export type ERC20Constructor = (name: string, symbol: string) => void;
+
 export interface ERC20Functions extends Functions {
   allowance: Call<(owner: string, spender: string) => ethers.BigNumber>;
   'allowance(address,address)': Call<
