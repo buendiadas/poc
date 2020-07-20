@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { ethers } from 'ethers';
-import { generateContractFile } from '@crestproject/typescript-generator';
-import { SolidityCompilerOutput } from '@crestproject/ethers-contracts';
+import { generateContractFile } from '@crestproject/codegen';
+import { SolidityCompilerOutput } from '@crestproject/ethers';
 
 export async function generate(source: string, destination: string) {
   const contract: SolidityCompilerOutput = await new Promise(

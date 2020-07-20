@@ -1,5 +1,5 @@
 {
-  "name": "@crestproject/jest-matchers",
+  "name": "@crestproject/codegen",
   "version": "0.0.0",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
@@ -36,15 +36,13 @@
     "ethers": "^5.0.5"
   },
   "peerDependencies": {
-    "ethers": "^5.0.5"
+    "ethers": "^5.0.5",
+    "prettier": "^2.0.5"
   },
   "jest": {
     "preset": "ts-jest",
     "roots": [
       "<rootDir>/src"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/tests/jest.setup.ts"
     ]
   }
 }

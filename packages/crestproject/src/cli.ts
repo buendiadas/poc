@@ -5,7 +5,7 @@ import yargs from 'yargs';
 
 const extensions = [path.extname(__filename).slice(1)];
 
-const args = yargs
+yargs
   .env('CRESTPROJECT')
   .pkgConf('crestproject')
   .commandDir('commands', { extensions })

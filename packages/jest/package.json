@@ -1,5 +1,5 @@
 {
-  "name": "@crestproject/typescript-generator",
+  "name": "@crestproject/jest",
   "version": "0.0.0",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
@@ -18,6 +18,7 @@
   "contributors": [
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
+  "types": "index.d.ts",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf dist coverage",
@@ -36,13 +37,18 @@
     "ethers": "^5.0.5"
   },
   "peerDependencies": {
-    "ethers": "^5.0.5",
-    "prettier": "^2.0.5"
+    "ethers": "^5.0.5"
   },
   "jest": {
     "preset": "ts-jest",
     "roots": [
       "<rootDir>/src"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/tests/jest.setup.ts"
     ]
+  },
+  "dependencies": {
+    "ts-jest": "^26.1.3"
   }
 }

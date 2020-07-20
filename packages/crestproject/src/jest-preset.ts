@@ -1,3 +1,3 @@
-// TODO: Add preset for jest with all sane defaults.
+import preset from '@crestproject/jest/preset';
 
-export default {};
+module.exports = preset;

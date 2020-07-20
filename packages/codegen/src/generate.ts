@@ -1,4 +1,3 @@
-import path from 'path';
 import { ConstructorFragment } from '@ethersproject/abi';
 import { ethers } from 'ethers';
 import { formatOutput } from './utils';
@@ -130,7 +129,7 @@ export function generateContract(
   name: string,
   source: string,
   abi: ethers.utils.Interface,
-  crestproject: string = '@crestproject/ethers-contracts',
+  crestproject: string = '@crestproject/ethers',
 ) {
   const functions = generateFunctions(Object.values(abi.functions));
   const constructor = generateConstructor(abi.deploy);
@@ -156,7 +155,7 @@ export function generateContractFile(
   name: string,
   abi: ethers.utils.Interface,
   source: string,
-  crestproject: string = '@crestproject/ethers-contracts',
+  crestproject: string = '@crestproject/ethers',
 ) {
   return formatOutput(generateContract(name, source, abi, crestproject));
 }

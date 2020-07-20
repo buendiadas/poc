@@ -23,12 +23,9 @@
     "ts-jest": "^26.1.2"
   },
   "jest": {
-    "preset": "ts-jest",
+    "preset": "crestproject",
     "roots": [
       "<rootDir>/tests"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/tests/jest.setup.ts"
     ]
   }
 }

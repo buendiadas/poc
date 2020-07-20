@@ -19,6 +19,7 @@
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
   "main": "index.js",
+  "browser": "browser.js",
   "bin": {
     "crestproject": "cli.js"
   },
@@ -37,16 +38,13 @@
     "postversion": "cp package.json dist"
   },
   "dependencies": {
-    "@crestproject/ethers-contracts": "^0.0.0",
-    "@crestproject/jest-matchers": "^0.0.0",
-    "@crestproject/typescript-generator": "^0.0.0",
+    "@crestproject/ethers": "^0.0.0",
+    "@crestproject/jest": "^0.0.0",
+    "@crestproject/codegen": "^0.0.0",
     "glob": "^7.1.6",
     "jest-worker": "^26.1.0",
     "throat": "^5.0.0",
     "yargs": "^15.4.1"
-  },
-  "devDependencies": {
-    "@types/jest": "^26.0.5"
   },
   "jest": {
     "preset": "ts-jest",

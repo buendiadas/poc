@@ -3,12 +3,7 @@
 exports[`code generator generates code 1`] = `
 "/* eslint-disable */
 import { ethers } from 'ethers';
-import {
-  contract,
-  Call,
-  Send,
-  Functions,
-} from '@crestproject/ethers-contracts';
+import { contract, Call, Send, Functions } from '@crestproject/ethers';
 
 export type ERC20Constructor = (name: string, symbol: string) => void;
 
