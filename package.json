@@ -11,7 +11,10 @@
     "lint": "lerna run lint",
     "typecheck": "lerna run typecheck",
     "build": "lerna run build",
-    "watch": "lerna run watch --stream"
+    "watch": "lerna run watch --stream",
+    "publish:local": "lerna publish from-package --force-publish --no-commit-hooks --no-git-tag-version --no-push --dist-tag=latest --registry=http://localhost:4873/",
+    "local-unpublish": "lerna exec -- npm unpublish --registry=\"http://localhost:4873/\" \"\\${LERNA_PACKAGE_NAME}\" --force",
+    "local-unpublish-all": "lerna exec -- npm unpublish -f --registry=\"http://localhost:4873/\" \"\\${LERNA_PACKAGE_NAME}\""
   },
   "devDependencies": {
     "@types/jest": "^26.0.4",
