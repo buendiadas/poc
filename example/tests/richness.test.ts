@@ -4,13 +4,18 @@ import { BasicToken } from './contracts/BasicToken';
 
 describe('example', () => {
   it('makes the poor rich', async () => {
-    const signer = provider.getSigner(0);
-    const balance = ethers.utils.parseEther('100000000000000');
-    const token = await BasicToken.deploy(signer, balance);
-    const contract = await AmIRichAlready.deploy(signer, token.address);
+    const [deployer, other] = await Promise.all([
+      provider.getSigner(0),
+      provider.getSigner(1),
+    ]);
 
-    const rich = await signer.getAddress();
-    const poor = await provider.getSigner(1).getAddress();
+    const balance = ethers.utils.parseEther('100000000000000');
+    const token = await BasicToken.deploy(deployer, balance);
+    const contract = await AmIRichAlready.deploy(deployer, token.address);
+
+    const rich = await deployer.getAddress();
+    const poor = await other.getAddress();
+
     const check = contract.check;
     await expect(check.from(rich).call()).resolves.toBeTruthy();
     await expect(check.from(poor).call()).resolves.toBeFalsy();

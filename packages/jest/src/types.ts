@@ -1,7 +1,7 @@
-import { ethers } from 'ethers';
+import { BuidlerProvider } from './provider';
 
 declare global {
   namespace globalThis {
-    var provider: ethers.providers.JsonRpcProvider;
+    var provider: BuidlerProvider;
   }
 }

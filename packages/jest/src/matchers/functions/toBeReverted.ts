@@ -1,11 +1,8 @@
 export function toBeReverted(this: jest.MatcherContext, received: Error) {
-  if (!(received instanceof Error)) {
-    throw new Error('Expected error object');
-  }
-
-  const isReverted = received.message.search('revert') >= 0;
-  const isThrown = received.message.search('invalid opcode') >= 0;
-  const isError = received.message.search('code=') >= 0;
+  const error = received?.message || JSON.stringify(received);
+  const isReverted = error.search('revert') >= 0;
+  const isThrown = error.search('invalid opcode') >= 0;
+  const isError = error.search('code=') >= 0;
 
   const pass = isReverted || isThrown || isError;
   const message = pass
