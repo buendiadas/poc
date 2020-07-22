@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
-import { Send, Functions, ConcreteContract } from './types';
+import { Send, Functions, SpecializedContract } from './types';
 
-export type DoppelgangerContract = ConcreteContract<DoppelgangerFunctions>;
+export type DoppelgangerContract = SpecializedContract<DoppelgangerFunctions>;
 
 export type DoppelgangerConstructor = () => void;
 

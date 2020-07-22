@@ -137,14 +137,14 @@ export function generateContract(
   const output = `
     /* eslint-disable */
     import { ethers } from 'ethers';
-    import { contract, ConcreteContract, Call, Send, Functions } from '${crestproject}';
+    import { contract, SpecializedContract, Call, Send, Functions } from '${crestproject}';
 
     export type ${name}Constructor = ${constructor};
     export interface ${name}Functions extends Functions {
       ${functions || '// No external functions'}
     }
 
-    export type ${name} = ConcreteContract<${name}Functions>;
+    export type ${name} = SpecializedContract<${name}Functions>;
     export const ${name} = contract.fromSolidity<${name}Functions, ${name}Constructor>(${source});
   `;
 

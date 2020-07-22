@@ -13,41 +13,39 @@ import {
 } from './doppelganger';
 import {
   Functions,
-  ConcreteContract,
   AnyFunction,
-  ConcreteMockContract,
+  SpecializedContract,
+  SpecializedMockContract,
 } from './types';
-import { ensureInterface } from './utils';
 import { MockContract } from './mock';
+import { ensureInterface } from './utils';
 
 export interface SolidityCompilerOutput {
   abi: JsonFragment[];
   bytecode?: string;
 }
 
-export interface ConcreteContractFactory<
+export interface SpecializedContractFactory<
   TFunctions extends Functions = {},
   TConstructor extends AnyFunction = () => void
 > {
   deploy(
     signer: ethers.Signer,
     ...args: Parameters<TConstructor>
-  ): Promise<ConcreteContract<TFunctions>>;
+  ): Promise<SpecializedContract<TFunctions>>;
   deploy(
     signer: ethers.Signer,
     options: FunctionOptions<Parameters<TConstructor>>,
-  ): Promise<ConcreteContract<TFunctions>>;
-
-  mock(signer: ethers.Signer): Promise<ConcreteMockContract<TFunctions>>;
-
+  ): Promise<SpecializedContract<TFunctions>>;
+  mock(signer: ethers.Signer): Promise<SpecializedMockContract<TFunctions>>;
   new (
     address?: string,
     provider?: ethers.Signer | ethers.providers.Provider,
-  ): ConcreteContract<TFunctions>;
+  ): SpecializedContract<TFunctions>;
 }
 
 export class ContractFactory {
-  public readonly doppelganger: ConcreteContractFactory<
+  public readonly doppelganger: SpecializedContractFactory<
     DoppelgangerFunctions,
     DoppelgangerConstructor
   >;
@@ -70,14 +68,17 @@ export class ContractFactory {
       public static deploy(
         signer: ethers.Signer,
         ...args: Parameters<TConstructor>
-      ): Promise<ConcreteContract<TFunctions>>;
+      ): Promise<SpecializedContract<TFunctions>>;
       public static deploy(
         signer: ethers.Signer,
         options: FunctionOptions<Parameters<TConstructor>>,
-      ): Promise<ConcreteContract<TFunctions>>;
+      ): Promise<SpecializedContract<TFunctions>>;
       public static deploy(signer: ethers.Signer, ...args: any) {
         const options = resolveFunctionOptions(...args);
-        const contract = new CurrentContract(undefined, signer) as Contract;
+        const contract = new CurrentContract(
+          undefined,
+          signer,
+        ) as SpecializedContract;
         const constructor = contract.abi.deploy;
         const fn = new ConstructorFunction(contract, constructor, options);
 
@@ -90,13 +91,13 @@ export class ContractFactory {
 
       public static async mock(
         signer: ethers.Signer,
-      ): Promise<ConcreteMockContract<TFunctions>> {
+      ): Promise<SpecializedMockContract<TFunctions>> {
         const doppelganger = await factory.doppelganger.deploy(signer);
         const contract = new CurrentContract(doppelganger.address, signer);
         return new MockContract<TFunctions>(
           doppelganger,
           contract as any,
-        ) as any;
+        ) as SpecializedMockContract<TFunctions>;
       }
 
       constructor(
@@ -106,19 +107,24 @@ export class ContractFactory {
         super(ensureInterface(fragments), address, provider ?? defaultProvider);
       }
 
-      public attach(address: string): ConcreteContract<TFunctions> {
+      public attach(address: string): SpecializedContract<TFunctions> {
         const provider = this.signer ?? this.provider;
-        return new CurrentContract(address, provider) as any;
+        return new CurrentContract(address, provider) as SpecializedContract<
+          TFunctions
+        >;
       }
 
       public connect(
         provider: ethers.Signer | ethers.providers.Provider,
-      ): ConcreteContract<TFunctions> {
-        return new CurrentContract(this.address, provider) as any;
+      ): SpecializedContract<TFunctions> {
+        return new CurrentContract(
+          this.address,
+          provider,
+        ) as SpecializedContract<TFunctions>;
       }
     };
 
-    return (CurrentContract as unknown) as ConcreteContractFactory<
+    return (CurrentContract as unknown) as SpecializedContractFactory<
       TFunctions,
       TConstructor
     >;

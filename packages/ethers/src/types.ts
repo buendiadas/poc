@@ -1,5 +1,4 @@
 import { ethers } from 'ethers';
-import { Contract } from './contract';
 import { CallFunction, FunctionOptions, SendFunction } from './function';
 import { MockContract } from './mock';
 
@@ -36,7 +35,7 @@ export interface Functions {
 
 export type FullFunction<
   TFunction extends FunctionDefinition,
-  TParent extends Contract = Contract
+  TParent extends SpecializedContract<{}> = SpecializedContract<{}>
 > = TFunction extends Call
   ? CallFunction<TFunction['input'], TFunction['output'], TParent>
   : TFunction extends Send
@@ -53,7 +52,7 @@ export type ShortcutFunctionOutput<
 
 export type ProxyFunction<
   TFunction extends FunctionDefinition,
-  TParent extends Contract = Contract
+  TParent extends SpecializedContract<{}> = SpecializedContract<{}>
 > = {
   contract: TParent;
   (...args: TFunction['input']): ShortcutFunctionOutput<TFunction>;
@@ -71,16 +70,27 @@ export type MockFunctionStub = {
   reverts(): Promise<ethers.ContractReceipt>;
 };
 
-export type ConcreteContract<TFunctions extends Functions> = Contract &
-  {
-    [TKey in keyof TFunctions]: TKey extends keyof Contract
-      ? Contract[TKey]
-      : ProxyFunction<TFunctions[TKey], ConcreteContract<TFunctions>>;
-  };
+export interface ContractBase<TFunctions extends Functions = {}> {
+  signer?: ethers.Signer;
+  provider?: ethers.providers.Provider;
+  abi: ethers.utils.Interface;
+  address: string;
+  attach(address: string): SpecializedContract<TFunctions>;
+  connect(
+    provider: ethers.Signer | ethers.providers.Provider,
+  ): SpecializedContract<TFunctions>;
+}
 
-export type ConcreteMockContract<TFunctions extends Functions> = MockContract<
-  TFunctions
-> &
+export type SpecializedContract<TFunctions extends Functions = {}> = {
+  [TKey in keyof TFunctions]: TKey extends keyof ContractBase<TFunctions>
+    ? ContractBase<TFunctions>[TKey]
+    : ProxyFunction<TFunctions[TKey], SpecializedContract<TFunctions>>;
+} &
+  ContractBase<TFunctions>;
+
+export type SpecializedMockContract<
+  TFunctions extends Functions
+> = MockContract<TFunctions> &
   {
     [TKey in keyof TFunctions]: TKey extends keyof MockContract<TFunctions>
       ? MockContract<TFunctions>[TKey]

@@ -71,7 +71,7 @@ describe('contract tagged template literals', () => {
 
     const incompatible = new IncompatibleContract(undefined, provider);
     const allowance = token.allowance;
-    expect(() => allowance.attach(incompatible)).toThrow(
+    expect(() => allowance.attach(incompatible as any)).toThrow(
       'Failed to attach function to incompatible contract',
     );
   });
@@ -83,7 +83,7 @@ describe('contract tagged template literals', () => {
 
     const compatible = new CompatibleContract(undefined, provider);
     const allowance = token.allowance;
-    expect(() => allowance.attach(compatible)).not.toThrow();
-    expect(allowance.attach(compatible)).toBeInstanceOf(CallFunction);
+    expect(() => allowance.attach(compatible as any)).not.toThrow();
+    expect(allowance.attach(compatible as any)).toBeInstanceOf(CallFunction);
   });
 });

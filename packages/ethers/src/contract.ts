@@ -5,10 +5,10 @@ import {
   ContractFunction,
   SendFunction,
 } from './function';
+import { SpecializedContract } from './types';
 
 // TODO: Add types and proxies for event handling.
-
-export class Contract {
+export class Contract implements SpecializedContract {
   private readonly _signer?: ethers.Signer = undefined;
   private readonly _provider?: ethers.providers.Provider = undefined;
 
@@ -49,7 +49,7 @@ export class Contract {
 
         const fragment = names[prop] ?? target.abi.getFunction(prop);
         const ctor = (...args: any) => {
-          return ContractFunction.create(target, fragment, ...args);
+          return ContractFunction.create(target as any, fragment, ...args);
         };
 
         return new Proxy(ctor, {
@@ -89,18 +89,14 @@ export class Contract {
     });
   }
 
-  public event(signature: string) {
-    return this.abi.getEvent(signature);
-  }
-
-  public attach(address: string): Contract {
+  public attach(address: string): SpecializedContract {
     const provider = this.signer ?? this.provider;
     return new Contract(this.abi, address, provider);
   }
 
   public connect(
     provider: ethers.Signer | ethers.providers.Provider,
-  ): Contract {
+  ): SpecializedContract {
     return new Contract(this.abi, this.address, provider);
   }
 }

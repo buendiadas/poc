@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { Contract } from './contract';
+import { SpecializedContract } from './types';
 import { propertyOf } from './utils';
 
 // TODO: Properly limit the available options based on the function type and signature.
@@ -65,12 +66,12 @@ export function resolveFunctionOptions<TArgs extends any[] = []>(
 
 export class ContractFunction<
   TArgs extends any[] = [],
-  TContract extends Contract = Contract,
+  TContract extends SpecializedContract<{}> = SpecializedContract<{}>,
   TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
 > {
   public static create<
     TArgs extends any[] = [],
-    TContract extends Contract = Contract,
+    TContract extends SpecializedContract<any> = SpecializedContract<any>,
     TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
   >(
     contract: TContract,
@@ -80,7 +81,7 @@ export class ContractFunction<
 
   public static create<
     TArgs extends any[] = [],
-    TContract extends Contract = Contract,
+    TContract extends SpecializedContract<any> = SpecializedContract<any>,
     TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
   >(
     contract: TContract,
@@ -90,7 +91,7 @@ export class ContractFunction<
 
   public static create<
     TArgs extends any[] = [],
-    TContract extends Contract = Contract,
+    TContract extends SpecializedContract<any> = SpecializedContract<any>,
     TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
   >(
     contract: TContract,
@@ -173,7 +174,7 @@ export class ContractFunction<
 export class CallFunction<
   TArgs extends any[] = [],
   TReturn extends any = unknown,
-  TContract extends Contract = Contract
+  TContract extends SpecializedContract<{}> = SpecializedContract<{}>
 > extends ContractFunction<TArgs, TContract, ethers.utils.FunctionFragment> {
   public async call(): Promise<TReturn> {
     const tx = await this.populate();
@@ -234,7 +235,7 @@ export class CallFunction<
 export class SendFunction<
   TArgs extends any[] = [],
   TReturn extends any = void,
-  TContract extends Contract = Contract
+  TContract extends SpecializedContract<{}> = SpecializedContract<{}>
 > extends CallFunction<TArgs, TReturn, TContract> {
   public async estimate(): Promise<ethers.BigNumber> {
     const tx = await this.populate();
@@ -262,7 +263,7 @@ export class SendFunction<
 
 export class ConstructorFunction<
   TArgs extends any[] = [],
-  TContract extends Contract = Contract
+  TContract extends SpecializedContract<{}> = SpecializedContract<{}>
 > extends ContractFunction<TArgs, TContract, ConstructorFragment> {
   public async call(): Promise<void> {
     throw new Error('Call not implemented yet');

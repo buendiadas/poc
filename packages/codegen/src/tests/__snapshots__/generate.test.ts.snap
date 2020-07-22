@@ -5,7 +5,7 @@ exports[`code generator generates code 1`] = `
 import { ethers } from 'ethers';
 import {
   contract,
-  ConcreteContract,
+  SpecializedContract,
   Call,
   Send,
   Functions,
@@ -55,7 +55,7 @@ export interface ERC20Functions extends Functions {
   >;
 }
 
-export type ERC20 = ConcreteContract<ERC20Functions>;
+export type ERC20 = SpecializedContract<ERC20Functions>;
 export const ERC20 = contract.fromSolidity<ERC20Functions, ERC20Constructor>(
   require('./contracts/ERC20.json'),
 );

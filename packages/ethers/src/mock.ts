@@ -1,10 +1,10 @@
 import { ethers } from 'ethers';
 import { DoppelgangerContract } from './doppelganger';
-import { ConcreteContract, Functions } from './types';
+import { SpecializedContract, Functions } from './types';
 
 function stub<TFunctions extends Functions>(
   mock: DoppelgangerContract,
-  contract: ConcreteContract<TFunctions>,
+  contract: SpecializedContract<TFunctions>,
   func: ethers.utils.FunctionFragment,
   params?: any[],
 ) {
@@ -33,7 +33,7 @@ function stub<TFunctions extends Functions>(
 export class MockContract<TFunctions extends Functions> {
   constructor(
     public readonly doppelganger: DoppelgangerContract,
-    public readonly contract: ConcreteContract<TFunctions>,
+    public readonly contract: SpecializedContract<TFunctions>,
   ) {
     const names = Object.values(this.contract.abi.functions).reduce(
       (carry, current) => {
