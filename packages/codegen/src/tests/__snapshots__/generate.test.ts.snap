@@ -3,10 +3,16 @@
 exports[`code generator generates code 1`] = `
 "/* eslint-disable */
 import { ethers } from 'ethers';
-import { contract, Call, Send, Functions } from '@crestproject/ethers';
+import {
+  contract,
+  ConcreteContract,
+  Call,
+  Send,
+  Functions,
+} from '@crestproject/ethers';
 
 export type ERC20Constructor = (name: string, symbol: string) => void;
-
+export type ERC20Type = ConcreteContract<ERC20Functions>;
 export interface ERC20Functions extends Functions {
   allowance: Call<(owner: string, spender: string) => ethers.BigNumber>;
   'allowance(address,address)': Call<

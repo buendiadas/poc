@@ -137,10 +137,10 @@ export function generateContract(
   const output = `
     /* eslint-disable */
     import { ethers } from 'ethers';
-    import { contract, Call, Send, Functions } from '${crestproject}';
+    import { contract, ConcreteContract, Call, Send, Functions } from '${crestproject}';
 
     export type ${name}Constructor = ${constructor};
-
+    export type ${name}Type = ConcreteContract<${name}Functions>;
     export interface ${name}Functions extends Functions {
       ${functions || '// No external functions'}
     }
