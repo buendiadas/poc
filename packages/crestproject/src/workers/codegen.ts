@@ -19,7 +19,13 @@ export async function generate(source: string, destination: string) {
   const relative = path.relative(destination, source);
   const from = `require('${relative}')`;
 
-  const content = generateContractFile(name, abi, from, 'crestproject');
+  const content = generateContractFile(
+    name,
+    abi,
+    from,
+    '@crestproject/crestproject',
+  );
+
   const output = path.join(destination, `${name}.ts`);
 
   await new Promise((resolve, reject) => {

@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { BuidlerProvider } from 'crestproject';
+import { BuidlerProvider } from '@crestproject/crestproject';
 import { AmIRichAlready } from './contracts/AmIRichAlready';
 import { BasicToken } from './contracts/BasicToken';
 
