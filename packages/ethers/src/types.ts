@@ -61,6 +61,15 @@ export type ProxiedFunction<
   >;
 } & FullFunction<TFunction>;
 
+export type MockedFunction<TFunction extends FunctionDefinition> = {
+  (...args: TFunction['input']): MockedFunctionStub;
+} & MockedFunctionStub;
+
+export type MockedFunctionStub = {
+  returns(output: any): Promise<ethers.ContractReceipt>;
+  reverts(): Promise<ethers.ContractReceipt>;
+};
+
 export type ConcreteContract<TFunctions extends Functions> = Contract &
   {
     [TKey in keyof TFunctions]: TKey extends keyof Contract

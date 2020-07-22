@@ -43,7 +43,7 @@ export class Contract {
       get: (target, prop: string) => {
         if (prop === 'then' || prop === 'catch' || prop === 'finally') {
           if (!names[prop]) {
-            return target;
+            return;
           }
         }
 

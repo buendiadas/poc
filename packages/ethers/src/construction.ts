@@ -6,15 +6,18 @@ import {
   FunctionOptions,
   resolveFunctionOptions,
 } from './function';
+import {
+  DoppelgangerCompilerOutput,
+  DoppelgangerConstructor,
+  DoppelgangerFunctions,
+} from './doppelganger';
 import { Functions, ConcreteContract, AnyFunction } from './types';
 import { ensureInterface } from './utils';
+import { MockContract, MockContractType } from './mock';
 
 export interface SolidityCompilerOutput {
   abi: JsonFragment[];
   bytecode?: string;
-  evm?: {
-    bytecode?: string;
-  };
 }
 
 export interface ConcreteContractFactory<
@@ -30,6 +33,8 @@ export interface ConcreteContractFactory<
     options: FunctionOptions<Parameters<TConstructor>>,
   ): Promise<ConcreteContract<TFunctions>>;
 
+  mock(signer: ethers.Signer): Promise<MockContractType<TFunctions>>;
+
   new (
     address?: string,
     provider?: ethers.Signer | ethers.providers.Provider,
@@ -37,6 +42,15 @@ export interface ConcreteContractFactory<
 }
 
 export class ContractFactory {
+  public readonly doppelganger: ConcreteContractFactory<
+    DoppelgangerFunctions,
+    DoppelgangerConstructor
+  >;
+
+  public constructor() {
+    this.doppelganger = this.fromSolidity(DoppelgangerCompilerOutput);
+  }
+
   public createFactory<
     TFunctions extends Functions = {},
     TConstructor extends AnyFunction = () => void
@@ -45,18 +59,20 @@ export class ContractFactory {
     bytecode?: string,
     defaultProvider?: ethers.Signer | ethers.providers.Provider,
   ) {
-    const ConcreteContract = class {
-      public static async deploy(
+    const factory = this;
+
+    const CurrentContract = class {
+      public static deploy(
         signer: ethers.Signer,
         ...args: Parameters<TConstructor>
       ): Promise<ConcreteContract<TFunctions>>;
-      public static async deploy(
+      public static deploy(
         signer: ethers.Signer,
         options: FunctionOptions<Parameters<TConstructor>>,
       ): Promise<ConcreteContract<TFunctions>>;
       public static deploy(signer: ethers.Signer, ...args: any) {
         const options = resolveFunctionOptions(...args);
-        const contract = new ConcreteContract(undefined, signer) as Contract;
+        const contract = new CurrentContract(undefined, signer) as Contract;
         const constructor = contract.abi.deploy;
         const fn = new ConstructorFunction(contract, constructor, options);
 
@@ -65,6 +81,12 @@ export class ContractFactory {
         });
 
         return fn.bytecode(hex).send();
+      }
+
+      public static async mock(signer: ethers.Signer) {
+        const doppelganger = await factory.doppelganger.deploy(signer);
+        const contract = new CurrentContract(doppelganger.address, signer);
+        return new MockContract<TFunctions>(doppelganger, contract as any);
       }
 
       constructor(
@@ -76,10 +98,7 @@ export class ContractFactory {
       }
     };
 
-    return ConcreteContract as ConcreteContractFactory<
-      TFunctions,
-      TConstructor
-    >;
+    return CurrentContract as ConcreteContractFactory<TFunctions, TConstructor>;
   }
 
   public fromSignature<
@@ -104,7 +123,7 @@ export class ContractFactory {
   ) {
     const json = typeof artifact === 'string' ? JSON.parse(artifact) : artifact;
     const abi = json?.abi;
-    const bytecode = json?.bytecode ?? json?.evm?.bytecode;
+    const bytecode = json?.bytecode;
 
     return this.createFactory<TFunctions, TConstructor>(
       abi,
