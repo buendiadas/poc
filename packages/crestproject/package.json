@@ -1,5 +1,5 @@
 {
-  "name": "crestproject",
+  "name": "@crestproject/crestproject",
   "version": "0.0.0",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
@@ -38,9 +38,9 @@
     "postversion": "cp package.json dist"
   },
   "dependencies": {
+    "@crestproject/codegen": "^0.0.0",
     "@crestproject/ethers": "^0.0.0",
     "@crestproject/jest": "^0.0.0",
-    "@crestproject/codegen": "^0.0.0",
     "glob": "^7.1.6",
     "jest-worker": "^26.1.0",
     "throat": "^5.0.0",
