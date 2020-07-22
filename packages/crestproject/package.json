@@ -40,6 +40,7 @@
   "dependencies": {
     "@crestproject/codegen": "^0.0.0",
     "@crestproject/ethers": "^0.0.0",
+    "@crestproject/evm": "^0.0.0",
     "@crestproject/jest": "^0.0.0",
     "glob": "^7.1.6",
     "jest-worker": "^26.1.0",

@@ -1,4 +1,4 @@
-import { BuidlerProvider } from './provider';
+import { BuidlerProvider } from '@crestproject/evm';
 
 declare global {
   namespace globalThis {

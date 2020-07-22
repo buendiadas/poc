@@ -1,5 +1,5 @@
 {
-  "name": "@crestproject/jest",
+  "name": "@crestproject/evm",
   "version": "0.0.0",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
@@ -18,7 +18,6 @@
   "contributors": [
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
-  "types": "index.d.ts",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf dist coverage",
@@ -27,29 +26,25 @@
     "postbuild": "cp package.json ../../LICENSE ../../README.md dist",
     "watch": "yarn build --watch",
     "format": "prettier --write src/{*,**/*}.{ts,sol}",
-    "lint": "prettier --list-different src/{*,**/*}.{ts,sol}",
+    "lint": "yarn prettier --list-different src/{*,**/*}.{ts,sol}",
     "test": "jest",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "preversion": "yarn typecheck && yarn lint && yarn build",
     "postversion": "cp package.json dist"
   },
-  "dependencies": {
-    "@crestproject/evm": "^0.0.0",
-    "ts-jest": "^26.1.3"
-  },
   "devDependencies": {
+    "@nomiclabs/buidler": "^1.3.8",
+    "@crestproject/ethers": "^0.0.0",
     "ethers": "^5.0.5"
   },
   "peerDependencies": {
+    "@nomiclabs/buidler": "^1.3.8",
     "ethers": "^5.0.5"
   },
   "jest": {
     "preset": "ts-jest",
     "roots": [
       "<rootDir>/src"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/tests/jest.setup.ts"
     ]
   }
 }

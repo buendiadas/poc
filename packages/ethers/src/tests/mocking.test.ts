@@ -1,12 +1,12 @@
+import { ethers } from 'ethers';
 import { network } from '@nomiclabs/buidler';
 import { EthereumProvider } from '@nomiclabs/buidler/types';
-import { ethers } from 'ethers';
 import { contract } from '../construction';
 import { Contract } from '../contract';
 import { MockContract } from '../mock';
 import { Functions, Call, Send } from '../types';
 
-class BuidlerProvider extends ethers.providers.JsonRpcProvider {
+export class BuidlerProvider extends ethers.providers.JsonRpcProvider {
   constructor(public readonly provider: EthereumProvider) {
     super();
   }
