@@ -11,9 +11,14 @@ import {
   DoppelgangerConstructor,
   DoppelgangerFunctions,
 } from './doppelganger';
-import { Functions, ConcreteContract, AnyFunction } from './types';
+import {
+  Functions,
+  ConcreteContract,
+  AnyFunction,
+  ConcreteMockContract,
+} from './types';
 import { ensureInterface } from './utils';
-import { MockContract, MockContractType } from './mock';
+import { MockContract } from './mock';
 
 export interface SolidityCompilerOutput {
   abi: JsonFragment[];
@@ -33,7 +38,7 @@ export interface ConcreteContractFactory<
     options: FunctionOptions<Parameters<TConstructor>>,
   ): Promise<ConcreteContract<TFunctions>>;
 
-  mock(signer: ethers.Signer): Promise<MockContractType<TFunctions>>;
+  mock(signer: ethers.Signer): Promise<ConcreteMockContract<TFunctions>>;
 
   new (
     address?: string,
@@ -61,7 +66,7 @@ export class ContractFactory {
   ) {
     const factory = this;
 
-    const CurrentContract = class {
+    const CurrentContract = class extends Contract {
       public static deploy(
         signer: ethers.Signer,
         ...args: Parameters<TConstructor>
@@ -83,22 +88,40 @@ export class ContractFactory {
         return fn.bytecode(hex).send();
       }
 
-      public static async mock(signer: ethers.Signer) {
+      public static async mock(
+        signer: ethers.Signer,
+      ): Promise<ConcreteMockContract<TFunctions>> {
         const doppelganger = await factory.doppelganger.deploy(signer);
         const contract = new CurrentContract(doppelganger.address, signer);
-        return new MockContract<TFunctions>(doppelganger, contract as any);
+        return new MockContract<TFunctions>(
+          doppelganger,
+          contract as any,
+        ) as any;
       }
 
       constructor(
         address: string = '0x',
         provider?: ethers.Signer | ethers.providers.Provider,
       ) {
-        const abi = ensureInterface(fragments);
-        return new Contract(abi, address, provider ?? defaultProvider);
+        super(ensureInterface(fragments), address, provider ?? defaultProvider);
+      }
+
+      public attach(address: string): ConcreteContract<TFunctions> {
+        const provider = this.signer ?? this.provider;
+        return new CurrentContract(address, provider) as any;
+      }
+
+      public connect(
+        provider: ethers.Signer | ethers.providers.Provider,
+      ): ConcreteContract<TFunctions> {
+        return new CurrentContract(this.address, provider) as any;
       }
     };
 
-    return CurrentContract as ConcreteContractFactory<TFunctions, TConstructor>;
+    return (CurrentContract as unknown) as ConcreteContractFactory<
+      TFunctions,
+      TConstructor
+    >;
   }
 
   public fromSignature<

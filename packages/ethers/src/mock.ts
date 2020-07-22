@@ -1,16 +1,6 @@
 import { ethers } from 'ethers';
 import { DoppelgangerContract } from './doppelganger';
-import { ContractFunction } from './function';
-import { ConcreteContract, Functions, MockedFunction } from './types';
-
-export type MockContractType<TFunctions extends Functions> = MockContract<
-  TFunctions
-> &
-  {
-    [TKey in keyof TFunctions]: TKey extends keyof MockContract<TFunctions>
-      ? MockContract<TFunctions>[TKey]
-      : MockedFunction<TFunctions[TKey]>;
-  };
+import { ConcreteContract, Functions } from './types';
 
 function stub<TFunctions extends Functions>(
   mock: DoppelgangerContract,

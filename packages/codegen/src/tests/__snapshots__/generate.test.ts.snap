@@ -12,7 +12,6 @@ import {
 } from '@crestproject/ethers';
 
 export type ERC20Constructor = (name: string, symbol: string) => void;
-export type ERC20Type = ConcreteContract<ERC20Functions>;
 export interface ERC20Functions extends Functions {
   allowance: Call<(owner: string, spender: string) => ethers.BigNumber>;
   'allowance(address,address)': Call<
@@ -56,6 +55,7 @@ export interface ERC20Functions extends Functions {
   >;
 }
 
+export type ERC20 = ConcreteContract<ERC20Functions>;
 export const ERC20 = contract.fromSolidity<ERC20Functions, ERC20Constructor>(
   require('./contracts/ERC20.json'),
 );

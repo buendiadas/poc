@@ -93,12 +93,14 @@ export class Contract {
     return this.abi.getEvent(signature);
   }
 
-  public attach(address: string): this {
+  public attach(address: string): Contract {
     const provider = this.signer ?? this.provider;
-    return new (this.constructor as any)(this.abi, address, provider);
+    return new Contract(this.abi, address, provider);
   }
 
-  public connect(provider: ethers.Signer | ethers.providers.Provider): this {
-    return new (this.constructor as any)(this.abi, this.address, provider);
+  public connect(
+    provider: ethers.Signer | ethers.providers.Provider,
+  ): Contract {
+    return new Contract(this.abi, this.address, provider);
   }
 }

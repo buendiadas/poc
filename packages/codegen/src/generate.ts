@@ -140,11 +140,11 @@ export function generateContract(
     import { contract, ConcreteContract, Call, Send, Functions } from '${crestproject}';
 
     export type ${name}Constructor = ${constructor};
-    export type ${name}Type = ConcreteContract<${name}Functions>;
     export interface ${name}Functions extends Functions {
       ${functions || '// No external functions'}
     }
 
+    export type ${name} = ConcreteContract<${name}Functions>;
     export const ${name} = contract.fromSolidity<${name}Functions, ${name}Constructor>(${source});
   `;
 

@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { Contract } from './contract';
 import { CallFunction, FunctionOptions, SendFunction } from './function';
+import { MockContract } from './mock';
 
 export type AnyFunction = (...args: any) => any;
 
@@ -50,7 +51,7 @@ export type ShortcutFunctionOutput<
   ? Promise<ethers.ContractReceipt>
   : never;
 
-export type ProxiedFunction<
+export type ProxyFunction<
   TFunction extends FunctionDefinition,
   TParent extends Contract = Contract
 > = {
@@ -61,11 +62,11 @@ export type ProxiedFunction<
   >;
 } & FullFunction<TFunction>;
 
-export type MockedFunction<TFunction extends FunctionDefinition> = {
-  (...args: TFunction['input']): MockedFunctionStub;
-} & MockedFunctionStub;
+export type MockFunction<TFunction extends FunctionDefinition> = {
+  (...args: TFunction['input']): MockFunctionStub;
+} & MockFunctionStub;
 
-export type MockedFunctionStub = {
+export type MockFunctionStub = {
   returns(output: any): Promise<ethers.ContractReceipt>;
   reverts(): Promise<ethers.ContractReceipt>;
 };
@@ -74,5 +75,14 @@ export type ConcreteContract<TFunctions extends Functions> = Contract &
   {
     [TKey in keyof TFunctions]: TKey extends keyof Contract
       ? Contract[TKey]
-      : ProxiedFunction<TFunctions[TKey], ConcreteContract<TFunctions>>;
+      : ProxyFunction<TFunctions[TKey], ConcreteContract<TFunctions>>;
+  };
+
+export type ConcreteMockContract<TFunctions extends Functions> = MockContract<
+  TFunctions
+> &
+  {
+    [TKey in keyof TFunctions]: TKey extends keyof MockContract<TFunctions>
+      ? MockContract<TFunctions>[TKey]
+      : MockFunction<TFunctions[TKey]>;
   };

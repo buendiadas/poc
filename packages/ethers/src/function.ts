@@ -277,11 +277,11 @@ export class ConstructorFunction<
     return this.contract.provider.estimateGas(tx);
   }
 
-  public send(wait?: true): Promise<this['contract']>;
+  public send(wait?: true): Promise<TContract>;
   public send(wait?: false): Promise<ethers.ContractTransaction>;
   public async send(
     wait: boolean = true,
-  ): Promise<this['contract'] | ethers.ContractTransaction> {
+  ): Promise<TContract | ethers.ContractTransaction> {
     if (!this.contract.signer) {
       throw new Error('Missing signer');
     }
@@ -294,7 +294,7 @@ export class ConstructorFunction<
     }
 
     const receipt = await response.wait();
-    return this.contract.attach(receipt.contractAddress);
+    return this.contract.attach(receipt.contractAddress) as TContract;
   }
 
   protected async populate() {
