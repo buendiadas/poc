@@ -5,6 +5,7 @@ exports[`code generator generates code 1`] = `
 import { ethers } from 'ethers';
 import {
   contract,
+  AddressLike,
   SpecializedContract,
   Call,
   Send,
@@ -13,29 +14,31 @@ import {
 
 export type ERC20Constructor = (name: string, symbol: string) => void;
 export interface ERC20Functions extends Functions {
-  allowance: Call<(owner: string, spender: string) => ethers.BigNumber>;
+  allowance: Call<
+    (owner: AddressLike, spender: AddressLike) => ethers.BigNumber
+  >;
   'allowance(address,address)': Call<
-    (owner: string, spender: string) => ethers.BigNumber
+    (owner: AddressLike, spender: AddressLike) => ethers.BigNumber
   >;
-  approve: Send<(spender: string, amount: ethers.BigNumberish) => boolean>;
+  approve: Send<(spender: AddressLike, amount: ethers.BigNumberish) => boolean>;
   'approve(address,uint256)': Send<
-    (spender: string, amount: ethers.BigNumberish) => boolean
+    (spender: AddressLike, amount: ethers.BigNumberish) => boolean
   >;
-  balanceOf: Call<(account: string) => ethers.BigNumber>;
-  'balanceOf(address)': Call<(account: string) => ethers.BigNumber>;
+  balanceOf: Call<(account: AddressLike) => ethers.BigNumber>;
+  'balanceOf(address)': Call<(account: AddressLike) => ethers.BigNumber>;
   decimals: Call<() => ethers.BigNumber>;
   'decimals()': Call<() => ethers.BigNumber>;
   decreaseAllowance: Send<
-    (spender: string, subtractedValue: ethers.BigNumberish) => boolean
+    (spender: AddressLike, subtractedValue: ethers.BigNumberish) => boolean
   >;
   'decreaseAllowance(address,uint256)': Send<
-    (spender: string, subtractedValue: ethers.BigNumberish) => boolean
+    (spender: AddressLike, subtractedValue: ethers.BigNumberish) => boolean
   >;
   increaseAllowance: Send<
-    (spender: string, addedValue: ethers.BigNumberish) => boolean
+    (spender: AddressLike, addedValue: ethers.BigNumberish) => boolean
   >;
   'increaseAllowance(address,uint256)': Send<
-    (spender: string, addedValue: ethers.BigNumberish) => boolean
+    (spender: AddressLike, addedValue: ethers.BigNumberish) => boolean
   >;
   name: Call<() => string>;
   'name()': Call<() => string>;
@@ -43,15 +46,25 @@ export interface ERC20Functions extends Functions {
   'symbol()': Call<() => string>;
   totalSupply: Call<() => ethers.BigNumber>;
   'totalSupply()': Call<() => ethers.BigNumber>;
-  transfer: Send<(recipient: string, amount: ethers.BigNumberish) => boolean>;
+  transfer: Send<
+    (recipient: AddressLike, amount: ethers.BigNumberish) => boolean
+  >;
   'transfer(address,uint256)': Send<
-    (recipient: string, amount: ethers.BigNumberish) => boolean
+    (recipient: AddressLike, amount: ethers.BigNumberish) => boolean
   >;
   transferFrom: Send<
-    (sender: string, recipient: string, amount: ethers.BigNumberish) => boolean
+    (
+      sender: AddressLike,
+      recipient: AddressLike,
+      amount: ethers.BigNumberish,
+    ) => boolean
   >;
   'transferFrom(address,address,uint256)': Send<
-    (sender: string, recipient: string, amount: ethers.BigNumberish) => boolean
+    (
+      sender: AddressLike,
+      recipient: AddressLike,
+      amount: ethers.BigNumberish,
+    ) => boolean
   >;
 }
 

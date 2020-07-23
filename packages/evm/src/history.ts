@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { Contract } from '@crestproject/ethers';
 
 export interface Message {
   to: Buffer;
@@ -15,25 +16,23 @@ export class History {
   }
 
   public clone() {
-    const map = new Map<string, string[]>();
-    this.history.forEach((value, key) => {
-      map.set(key, value.slice());
-    });
-
-    return new History(map);
+    return new History(this.history);
   }
 
   public clear() {
     this.history.clear();
   }
 
-  public reset(address: string) {
-    const addr = ethers.utils.getAddress(address);
-    return this.history.delete(addr);
+  public reset(contract: Contract | string) {
+    const address = contract instanceof Contract ? contract.address : contract;
+    const checksum = ethers.utils.getAddress(address);
+    return this.history.delete(checksum);
   }
 
-  public calls(address: string) {
-    return this.history.get(address) ?? [];
+  public calls(contract: Contract | string) {
+    const address = contract instanceof Contract ? contract.address : contract;
+    const checksum = ethers.utils.getAddress(address);
+    return this.history.get(checksum) ?? [];
   }
 
   public record(message: Message) {

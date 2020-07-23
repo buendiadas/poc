@@ -1,7 +1,13 @@
 import { ethers } from 'ethers';
 import { Contract } from './contract';
+import { MockContract } from './mock';
 import { SpecializedContract } from './types';
-import { propertyOf } from './utils';
+import {
+  AddressLike,
+  propertyOf,
+  resolveAddress,
+  resolveArguments,
+} from './utils';
 
 // TODO: Properly limit the available options based on the function type and signature.
 
@@ -19,7 +25,7 @@ export interface FunctionOptions<TArgs extends any[] = []> {
   gas?: ethers.BigNumberish;
   price?: ethers.BigNumberish;
   block?: ethers.providers.BlockTag;
-  from?: string;
+  from?: AddressLike;
   bytecode?: ethers.BytesLike;
 }
 
@@ -28,6 +34,14 @@ export function isFunctionOptions<TArgs extends any[] = []>(
 ): value is FunctionOptions<TArgs> {
   if (typeof value === 'object' && !Array.isArray(value)) {
     if (ethers.BigNumber.isBigNumber(value)) {
+      return false;
+    }
+
+    if (ethers.Signer.isSigner(value)) {
+      return false;
+    }
+
+    if (value instanceof MockContract || value instanceof Contract) {
       return false;
     }
 
@@ -148,7 +162,7 @@ export class ContractFunction<
     return this.refine({ gas: limit, price });
   }
 
-  public from(from?: string) {
+  public from(from?: AddressLike) {
     return this.refine({ from });
   }
 
@@ -209,15 +223,16 @@ export class CallFunction<
   }
 
   protected async populate() {
-    const data = this.contract.abi.encodeFunctionData(
-      this.fragment,
-      this.options.args,
-    );
+    const inputs = this.fragment.inputs;
+    const args = await resolveArguments(inputs, this.options.args);
+    const data = this.contract.abi.encodeFunctionData(this.fragment, args);
 
     const tx: ethers.PopulatedTransaction = {
       to: this.contract.address,
       data,
-      ...(this.options.from && { from: this.options.from }),
+      ...(this.options.from && {
+        from: await resolveAddress(this.options.from),
+      }),
       ...(this.options.nonce && {
         nonce: ethers.BigNumber.from(this.options.nonce).toNumber(),
       }),
@@ -307,11 +322,14 @@ export class ConstructorFunction<
       throw new Error('Missing bytecode');
     }
 
+    const inputs = this.fragment.inputs;
+    const args = await resolveArguments(inputs, this.options.args);
+
     // Set the data to the bytecode + the encoded constructor arguments
     const data = ethers.utils.hexlify(
       ethers.utils.concat([
         this.options.bytecode,
-        this.contract.abi.encodeDeploy(this.options.args),
+        this.contract.abi.encodeDeploy(args),
       ]),
     );
 

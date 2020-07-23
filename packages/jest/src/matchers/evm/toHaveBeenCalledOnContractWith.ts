@@ -16,7 +16,7 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
 
     const signature = contract.abi.encodeFunctionData(fragment, args);
     const calls = history
-      .calls(contract.address)
+      .calls(contract)
       .filter((call) => call.startsWith(signature));
 
     // TODO: Print serialized list of arguments

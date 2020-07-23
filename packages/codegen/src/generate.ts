@@ -72,7 +72,7 @@ export function getType(
   }
 
   if (param.type === 'address') {
-    return 'string';
+    return flexible ? 'AddressLike' : 'string';
   }
 
   if (param.type === 'string') {
@@ -137,7 +137,7 @@ export function generateContract(
   const output = `
     /* eslint-disable */
     import { ethers } from 'ethers';
-    import { contract, SpecializedContract, Call, Send, Functions } from '${crestproject}';
+    import { contract, AddressLike, SpecializedContract, Call, Send, Functions } from '${crestproject}';
 
     export type ${name}Constructor = ${constructor};
     export interface ${name}Functions extends Functions {

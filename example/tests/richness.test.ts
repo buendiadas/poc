@@ -4,19 +4,19 @@ import { AmIRichAlready } from './contracts/AmIRichAlready';
 import { BasicToken } from './contracts/BasicToken';
 
 async function deploy(provider: BuidlerProvider) {
-  const [deployer, other] = await Promise.all([
+  const [rich, poor] = await Promise.all([
     provider.getSigner(0),
     provider.getSigner(1),
   ]);
 
   const balance = ethers.utils.parseEther('100000000000000');
-  const token = await BasicToken.deploy(deployer, balance);
-  const contract = await AmIRichAlready.deploy(deployer, token.address);
+  const token = await BasicToken.deploy(rich, balance);
+  const contract = await AmIRichAlready.deploy(rich, token.address);
 
   return {
     balance,
-    deployer,
-    other,
+    rich,
+    poor,
     token,
     contract,
   };
@@ -24,16 +24,9 @@ async function deploy(provider: BuidlerProvider) {
 
 describe('example', () => {
   it('makes the poor rich', async () => {
-    const {
-      balance,
-      contract,
-      token,
-      deployer,
-      other,
-    } = await provider.snapshot(deploy);
-
-    const rich = await deployer.getAddress();
-    const poor = await other.getAddress();
+    const { balance, contract, token, rich, poor } = await provider.snapshot(
+      deploy,
+    );
 
     const check = contract.check;
     await expect(check.from(rich).call()).resolves.toBeTruthy();
@@ -54,16 +47,9 @@ describe('example', () => {
   });
 
   it('make everyone poor', async () => {
-    const {
-      balance,
-      contract,
-      token,
-      deployer,
-      other,
-    } = await provider.snapshot(deploy);
-
-    const rich = await deployer.getAddress();
-    const poor = await other.getAddress();
+    const { balance, contract, token, rich, poor } = await provider.snapshot(
+      deploy,
+    );
 
     const stranger = '0x0000000000000000000000000000000000000001';
     await token.transfer(stranger, balance);

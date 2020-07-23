@@ -1,4 +1,3 @@
-import { Contract, ContractFunction } from '@crestproject/ethers';
 import { ethers } from 'ethers';
 import * as matchers from './matchers';
 

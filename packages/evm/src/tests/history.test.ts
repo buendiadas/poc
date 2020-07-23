@@ -10,12 +10,12 @@ describe('buidler evm history tracking', () => {
     const token = await ERC20.deploy(deployer, 'Test Token', 'TEST');
 
     await expect(token.decimals()).resolves.toBe(18);
-    expect(provider.history.calls(token.address).length).toBe(1);
+    expect(provider.history.calls(token).length).toBe(1);
 
     await expect(token.decimals()).resolves.toBe(18);
-    expect(provider.history.calls(token.address).length).toBe(2);
+    expect(provider.history.calls(token).length).toBe(2);
 
     const encoded = token.abi.encodeFunctionData(token.decimals.fragment);
-    expect(provider.history.calls(token.address).shift()).toEqual(encoded);
+    expect(provider.history.calls(token).shift()).toEqual(encoded);
   });
 });

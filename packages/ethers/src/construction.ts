@@ -109,18 +109,19 @@ export class ContractFactory {
 
       public attach(address: string): SpecializedContract<TFunctions> {
         const provider = this.signer ?? this.provider;
-        return new CurrentContract(address, provider) as SpecializedContract<
-          TFunctions
-        >;
+        return (new CurrentContract(
+          address,
+          provider,
+        ) as any) as SpecializedContract<TFunctions>;
       }
 
       public connect(
         provider: ethers.Signer | ethers.providers.Provider,
       ): SpecializedContract<TFunctions> {
-        return new CurrentContract(
+        return (new CurrentContract(
           this.address,
           provider,
-        ) as SpecializedContract<TFunctions>;
+        ) as any) as SpecializedContract<TFunctions>;
       }
     };
 

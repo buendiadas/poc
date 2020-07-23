@@ -30,7 +30,19 @@ function stub<TFunctions extends Functions>(
   };
 }
 
-export class MockContract<TFunctions extends Functions> {
+export class MockContract<TFunctions extends Functions = {}> {
+  get address() {
+    return this.contract.address;
+  }
+
+  get provider() {
+    return this.contract.provider;
+  }
+
+  get signer() {
+    return this.contract.signer;
+  }
+
   constructor(
     public readonly doppelganger: DoppelgangerContract,
     public readonly contract: SpecializedContract<TFunctions>,

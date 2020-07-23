@@ -19,7 +19,7 @@ export function toHaveBeenCalledOnContractTimes(
   return ensureParameters(this, subject, (history, contract, fragment) => {
     const signature = fragment ? contract.abi.getSighash(fragment) : '0x';
     const calls = history
-      .calls(contract.address)
+      .calls(contract)
       .filter((call) => call.startsWith(signature));
 
     const pass = calls.length === count;

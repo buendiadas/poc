@@ -10,6 +10,7 @@ contract BasicToken is ERC20 {
 
 contract AmIRichAlready {
     BasicToken private tokenContract;
+
     uint256 private constant RICHNESS = 1000000 * 10**18;
 
     constructor(BasicToken _tokenContract) public {
