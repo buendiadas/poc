@@ -43,13 +43,15 @@ export class BuidlerProvider extends ethers.providers.JsonRpcProvider {
       snapshot = this.snapshots.get(creator)!;
       await this.provider.send('evm_revert', [snapshot.id]);
     } else {
-      const history = this.history.clone();
-      snapshot = { id: '', history, data: await creator(this) };
+      const data = await creator(this);
+      snapshot = { id: '', history: this.history, data };
     }
 
+    snapshot.history = snapshot.history.clone();
     snapshot.id = await this.provider.send('evm_snapshot', []);
+
+    this.history = snapshot.history.clone();
     this.snapshots.set(creator, snapshot);
-    this.history = snapshot.history;
 
     return snapshot.data;
   }

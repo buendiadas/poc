@@ -120,6 +120,10 @@ export class ContractFunction<
     public readonly options: FunctionOptions<TArgs> = {},
   ) {}
 
+  public get ref() {
+    return this.refine();
+  }
+
   public args(...args: TArgs) {
     return this.refine({ args });
   }

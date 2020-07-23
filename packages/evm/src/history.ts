@@ -15,7 +15,12 @@ export class History {
   }
 
   public clone() {
-    return new History(this.history);
+    const map = new Map<string, string[]>();
+    this.history.forEach((value, key) => {
+      map.set(key, value.slice());
+    });
+
+    return new History(map);
   }
 
   public clear() {

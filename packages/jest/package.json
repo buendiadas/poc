@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@crestproject/evm": "^0.0.5",
+    "@crestproject/ethers": "^0.0.5",
     "ts-jest": "^26.1.3"
   },
   "devDependencies": {
@@ -45,11 +46,11 @@
   },
   "jest": {
     "preset": "ts-jest",
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/tests/setup.ts"
+    ],
     "roots": [
       "<rootDir>/src"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/tests/jest.setup.ts"
     ]
   }
 }

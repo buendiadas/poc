@@ -1,3 +1,4 @@
+import { Contract, ContractFunction } from '@crestproject/ethers';
 import { ethers } from 'ethers';
 import * as matchers from './matchers';
 
@@ -15,6 +16,9 @@ export type EthereumMatchers<R> = {
   toBeReverted(): R;
   toBeRevertedWith(message: string): R;
   toBeReceipt(): R;
+  toHaveBeenCalledOnContract(): R;
+  toHaveBeenCalledOnContractTimes(count: number): R;
+  toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(...args: TArgs): R;
 };
 
 declare global {
