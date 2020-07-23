@@ -49,26 +49,6 @@ export function getType(
   param: ethers.utils.ParamType,
   flexible?: boolean,
 ): string {
-  if (param.type === 'address') {
-    return 'string';
-  }
-
-  if (param.type === 'string') {
-    return 'string';
-  }
-
-  if (param.type === 'bool') {
-    return 'boolean';
-  }
-
-  if (param.type.substring(0, 5) === 'bytes') {
-    return flexible ? 'ethers.utils.BytesLike' : 'string';
-  }
-
-  if (param.type.substring(0, 4) === 'uint') {
-    return flexible ? 'ethers.BigNumberish' : 'ethers.BigNumber';
-  }
-
   if (param.type === 'array' || param.type.substr(-1) === ']') {
     const type = getType(param.arrayChildren, flexible);
     const matches = param.type.match(/\[([0-9]*)\]$/);
@@ -89,6 +69,26 @@ export function getType(
     });
 
     return `{ ${struct.join(', ')} }`;
+  }
+
+  if (param.type === 'address') {
+    return 'string';
+  }
+
+  if (param.type === 'string') {
+    return 'string';
+  }
+
+  if (param.type === 'bool') {
+    return 'boolean';
+  }
+
+  if (param.type.substring(0, 5) === 'bytes') {
+    return flexible ? 'ethers.utils.BytesLike' : 'string';
+  }
+
+  if (param.type.substring(0, 4) === 'uint') {
+    return flexible ? 'ethers.BigNumberish' : 'ethers.BigNumber';
   }
 
   return 'any';
