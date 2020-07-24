@@ -1,12 +1,12 @@
 import { ethers } from 'ethers';
 import { contract } from '../construction';
-import { Functions, Call, Send } from '../types';
+import { Call, Send } from '../types';
 import { Contract } from '../contract';
 import { SendFunction, CallFunction } from '../function';
 
 describe('contract tagged template literals', () => {
   // prettier-ignore
-  interface TokenFunctions extends Functions {
+  interface Token extends Contract<Token> {
     'allowance': Call<(owner: string, spender: string) => ethers.BigNumber>;
     'allowance(address,address)': Call<(owner: string, spender: string) => ethers.BigNumber>;
     'allowance(address,uint)': Call<(owner: string, how: ethers.BigNumberish) => ethers.BigNumber>;
@@ -25,7 +25,7 @@ describe('contract tagged template literals', () => {
   }
 
   // prettier-ignore
-  const Token = contract.fromSignature<TokenFunctions>`
+  const Token = contract.fromSignature<Token>`
     function allowance(address owner, address spender) view returns (uint256)
     function allowance(address owner, uint how) view returns (uint256)
     function approve(address spender, uint256 amount) returns (bool)

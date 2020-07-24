@@ -1,29 +1,10 @@
 import { ethers, Signer } from 'ethers';
 import { Contract } from './contract';
-import { MockContract } from './mock';
 
-export function propertyOf<TOr = any>(
-  property: string,
-  candidates: object[] = [],
-): TOr {
-  const obj = candidates.find((obj) => obj.hasOwnProperty(property));
-  return (obj as any)?.[property] ?? undefined;
-}
-
-export function ensureInterface(
-  fragments: string | (ethers.utils.Fragment | string)[],
-) {
-  if (ethers.utils.Interface.isInterface(fragments)) {
-    return fragments;
-  }
-
-  return new ethers.utils.Interface(fragments);
-}
-
-export type AddressLike = Contract | MockContract | Signer | string;
+export type AddressLike = Contract | Signer | string;
 
 export async function resolveAddress(value: AddressLike): Promise<string> {
-  if (value instanceof Contract || value instanceof MockContract) {
+  if (value instanceof Contract) {
     return resolveAddress(value.address);
   }
 
@@ -68,4 +49,9 @@ export function resolveArguments(
   }
 
   return value;
+}
+
+export function randomAddress() {
+  const address = ethers.utils.hexlify(ethers.utils.randomBytes(20));
+  return ethers.utils.getAddress(address);
 }

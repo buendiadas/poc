@@ -1,30 +1,63 @@
+import {
+  Interface,
+  Fragment,
+  FunctionFragment,
+  JsonFragment,
+} from '@ethersproject/abi';
 import { ethers } from 'ethers';
 import {
   CallFunction,
   ConstructorFunction,
   ContractFunction,
+  resolveFunctionOptions,
   SendFunction,
 } from './function';
-import { SpecializedContract } from './types';
+
+export type PossibleInterface = string | (Fragment | JsonFragment | string)[];
+
+function ensureInterface(abi: Interface | PossibleInterface) {
+  if (Interface.isInterface(abi)) {
+    return abi;
+  }
+
+  return new Interface(abi);
+}
+
+export function deploy<TContract extends Contract = Contract>(
+  contract: TContract,
+  bytecode: string,
+  ...args: any
+) {
+  const options = resolveFunctionOptions(...args);
+  const constructor = contract.abi.deploy;
+  const fn = new ConstructorFunction(contract, constructor, options);
+  const hex = ethers.utils.hexlify(bytecode ?? '', {
+    allowMissingPrefix: true,
+  });
+
+  return fn.bytecode(hex).send();
+}
 
 // TODO: Add types and proxies for event handling.
-export class Contract implements SpecializedContract {
-  private readonly _signer?: ethers.Signer = undefined;
-  private readonly _provider?: ethers.providers.Provider = undefined;
+export class Contract<TContract extends Contract = any> {
+  public readonly abi: Interface;
 
+  private readonly _signer?: ethers.Signer = undefined;
   public get signer() {
     return this._signer;
   }
 
+  private readonly _provider?: ethers.providers.Provider = undefined;
   public get provider() {
     return this._provider ?? this.signer?.provider;
   }
 
   constructor(
-    public readonly abi: ethers.utils.Interface,
-    public readonly address: string = '0x',
+    abi: Interface | PossibleInterface,
+    public readonly address: string,
     provider?: ethers.providers.Provider | ethers.Signer,
   ) {
+    this.abi = ensureInterface(abi);
     if (ethers.Signer.isSigner(provider)) {
       this._signer = provider;
     } else if (ethers.providers.Provider.isProvider(provider)) {
@@ -37,30 +70,30 @@ export class Contract implements SpecializedContract {
       }
 
       return carry;
-    }, {} as { [name: string]: ethers.utils.FunctionFragment });
+    }, {} as { [name: string]: FunctionFragment });
 
-    const functions = new Proxy(this, {
-      get: (target, prop: string) => {
-        if (prop === 'then' || prop === 'catch' || prop === 'finally') {
-          if (!names[prop]) {
-            return;
-          }
+    return new Proxy(this, {
+      get: (target, prop: string, receiver) => {
+        if (Reflect.has(target, prop)) {
+          return Reflect.get(target, prop, receiver);
+        }
+
+        // Do not attempt to call `getFunction` for non-signatures.
+        if (!names[prop] && !prop.includes('(')) {
+          return;
         }
 
         const fragment = names[prop] ?? target.abi.getFunction(prop);
-        const ctor = (...args: any) => {
-          return ContractFunction.create(target as any, fragment, ...args);
-        };
-
-        return new Proxy(ctor, {
-          // Obtain a refinable function instance (e.g. token.function.transfer.nonce(10).args('0x', 123).send())
-          get: (target, prop, receiver) => {
-            return Reflect.get(target(), prop, receiver);
+        const instance = ContractFunction.create(target, fragment);
+        return new Proxy(() => {}, {
+          has: (_, prop) => {
+            return Reflect.has(instance, prop);
           },
-          // Shortcut for directly using call/send (e.g. token.function.transfer('0x', 123))
-          apply: (target, thiz, args) => {
-            const fn = target.apply(thiz, args);
-
+          get: (_, prop, receiver) => {
+            return Reflect.get(instance, prop, receiver);
+          },
+          apply: (_, __, args) => {
+            const fn = instance.args.apply(instance, args);
             if (fn instanceof ConstructorFunction) {
               return fn.send();
             }
@@ -76,27 +109,16 @@ export class Contract implements SpecializedContract {
         });
       },
     });
-
-    return new Proxy(this, {
-      get: (target, prop: string, receiver) => {
-        if (Reflect.has(target, prop)) {
-          return Reflect.get(target, prop, receiver);
-        }
-
-        // Shortcut so users can directly call a function (e.g. token.transfer('0x', 123))
-        return (functions as any)[prop];
-      },
-    });
   }
 
-  public attach(address: string): SpecializedContract {
+  public attach(address: string): TContract {
     const provider = this.signer ?? this.provider;
-    return new Contract(this.abi, address, provider);
+    return new Contract(this.abi, address, provider) as any;
   }
 
   public connect(
     provider: ethers.Signer | ethers.providers.Provider,
-  ): SpecializedContract {
-    return new Contract(this.abi, this.address, provider);
+  ): TContract {
+    return new Contract(this.abi, this.address, provider) as any;
   }
 }

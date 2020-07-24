@@ -3,5 +3,4 @@ export * from './contract';
 export * from './function';
 export * from './types';
 export * from './mock';
-
-export { resolveAddress, resolveArguments, AddressLike } from './utils';
+export * from './utils';

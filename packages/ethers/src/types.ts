@@ -1,9 +1,19 @@
 import { ethers } from 'ethers';
-import { Contract } from './contract';
 import { CallFunction, FunctionOptions, SendFunction } from './function';
-import { MockContract } from './mock';
 
-export type AnyFunction = (...args: any) => any;
+export type Call<
+  TSignature extends AnyFunction = AnyFunction
+> = ProxiedFunction<CallDefinition<TSignature>>;
+
+export type Send<
+  TSignature extends AnyFunction = AnyFunction,
+  TPayable extends boolean = false
+> = ProxiedFunction<SendDefinition<TSignature, TPayable>>;
+
+type AnyFunction = (...args: any) => any;
+export type ProxiedFunction<
+  TFunction extends FunctionDefinition
+> = FullFunction<TFunction> & ShortcutFunction<TFunction>;
 
 export interface FunctionDefinition {
   type: 'call' | 'send';
@@ -12,15 +22,15 @@ export interface FunctionDefinition {
   output: any;
 }
 
-export type Call<TSignature extends AnyFunction = any> = {
+type CallDefinition<TSignature extends AnyFunction = AnyFunction> = {
   type: 'call';
   signature: TSignature;
   input: Parameters<TSignature>;
   output: ReturnType<TSignature>;
 };
 
-export type Send<
-  TSignature extends AnyFunction = any,
+type SendDefinition<
+  TSignature extends AnyFunction = AnyFunction,
   TPayable extends boolean = false
 > = {
   type: 'send';
@@ -30,70 +40,25 @@ export type Send<
   output: ReturnType<TSignature>;
 };
 
-export interface Functions {
-  [signature: string]: FunctionDefinition;
-}
-
-export type FullFunction<
-  TFunction extends FunctionDefinition,
-  TParent extends SpecializedContract<{}> = SpecializedContract<{}>
-> = TFunction extends Call
-  ? CallFunction<TFunction['input'], TFunction['output'], TParent>
-  : TFunction extends Send
-  ? SendFunction<TFunction['input'], TFunction['output'], TParent>
-  : never;
-
-export type ShortcutFunctionOutput<
+type FullFunction<
   TFunction extends FunctionDefinition
-> = TFunction extends Call
-  ? Promise<TFunction['output']>
-  : TFunction extends Send
-  ? Promise<ethers.ContractReceipt>
+> = TFunction extends CallDefinition
+  ? CallFunction<TFunction['input'], TFunction['output']>
+  : TFunction extends SendDefinition
+  ? SendFunction<TFunction['input'], TFunction['output']>
   : never;
 
-export type ProxyFunction<
-  TFunction extends FunctionDefinition,
-  TParent extends SpecializedContract<{}> = SpecializedContract<{}>
-> = {
-  contract: TParent;
+type ShortcutFunction<TFunction extends FunctionDefinition> = {
   (...args: TFunction['input']): ShortcutFunctionOutput<TFunction>;
   (options: FunctionOptions<TFunction['input']>): ShortcutFunctionOutput<
     TFunction
   >;
-} & FullFunction<TFunction>;
-
-export type MockFunction<TFunction extends FunctionDefinition> = {
-  (...args: TFunction['input']): MockFunctionStub;
-} & MockFunctionStub;
-
-export type MockFunctionStub = {
-  returns(...output: any): Promise<ethers.ContractReceipt>;
-  reverts(): Promise<ethers.ContractReceipt>;
 };
 
-export interface ContractBase<TFunctions extends Functions = {}> {
-  signer?: ethers.Signer;
-  provider?: ethers.providers.Provider;
-  abi: ethers.utils.Interface;
-  address: string;
-  attach(address: string): SpecializedContract<TFunctions>;
-  connect(
-    provider: ethers.Signer | ethers.providers.Provider,
-  ): SpecializedContract<TFunctions>;
-}
-
-export type SpecializedContract<TFunctions extends Functions = {}> = Contract &
-  {
-    [TKey in keyof TFunctions]: TKey extends keyof ContractBase<TFunctions>
-      ? ContractBase<TFunctions>[TKey]
-      : ProxyFunction<TFunctions[TKey], SpecializedContract<TFunctions>>;
-  };
-
-export type SpecializedMockContract<
-  TFunctions extends Functions = {}
-> = MockContract<TFunctions> &
-  {
-    [TKey in keyof TFunctions]: TKey extends keyof MockContract<TFunctions>
-      ? MockContract<TFunctions>[TKey]
-      : MockFunction<TFunctions[TKey]>;
-  };
+type ShortcutFunctionOutput<
+  TFunction extends FunctionDefinition
+> = TFunction extends CallDefinition
+  ? Promise<TFunction['output']>
+  : TFunction extends SendDefinition
+  ? Promise<ethers.ContractReceipt>
+  : never;

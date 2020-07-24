@@ -1,9 +1,18 @@
+export function prettierConfig(cwd: string = process.cwd()) {
+  try {
+    const prettier = require('prettier');
+    return prettier.resolveConfig.sync(cwd);
+  } catch (error) {
+    return {};
+  }
+}
+
 export function formatOutput(value: string) {
   try {
     const prettier = require('prettier');
-    const config = prettier.resolveConfig.sync(process.cwd());
+    const defaults = prettierConfig();
     const options = {
-      ...config,
+      ...defaults,
       parser: 'typescript',
     };
 

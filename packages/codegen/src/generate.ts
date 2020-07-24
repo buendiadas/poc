@@ -45,6 +45,20 @@ export function getOutput(fragment: ConstructorFragment) {
   return 'any[]';
 }
 
+export function getRawOutput(fragment: ConstructorFragment) {
+  if (!ethers.utils.FunctionFragment.isFunctionFragment(fragment)) {
+    return '[]';
+  }
+
+  const outputs = (fragment.outputs ?? []).map((output, index) => {
+    const name = output.name || `$$${index}`;
+    const type = getType(output, true);
+    return `${name}: ${type}`;
+  });
+
+  return `[${outputs.join(', ')}]`;
+}
+
 export function getType(
   param: ethers.utils.ParamType,
   flexible?: boolean,
@@ -102,27 +116,40 @@ export function generateFunction(fragment: ethers.utils.FunctionFragment) {
 }
 
 export function generateFunctions(fragments: ethers.utils.FunctionFragment[]) {
-  const functions = fragments.reduce((carry, fragment, index, array) => {
-    const type = generateFunction(fragment);
-    const found = array.findIndex((current) => fragment.name === current.name);
+  if (!fragments.length) {
+    return '';
+  }
 
-    // Only create a shortcut for the first function overload.
-    if (index === found) {
-      carry.push(`${fragment.name}: ${type};`);
-    }
+  const [short, full] = fragments.reduce(
+    ([short, full], fragment, index, array) => {
+      const type = generateFunction(fragment);
+      const found = array.findIndex(
+        (current) => fragment.name === current.name,
+      );
 
-    const signature = fragment.format();
-    carry.push(`'${signature}': ${type}`);
+      // Only create a shortcut for the first function overload.
+      if (index === found) {
+        short.push(`${fragment.name}: ${type}`);
+      }
 
-    return carry;
-  }, [] as string[]);
+      const signature = fragment.format();
+      full.push(`'${signature}': ${type}`);
 
-  return functions.join('\n');
+      return [short, full] as [string[], string[]];
+    },
+    [[], []] as [string[], string[]],
+  );
+
+  return `// Shortcuts (using function name of first overload)
+  ${short.join('\n  ')}
+
+  // Explicit accessors (using full function signature)
+  ${full.join('\n  ')}`;
 }
 
-export function generateConstructor(fragment: ConstructorFragment) {
+export function generateConstructorArgs(fragment: ConstructorFragment) {
   const input = getInput(fragment);
-  return `(${input}) => void`;
+  return input ? `[${input}]` : '';
 }
 
 export function generateContract(
@@ -132,23 +159,22 @@ export function generateContract(
   crestproject: string = '@crestproject/ethers',
 ) {
   const functions = generateFunctions(Object.values(abi.functions));
-  const constructor = generateConstructor(abi.deploy);
+  const constructor = generateConstructorArgs(abi.deploy);
+  const generic = `${name}${constructor ? `, ${name}Args` : ''}`;
 
-  const output = `
-    /* eslint-disable */
-    import { ethers } from 'ethers';
-    import { contract, AddressLike, SpecializedContract, Call, Send, Functions } from '${crestproject}';
+  // prettier-ignore
+  return `/* eslint-disable */
+import { ethers } from 'ethers';
+import { contract, Call, Send, AddressLike, Contract } from '${crestproject}';
 
-    export type ${name}Constructor = ${constructor};
-    export interface ${name}Functions extends Functions {
-      ${functions || '// No external functions'}
-    }
+${constructor ? `export type ${name}Args = ${constructor};` : ''}
 
-    export type ${name} = SpecializedContract<${name}Functions>;
-    export const ${name} = contract.fromSolidity<${name}Functions, ${name}Constructor>(${source});
-  `;
+// prettier-ignore
+export interface ${name} extends Contract<${name}> {
+  ${functions || '// No external functions'}
+}
 
-  return output;
+export const ${name} = contract.fromSolidity<${generic}>(${source});`;
 }
 
 export function generateContractFile(

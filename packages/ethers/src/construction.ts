@@ -1,152 +1,79 @@
 import { ethers } from 'ethers';
 import { JsonFragment } from '@ethersproject/abi';
-import { Contract } from './contract';
-import {
-  ConstructorFunction,
-  FunctionOptions,
-  resolveFunctionOptions,
-} from './function';
-import {
-  DoppelgangerCompilerOutput,
-  DoppelgangerConstructor,
-  DoppelgangerFunctions,
-} from './doppelganger';
-import {
-  Functions,
-  AnyFunction,
-  SpecializedContract,
-  SpecializedMockContract,
-} from './types';
-import { MockContract } from './mock';
-import { ensureInterface } from './utils';
+import { FunctionOptions } from './function';
+import { Contract, PossibleInterface, deploy } from './contract';
+import { mock, MockContract } from './mock';
 
 export interface SolidityCompilerOutput {
   abi: JsonFragment[];
   bytecode?: string;
 }
 
-export interface SpecializedContractFactory<
-  TFunctions extends Functions = {},
-  TConstructor extends AnyFunction = () => void
+export interface ContractFactory<
+  TContract extends Contract = Contract,
+  TConstructorArgs extends any[] = []
 > {
+  mock(signer: ethers.Signer): Promise<MockContract<TContract>>;
+  deploy(signer: ethers.Signer, ...args: TConstructorArgs): Promise<TContract>;
   deploy(
     signer: ethers.Signer,
-    ...args: Parameters<TConstructor>
-  ): Promise<SpecializedContract<TFunctions>>;
-  deploy(
-    signer: ethers.Signer,
-    options: FunctionOptions<Parameters<TConstructor>>,
-  ): Promise<SpecializedContract<TFunctions>>;
-  mock(signer: ethers.Signer): Promise<SpecializedMockContract<TFunctions>>;
+    options: FunctionOptions<TConstructorArgs>,
+  ): Promise<TContract>;
   new (
     address?: string,
     provider?: ethers.Signer | ethers.providers.Provider,
-  ): SpecializedContract<TFunctions>;
+  ): TContract;
 }
 
-export class ContractFactory {
-  public readonly doppelganger: SpecializedContractFactory<
-    DoppelgangerFunctions,
-    DoppelgangerConstructor
-  >;
-
-  public constructor() {
-    this.doppelganger = this.fromSolidity(DoppelgangerCompilerOutput);
-  }
-
+export class GenericContractFactory {
   public createFactory<
-    TFunctions extends Functions = {},
-    TConstructor extends AnyFunction = () => void
+    TContract extends Contract = Contract,
+    TConstructorArgs extends any[] = []
   >(
-    fragments: string | (ethers.utils.Fragment | string)[],
+    abi: ethers.utils.Interface | PossibleInterface,
     bytecode?: string,
     defaultProvider?: ethers.Signer | ethers.providers.Provider,
   ) {
-    const factory = this;
-
-    const CurrentContract = class extends Contract {
-      public static deploy(
-        signer: ethers.Signer,
-        ...args: Parameters<TConstructor>
-      ): Promise<SpecializedContract<TFunctions>>;
-      public static deploy(
-        signer: ethers.Signer,
-        options: FunctionOptions<Parameters<TConstructor>>,
-      ): Promise<SpecializedContract<TFunctions>>;
-      public static deploy(signer: ethers.Signer, ...args: any) {
-        const options = resolveFunctionOptions(...args);
-        const contract = new CurrentContract(
-          undefined,
-          signer,
-        ) as SpecializedContract;
-        const constructor = contract.abi.deploy;
-        const fn = new ConstructorFunction(contract, constructor, options);
-
-        const hex = ethers.utils.hexlify(bytecode ?? '', {
-          allowMissingPrefix: true,
-        });
-
-        return fn.bytecode(hex).send();
+    class SpecializedContract extends Contract<TContract> {
+      public static deploy(signer: ethers.Signer, ...args: TConstructorArgs) {
+        const contract = new SpecializedContract('0x', signer) as TContract;
+        return deploy<TContract>(contract, bytecode ?? '0x', ...args);
       }
 
-      public static async mock(
-        signer: ethers.Signer,
-      ): Promise<SpecializedMockContract<TFunctions>> {
-        const doppelganger = await factory.doppelganger.deploy(signer);
-        const contract = new CurrentContract(doppelganger.address, signer);
-        return new MockContract<TFunctions>(
-          doppelganger,
-          contract as any,
-        ) as SpecializedMockContract<TFunctions>;
+      public static mock(signer: ethers.Signer) {
+        const contract = new SpecializedContract('0x', signer) as TContract;
+        return mock<TContract>(contract);
       }
 
       constructor(
-        address: string = '0x',
+        address: string,
         provider?: ethers.Signer | ethers.providers.Provider,
       ) {
-        super(ensureInterface(fragments), address, provider ?? defaultProvider);
+        super(abi, address, provider ?? defaultProvider);
       }
+    }
 
-      public attach(address: string): SpecializedContract<TFunctions> {
-        const provider = this.signer ?? this.provider;
-        return (new CurrentContract(
-          address,
-          provider,
-        ) as any) as SpecializedContract<TFunctions>;
-      }
-
-      public connect(
-        provider: ethers.Signer | ethers.providers.Provider,
-      ): SpecializedContract<TFunctions> {
-        return (new CurrentContract(
-          this.address,
-          provider,
-        ) as any) as SpecializedContract<TFunctions>;
-      }
-    };
-
-    return (CurrentContract as unknown) as SpecializedContractFactory<
-      TFunctions,
-      TConstructor
+    return (SpecializedContract as any) as ContractFactory<
+      TContract,
+      TConstructorArgs
     >;
   }
 
-  public fromSignature<
-    TFunctions extends Functions = {},
-    TConstructor extends AnyFunction = () => void
-  >(signatures: TemplateStringsArray) {
+  public fromSignature<TContract extends Contract = Contract>(
+    signatures: TemplateStringsArray,
+  ) {
     const trimmed = signatures
       .join('')
       .trim()
       .split('\n')
       .map((item) => item.trim());
 
-    return this.createFactory<TFunctions, TConstructor>(trimmed);
+    return this.createFactory<TContract>(trimmed);
   }
 
   public fromSolidity<
-    TFunctions extends Functions = {},
-    TConstructor extends AnyFunction = () => void
+    TContract extends Contract = Contract,
+    TConstructorArgs extends any[] = []
   >(
     artifact: SolidityCompilerOutput,
     provider?: ethers.Signer | ethers.providers.Provider,
@@ -155,7 +82,7 @@ export class ContractFactory {
     const abi = json?.abi;
     const bytecode = json?.bytecode;
 
-    return this.createFactory<TFunctions, TConstructor>(
+    return this.createFactory<TContract, TConstructorArgs>(
       abi,
       bytecode,
       provider,
@@ -164,4 +91,4 @@ export class ContractFactory {
 }
 
 // Expose a default contract factory for convenience.
-export const contract = new ContractFactory();
+export const contract = new GenericContractFactory();

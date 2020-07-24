@@ -1,10 +1,10 @@
 import { ethers } from 'ethers';
 import { network } from '@nomiclabs/buidler';
 import { EthereumProvider } from '@nomiclabs/buidler/types';
+import { Call, Send } from '../types';
 import { contract } from '../construction';
+import { randomAddress } from '../utils';
 import { Contract } from '../contract';
-import { MockContract } from '../mock';
-import { Functions, Call, Send } from '../types';
 
 export class BuidlerProvider extends ethers.providers.JsonRpcProvider {
   constructor(public readonly provider: EthereumProvider) {
@@ -18,7 +18,7 @@ export class BuidlerProvider extends ethers.providers.JsonRpcProvider {
 
 describe('contract tagged template literals', () => {
   // prettier-ignore
-  interface TokenFunctions extends Functions {
+  interface Token extends Contract<Token> {
     'allowance': Call<(owner: string, spender: string) => ethers.BigNumber>;
     'allowance(address,address)': Call<(owner: string, spender: string) => ethers.BigNumber>;
     'allowance(address,uint)': Call<(owner: string, how: ethers.BigNumberish) => ethers.BigNumber>;
@@ -37,7 +37,7 @@ describe('contract tagged template literals', () => {
   }
 
   // prettier-ignore
-  const Token = contract.fromSignature<TokenFunctions>`
+  const Token = contract.fromSignature<Token>`
     function allowance(address owner, address spender) view returns (uint256)
     function allowance(address owner, uint how) view returns (uint256)
     function approve(address spender, uint256 amount) returns (bool)
@@ -53,39 +53,42 @@ describe('contract tagged template literals', () => {
   it('properly deploys the mock contract', async () => {
     const signer = provider.getSigner(0);
     const mock = await Token.mock(signer);
-
-    expect(mock).toBeInstanceOf(MockContract);
-    expect(mock.contract).toBeInstanceOf(Contract);
-    expect(mock.doppelganger).toBeInstanceOf(Contract);
+    expect(mock).toBeInstanceOf(Contract);
+    expect(mock.address).toMatch(/^0x[0-9-a-fA-F]{40}$/);
   });
 
   it('can mock contract return values', async () => {
     const signer = provider.getSigner(0);
-    const mock = await Token.mock(signer);
+    const token = await Token.mock(signer);
 
-    await mock.balanceOf.returns(ethers.BigNumber.from('123'));
-    const result = await mock.contract.balanceOf(ethers.constants.AddressZero);
+    await token.balanceOf.returns(123);
+    const result = await token.balanceOf(ethers.constants.AddressZero);
 
     expect(result.toString()).toBe('123');
   });
 
   it('can mock contract return values with arguments', async () => {
     const signer = provider.getSigner(0);
-    const mock = await Token.mock(signer);
+    const token = await Token.mock(signer);
+    const specificAddress = randomAddress();
 
-    await mock.balanceOf(ethers.constants.AddressZero).returns('456');
-    const result = await mock.contract.balanceOf(ethers.constants.AddressZero);
+    await token.balanceOf.returns(123);
+    await token.balanceOf.given(specificAddress).returns(456);
 
-    expect(result.toString()).toBe('456');
+    const generic = await token.balanceOf(randomAddress());
+    const specific = await token.balanceOf(specificAddress);
+
+    expect(generic.toString()).toBe('123');
+    expect(specific.toString()).toBe('456');
   });
 
   it('can mock reverts', async () => {
     const signer = provider.getSigner(0);
     const mock = await Token.mock(signer);
 
-    await mock.balanceOf(ethers.constants.AddressZero).reverts();
+    await mock.balanceOf.given(ethers.constants.AddressZero).reverts();
     await expect(
-      mock.contract.balanceOf(ethers.constants.AddressZero),
+      mock.balanceOf(ethers.constants.AddressZero),
     ).rejects.toThrowError('Mock revert');
   });
 });
