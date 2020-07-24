@@ -24,13 +24,17 @@ export class History {
   }
 
   public reset(contract: Contract | string) {
-    const address = contract instanceof Contract ? contract.address : contract;
+    const address = (contract as any)?.address
+      ? (contract as any).address
+      : contract;
     const checksum = ethers.utils.getAddress(address);
     return this.history.delete(checksum);
   }
 
   public calls(contract: Contract | string) {
-    const address = contract instanceof Contract ? contract.address : contract;
+    const address = (contract as any)?.address
+      ? (contract as any).address
+      : contract;
     const checksum = ethers.utils.getAddress(address);
     return this.history.get(checksum) ?? [];
   }

@@ -33,7 +33,7 @@ export function ensureParameters<
   }
 
   const history = (contract?.provider as BuidlerProvider)?.history;
-  if (!(history instanceof History)) {
+  if (!history) {
     const error =
       'Invalid or unsupported provider for contract call history assertion';
     return forceFail(context, subject, error);

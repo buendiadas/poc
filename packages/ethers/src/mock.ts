@@ -3,6 +3,7 @@ import { Contract } from './contract';
 import { Doppelganger } from './doppelganger';
 import { ContractFunction } from './function';
 import { ProxiedFunction } from './types';
+import { resolveArguments } from './utils';
 
 function stub<TContract extends Contract = Contract>(
   doppelganger: Doppelganger,
@@ -11,14 +12,21 @@ function stub<TContract extends Contract = Contract>(
   params?: any[],
 ) {
   const encoder = ethers.utils.defaultAbiCoder;
-  const data = params
-    ? contract.abi.encodeFunctionData(func, params)
-    : contract.abi.getSighash(func);
 
   return {
     given: (...input: any) => stub(doppelganger, contract, func, input),
-    reverts: () => doppelganger.__doppelganger__mockReverts(data),
-    returns: (...output: any) => {
+    reverts: async () => {
+      const args = params
+        ? await resolveArguments(func.inputs, params)
+        : undefined;
+
+      const data = args
+        ? contract.abi.encodeFunctionData(func, args)
+        : contract.abi.getSighash(func);
+
+      return doppelganger.__doppelganger__mockReverts(data);
+    },
+    returns: async (...output: any) => {
       if (!func.outputs) {
         const formatted = func.format();
 
@@ -27,7 +35,19 @@ function stub<TContract extends Contract = Contract>(
         );
       }
 
-      const encoded = encoder.encode(func.outputs, output);
+      const args = params
+        ? await resolveArguments(func.inputs, params)
+        : undefined;
+
+      const data = args
+        ? contract.abi.encodeFunctionData(func, args)
+        : contract.abi.getSighash(func);
+
+      const resolved = output?.length
+        ? await resolveArguments(func.outputs, output)
+        : undefined;
+
+      const encoded = encoder.encode(func.outputs, resolved);
       return doppelganger.__doppelganger__mockReturns(data, encoded);
     },
   };

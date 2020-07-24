@@ -79,7 +79,11 @@ export class Contract<TContract extends Contract = any> {
         }
 
         // Do not attempt to call `getFunction` for non-signatures.
-        if (!names[prop] && !prop.includes('(')) {
+        if (!names[prop] && !prop?.includes?.('(')) {
+          return;
+        }
+
+        if (typeof prop !== 'string') {
           return;
         }
 
