@@ -2,15 +2,24 @@ import { Contract, ContractFunction } from '@crestproject/ethers';
 import { BuidlerProvider, History } from '@crestproject/evm';
 import { ethers } from 'ethers';
 
-export type MatcherCallback = (
+export type MatcherCallback<
+  TReturn extends jest.CustomMatcherResult | Promise<jest.CustomMatcherResult>
+> = (
   history: History,
   contract: Contract,
   fragment?: ethers.utils.FunctionFragment,
-) => jest.CustomMatcherResult;
+) => TReturn;
 
 export function ensureParameters<
-  TSubject extends Contract | ContractFunction<any> = any
->(context: jest.MatcherContext, subject: TSubject, callback: MatcherCallback) {
+  TSubject extends Contract | ContractFunction<any> = any,
+  TReturn extends
+    | jest.CustomMatcherResult
+    | Promise<jest.CustomMatcherResult> = jest.CustomMatcherResult
+>(
+  context: jest.MatcherContext,
+  subject: TSubject,
+  callback: MatcherCallback<TReturn>,
+): TReturn {
   const fn =
     subject instanceof ContractFunction
       ? subject
@@ -29,14 +38,14 @@ export function ensureParameters<
   if (!contract) {
     const error =
       'Missing contract instance for contract call history assertion';
-    return forceFail(context, subject, error);
+    return forceFail(context, subject, error) as TReturn;
   }
 
   const history = (contract?.provider as BuidlerProvider)?.history;
   if (!history) {
     const error =
       'Invalid or unsupported provider for contract call history assertion';
-    return forceFail(context, subject, error);
+    return forceFail(context, subject, error) as TReturn;
   }
 
   const fragment = fn instanceof ContractFunction ? fn.fragment : undefined;
