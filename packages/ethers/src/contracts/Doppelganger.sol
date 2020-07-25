@@ -5,6 +5,7 @@ contract Doppelganger {
     struct MockCall {
         bool initialized;
         bool reverts;
+        string revertsReason;
         bytes returnValue;
     }
 
@@ -13,17 +14,24 @@ contract Doppelganger {
     fallback() external payable {
         MockCall storage mockCall = __doppelganger__internal__getMockCall();
         if (mockCall.reverts == true) {
-            __doppelganger__internal__mockRevert();
-            return;
+            revert(
+                string(
+                    abi.encodePacked("Mock revert: ", mockCall.revertsReason)
+                )
+            );
         }
 
         __doppelganger__internal__mockReturn(mockCall.returnValue);
     }
 
-    function __doppelganger__mockReverts(bytes memory data) public {
+    function __doppelganger__mockReverts(
+        bytes memory data,
+        string memory reason
+    ) public {
         mockConfig[keccak256(data)] = MockCall({
             initialized: true,
             reverts: true,
+            revertsReason: reason,
             returnValue: ""
         });
     }
@@ -34,6 +42,7 @@ contract Doppelganger {
         mockConfig[keccak256(data)] = MockCall({
             initialized: true,
             reverts: false,
+            revertsReason: "",
             returnValue: value
         });
     }
@@ -52,7 +61,7 @@ contract Doppelganger {
     }
 
     function __doppelganger__internal__fromCode(bytes4 code)
-        public
+        internal
         view
         returns (string memory)
     {
@@ -102,9 +111,5 @@ contract Doppelganger {
         assembly {
             return(add(ret, 0x20), mload(ret))
         }
-    }
-
-    function __doppelganger__internal__mockRevert() private pure {
-        revert("Mock revert");
     }
 }

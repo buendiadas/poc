@@ -73,9 +73,12 @@ describe('contract tagged template literals', () => {
     const signer = provider.getSigner(0);
     const mock = await Token.mock(signer);
 
-    await mock.balanceOf.given(ethers.constants.AddressZero).reverts();
+    await mock.balanceOf
+      .given(ethers.constants.AddressZero)
+      .reverts('YOU SHALL NOT PASS!');
+
     await expect(
       mock.balanceOf(ethers.constants.AddressZero),
-    ).rejects.toThrowError('Mock revert');
+    ).rejects.toThrowError('Mock revert: YOU SHALL NOT PASS!');
   });
 });

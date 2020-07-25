@@ -15,7 +15,7 @@ function stub<TContract extends Contract = Contract>(
 
   return {
     given: (...input: any) => stub(doppelganger, contract, func, input),
-    reverts: async () => {
+    reverts: async (reason: string) => {
       const args = params
         ? await resolveArguments(func.inputs, params)
         : undefined;
@@ -24,7 +24,7 @@ function stub<TContract extends Contract = Contract>(
         ? contract.abi.encodeFunctionData(func, args)
         : contract.abi.getSighash(func);
 
-      return doppelganger.__doppelganger__mockReverts(data);
+      return doppelganger.__doppelganger__mockReverts(data, reason);
     },
     returns: async (...output: any) => {
       if (!func.outputs) {
@@ -94,7 +94,7 @@ export type MockContract<TContract extends Contract = Contract> = {
 
 export type Stub<TOutput extends any[] = any[]> = {
   returns(...args: TOutput): Promise<ethers.ContractReceipt>;
-  reverts(): Promise<ethers.ContractReceipt>;
+  reverts(reason: string): Promise<ethers.ContractReceipt>;
 };
 
 export type RefinableStub<
