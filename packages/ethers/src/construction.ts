@@ -34,13 +34,13 @@ export class GenericContractFactory {
       public static deploy(signer: ethers.Signer, ...args: TConstructorArgs) {
         const address = ethers.constants.AddressZero;
         const contract = new SpecializedContract(address, signer) as TContract;
-        return deploy<TContract>(contract, bytecode ?? '0x', ...args);
+        return deploy(contract, bytecode ?? '0x', ...args);
       }
 
       public static mock(signer: ethers.Signer) {
         const address = ethers.constants.AddressZero;
         const contract = new SpecializedContract(address, signer) as TContract;
-        return mock<TContract>(contract);
+        return mock(contract);
       }
 
       constructor(
@@ -53,7 +53,7 @@ export class GenericContractFactory {
       public clone(
         address: string,
         provider: ethers.Signer | ethers.providers.Provider,
-      ) {
+      ): SpecializedContract {
         return new SpecializedContract(address, provider);
       }
     }

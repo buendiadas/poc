@@ -23,14 +23,18 @@ function ensureInterface(abi: Interface | PossibleInterface) {
   return new Interface(abi);
 }
 
-export function deploy<TContract extends Contract = Contract>(
-  contract: TContract,
-  bytecode: string,
-  ...args: any
-) {
+export function deploy<
+  TContract extends Contract = Contract,
+  TArgs extends any[] = any
+>(contract: TContract, bytecode: string, ...args: TArgs): Promise<TContract> {
   const options = resolveFunctionOptions(...args);
   const constructor = contract.abi.deploy;
-  const fn = new ConstructorFunction(contract, constructor, options);
+  const fn = new ConstructorFunction<TArgs, TContract>(
+    contract,
+    constructor,
+    options,
+  );
+
   const hex = ethers.utils.hexlify(bytecode ?? '', {
     allowMissingPrefix: true,
   });
