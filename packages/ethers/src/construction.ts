@@ -53,8 +53,8 @@ export class GenericContractFactory {
       public clone(
         address: string,
         provider: ethers.Signer | ethers.providers.Provider,
-      ): SpecializedContract {
-        return new SpecializedContract(address, provider);
+      ): TContract {
+        return new SpecializedContract(address, provider) as TContract;
       }
     }
 

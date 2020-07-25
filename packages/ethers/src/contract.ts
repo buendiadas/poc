@@ -127,8 +127,8 @@ export class Contract<TContract extends Contract = any> {
   public clone(
     address: string,
     provider: ethers.Signer | ethers.providers.Provider,
-  ) {
-    return new Contract<TContract>(this.abi, address, provider);
+  ): TContract {
+    return new Contract(this.abi, address, provider) as any;
   }
 
   public attach(address: string) {
