@@ -49,19 +49,21 @@ export class Contract<TContract extends Contract = any> {
 
   private readonly _provider?: ethers.providers.Provider = undefined;
   public get provider() {
-    return this._provider ?? this.signer?.provider;
+    return (this._provider ?? this.signer?.provider)!;
   }
 
   constructor(
     abi: Interface | PossibleInterface,
     public readonly address: string,
-    provider?: ethers.providers.Provider | ethers.Signer,
+    provider: ethers.providers.Provider | ethers.Signer,
   ) {
     this.abi = ensureInterface(abi);
     if (ethers.Signer.isSigner(provider)) {
       this._signer = provider;
     } else if (ethers.providers.Provider.isProvider(provider)) {
       this._provider = provider;
+    } else {
+      throw new Error('Missing provider');
     }
 
     const names = Object.values(this.abi.functions).reduce((carry, current) => {
@@ -96,6 +98,9 @@ export class Contract<TContract extends Contract = any> {
           get: (_, prop, receiver) => {
             return Reflect.get(instance, prop, receiver);
           },
+          set: (_, prop, receiver) => {
+            return Reflect.set(instance, prop, receiver);
+          },
           apply: (_, __, args) => {
             const fn = instance.args.apply(instance, args);
             if (fn instanceof ConstructorFunction) {
@@ -115,14 +120,19 @@ export class Contract<TContract extends Contract = any> {
     });
   }
 
-  public attach(address: string): TContract {
-    const provider = this.signer ?? this.provider;
-    return new Contract(this.abi, address, provider) as any;
+  public clone(
+    address: string,
+    provider: ethers.Signer | ethers.providers.Provider,
+  ) {
+    return new Contract<TContract>(this.abi, address, provider);
   }
 
-  public connect(
-    provider: ethers.Signer | ethers.providers.Provider,
-  ): TContract {
-    return new Contract(this.abi, this.address, provider) as any;
+  public attach(address: string) {
+    const provider = this.signer ?? this.provider;
+    return this.clone(address, provider);
+  }
+
+  public connect(provider: ethers.Signer | ethers.providers.Provider) {
+    return this.clone(this.address, provider);
   }
 }

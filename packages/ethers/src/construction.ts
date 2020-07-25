@@ -29,27 +29,32 @@ export class GenericContractFactory {
   public createFactory<
     TContract extends Contract = Contract,
     TConstructorArgs extends any[] = []
-  >(
-    abi: ethers.utils.Interface | PossibleInterface,
-    bytecode?: string,
-    defaultProvider?: ethers.Signer | ethers.providers.Provider,
-  ) {
+  >(abi: ethers.utils.Interface | PossibleInterface, bytecode?: string) {
     class SpecializedContract extends Contract<TContract> {
       public static deploy(signer: ethers.Signer, ...args: TConstructorArgs) {
-        const contract = new SpecializedContract('0x', signer) as TContract;
+        const address = ethers.constants.AddressZero;
+        const contract = new SpecializedContract(address, signer) as TContract;
         return deploy<TContract>(contract, bytecode ?? '0x', ...args);
       }
 
       public static mock(signer: ethers.Signer) {
-        const contract = new SpecializedContract('0x', signer) as TContract;
+        const address = ethers.constants.AddressZero;
+        const contract = new SpecializedContract(address, signer) as TContract;
         return mock<TContract>(contract);
       }
 
       constructor(
         address: string,
-        provider?: ethers.Signer | ethers.providers.Provider,
+        provider: ethers.Signer | ethers.providers.Provider,
       ) {
-        super(abi, address, provider ?? defaultProvider);
+        super(abi, address, provider);
+      }
+
+      public clone(
+        address: string,
+        provider: ethers.Signer | ethers.providers.Provider,
+      ) {
+        return new SpecializedContract(address, provider);
       }
     }
 
@@ -74,19 +79,11 @@ export class GenericContractFactory {
   public fromSolidity<
     TContract extends Contract = Contract,
     TConstructorArgs extends any[] = []
-  >(
-    artifact: SolidityCompilerOutput,
-    provider?: ethers.Signer | ethers.providers.Provider,
-  ) {
+  >(artifact: SolidityCompilerOutput) {
     const json = typeof artifact === 'string' ? JSON.parse(artifact) : artifact;
     const abi = json?.abi;
     const bytecode = json?.bytecode;
-
-    return this.createFactory<TContract, TConstructorArgs>(
-      abi,
-      bytecode,
-      provider,
-    );
+    return this.createFactory<TContract, TConstructorArgs>(abi, bytecode);
   }
 }
 
