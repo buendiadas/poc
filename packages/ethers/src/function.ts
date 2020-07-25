@@ -280,8 +280,13 @@ export class ConstructorFunction<
   TArgs extends any[] = [],
   TContract extends Contract = Contract
 > extends ContractFunction<TArgs, ConstructorFragment> {
-  public async call(): Promise<void> {
-    throw new Error('Call not implemented yet');
+  public async call(): Promise<string> {
+    const tx = await this.populate();
+    if (this.contract.provider == null) {
+      throw new Error('Missing provider');
+    }
+
+    return this.contract.provider.call(tx);
   }
 
   public async estimate(): Promise<ethers.BigNumber> {
