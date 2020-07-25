@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import { Contract } from './contract';
-import { RefinableStub, Stub } from './mock';
 import { AddressLike, resolveAddress, resolveArguments } from './utils';
 
 function propertyOf<TOr = any>(

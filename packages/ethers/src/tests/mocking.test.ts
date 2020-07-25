@@ -1,20 +1,9 @@
 import { ethers } from 'ethers';
-import { network } from '@nomiclabs/buidler';
-import { EthereumProvider } from '@nomiclabs/buidler/types';
 import { Call, Send } from '../types';
 import { contract } from '../construction';
 import { randomAddress } from '../utils';
 import { Contract } from '../contract';
-
-export class BuidlerProvider extends ethers.providers.JsonRpcProvider {
-  constructor(public readonly provider: EthereumProvider) {
-    super();
-  }
-
-  public send(method: string, params: any): Promise<any> {
-    return this.provider.send(method, params);
-  }
-}
+import { provider } from './provider';
 
 describe('contract tagged template literals', () => {
   // prettier-ignore
@@ -47,8 +36,6 @@ describe('contract tagged template literals', () => {
     function symbol() view returns (string)
     function transfer(address recipient, uint256 amount) returns (bool)
   `;
-
-  const provider = new BuidlerProvider(network.provider);
 
   it('properly deploys the mock contract', async () => {
     const signer = provider.getSigner(0);

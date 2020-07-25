@@ -3,6 +3,8 @@ import { contract } from '../construction';
 import { Call, Send } from '../types';
 import { Contract } from '../contract';
 import { SendFunction, CallFunction } from '../function';
+import { randomAddress } from '../utils';
+import { provider } from './provider';
 
 describe('contract tagged template literals', () => {
   // prettier-ignore
@@ -36,23 +38,27 @@ describe('contract tagged template literals', () => {
     function transfer(address recipient, uint256 amount) returns (bool)
   `;
 
-  const provider = new ethers.providers.JsonRpcProvider();
-  const token = new Token('0x', provider);
+  const address = ethers.constants.AddressZero;
+  const token = new Token(address, provider.getSigner(0));
 
-  it('factory creates a contract instance', () => {
-    expect(token).toBeInstanceOf(Contract);
+  it('factory creates a contract instance', async () => {
+    expect(token).toBeInstanceOf(Token);
   });
 
   it('shortcut directly invokes call for transactions', () => {
-    expect(token.allowance('0x', '0x')).toBeInstanceOf(Promise);
+    expect(token.allowance(randomAddress(), randomAddress())).toBeInstanceOf(
+      Promise,
+    );
   });
 
   it('shortcut directly invokes send for transactions', () => {
-    expect(token.transfer('0x', 123)).toBeInstanceOf(Promise);
+    expect(token.transfer(randomAddress(), 123)).toBeInstanceOf(Promise);
   });
 
   it('shortcut syntax allows chaining methods', () => {
-    expect(token.transfer.args('0x', 123)).toBeInstanceOf(SendFunction);
+    expect(token.transfer.args(randomAddress(), 123)).toBeInstanceOf(
+      SendFunction,
+    );
   });
 
   it('shortcut syntax returns the first function fragment', () => {
