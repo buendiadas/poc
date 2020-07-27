@@ -1,9 +1,9 @@
 import { ethers } from 'ethers';
 import { Contract } from './contract';
 import { Doppelganger } from './doppelganger';
-import { ContractFunction } from './function';
+import { ContractFunction, CallFunction, SendFunction, ContractReceipt } from './function';
 import { ProxiedFunction } from './types';
-import { resolveArguments } from './utils';
+import { resolveArguments, AddressLike } from './utils';
 
 function stub<TContract extends Contract = Contract>(
   doppelganger: Doppelganger,
@@ -69,7 +69,41 @@ export async function mock<TContract extends Contract = Contract>(
     signatures,
   );
 
+  async function forward<TArgs extends any[] = any, TReturn = any, TContract extends Contract = Contract>(
+    fn: SendFunction<TArgs, TReturn, TContract> | CallFunction<TArgs, TReturn, TContract>,
+    ...params: any
+  ): Promise<any> {
+    const fragment = fn.fragment;
+    const callee = fn.contract;
+  
+    const args = params
+      ? await resolveArguments(fragment.inputs, params)
+      : undefined;
+
+    const data = args
+      ? fn.contract.abi.encodeFunctionData(fragment, args)
+      : fn.contract.abi.getSighash(fragment);
+      
+    const forward = doppelganger.__doppelganger__mockForward.args(data, callee);
+    if (fn instanceof SendFunction) {
+      const receipt = await forward.send() as any;
+      const refined: ContractReceipt<SendFunction<TArgs, TReturn, TContract>> = receipt;
+      refined.function = fn;
+      return refined;
+    }
+  
+    const result = await forward.call();
+    const decoded = fn.contract.abi.decodeFunctionResult(fragment, result);
+    if (fragment.outputs?.length === 1) {
+      return decoded[0];
+    }
+  
+    return decoded;
+  }
+
   const mocked = contract.attach(doppelganger.address);
+  (mocked as any).forward = forward;
+
   const proxy = new Proxy(mocked, {
     get: (target, prop: string, receiver) => {
       const value = Reflect.get(target, prop, receiver);
@@ -98,6 +132,15 @@ export type MockContract<TContract extends Contract = Contract> = {
   [TKey in keyof TContract]: TContract[TKey] extends ProxiedFunction<any>
     ? TContract[TKey] & RefinableStub<Parameters<TContract[TKey]['args']>>
     : TContract[TKey];
+} & {
+  forward<TArgs extends any[] = any, TReturn = any, TContract extends Contract = Contract>(
+    send: SendFunction<TArgs, TReturn, TContract>,
+    ...args: TArgs
+  ): Promise<ContractReceipt<SendFunction<TArgs, TReturn, TContract>>>;
+  forward<TArgs extends any[] = any, TReturn = any>(
+    call: CallFunction<TArgs, TReturn>,
+    ...args: TArgs
+  ): Promise<TReturn>;
 };
 
 export type Stub<TOutput extends any[] = any[]> = {

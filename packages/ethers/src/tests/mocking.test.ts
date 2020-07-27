@@ -4,6 +4,7 @@ import { contract } from '../construction';
 import { randomAddress } from '../utils';
 import { Contract } from '../contract';
 import { provider } from './provider';
+import { ERC20 } from './contracts/ERC20'
 
 describe('contract tagged template literals', () => {
   // prettier-ignore
@@ -89,5 +90,13 @@ describe('contract tagged template literals', () => {
     await expect(
       mock.balanceOf(ethers.constants.AddressZero),
     ).rejects.toThrowError('Mock not initialized: balanceOf(address)');
+  });
+
+  it('can forward calls', async () => {
+    const signer = provider.getSigner(0);
+    const token = await ERC20.deploy(signer, 'Test Token', 'TEST');
+    const mock = await ERC20.mock(signer);
+
+    await expect(mock.forward(token.name)).resolves.toBe('Test Token');
   });
 });

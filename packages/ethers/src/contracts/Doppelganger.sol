@@ -43,10 +43,23 @@ contract Doppelganger {
         __doppelganger__internal__mockReturn(mockCall.value);
     }
 
+    function __doppelganger__mockForward(
+        bytes calldata _data,
+        address _callee
+    )
+        external
+        returns (bytes memory)
+    {
+        (bool success, bytes memory returnData) = _callee.call(_data);
+        require(success, string(returnData));
+
+        return returnData;
+    }
+
     function __doppelganger__mockReverts(
-        bytes memory _data,
-        string memory _reason
-    ) public {
+        bytes calldata _data,
+        string calldata _reason
+    ) external {
         mockConfig[keccak256(_data)] = MockCall({
             initialized: true,
             reverts: true,
@@ -56,9 +69,9 @@ contract Doppelganger {
     }
 
     function __doppelganger__mockReturns(
-        bytes memory _data,
-        bytes memory _value
-    ) public {
+        bytes calldata _data,
+        bytes calldata _value
+    ) external {
         mockConfig[keccak256(_data)] = MockCall({
             initialized: true,
             reverts: false,
