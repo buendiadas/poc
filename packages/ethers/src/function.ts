@@ -1,6 +1,27 @@
+import {
+  Fragment,
+  ConstructorFragment,
+  FunctionFragment,
+} from '@ethersproject/abi';
 import { ethers } from 'ethers';
 import { Contract } from './contract';
 import { AddressLike, resolveAddress, resolveArguments } from './utils';
+
+export interface ContractReceipt<
+  TFunction extends
+    | SendFunction<any, any>
+    | ConstructorFunction<any> = SendFunction
+> extends ethers.ContractReceipt {
+  function: TFunction;
+}
+
+export interface ContractTransaction<
+  TFunction extends
+    | SendFunction<any, any>
+    | ConstructorFunction<any> = SendFunction
+> extends ethers.ContractTransaction {
+  function: TFunction;
+}
 
 function propertyOf<TOr = any>(
   property: string,
@@ -8,15 +29,6 @@ function propertyOf<TOr = any>(
 ): TOr {
   const obj = candidates.find((obj) => obj.hasOwnProperty(property));
   return (obj as any)?.[property] ?? undefined;
-}
-
-// TODO: Properly limit the available options based on the function type and signature.
-
-export interface ConstructorFragment extends ethers.utils.Fragment {
-  stateMutability: string;
-  payable: boolean;
-  gas?: ethers.BigNumber;
-  format(format?: string): string;
 }
 
 export interface FunctionOptions<TArgs extends any[] = []> {
@@ -82,36 +94,40 @@ export function resolveFunctionOptions<TArgs extends any[] = []>(
 
 export class ContractFunction<
   TArgs extends any[] = [],
-  TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
+  TFragment extends Fragment = Fragment,
+  TContract extends Contract = Contract
 > {
   public static create<
     TArgs extends any[] = [],
-    TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
+    TFragment extends Fragment = Fragment,
+    TContract extends Contract = Contract
   >(
-    contract: Contract,
+    contract: TContract,
     fragment: TFragment,
     ...args: TArgs
-  ): ContractFunction<TArgs, TFragment>;
+  ): ContractFunction<TArgs, TFragment, TContract>;
 
   public static create<
     TArgs extends any[] = [],
-    TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
+    TFragment extends Fragment = Fragment,
+    TContract extends Contract = Contract
   >(
-    contract: Contract,
+    contract: TContract,
     fragment: TFragment,
     options: FunctionOptions<TArgs>,
-  ): ContractFunction<TArgs, TFragment>;
+  ): ContractFunction<TArgs, TFragment, TContract>;
 
   public static create<
     TArgs extends any[] = [],
-    TFragment extends ethers.utils.Fragment = ethers.utils.Fragment
+    TFragment extends Fragment = Fragment,
+    TContract extends Contract = Contract
   >(
-    contract: Contract,
+    contract: TContract,
     fragment: TFragment,
     ...args: [FunctionOptions<TArgs>] | TArgs
   ) {
     const options = resolveFunctionOptions(...args) as FunctionOptions<TArgs>;
-    if (ethers.utils.FunctionFragment.isFunctionFragment(fragment)) {
+    if (FunctionFragment.isFunctionFragment(fragment)) {
       if (fragment.constant) {
         return new CallFunction<TArgs>(contract, fragment, options);
       }
@@ -119,7 +135,7 @@ export class ContractFunction<
       return new SendFunction<TArgs>(contract, fragment, options);
     }
 
-    if (ethers.utils.FunctionFragment.isConstructorFragment(fragment)) {
+    if (FunctionFragment.isConstructorFragment(fragment)) {
       return new ConstructorFunction<TArgs>(contract, fragment, options);
     }
 
@@ -127,7 +143,7 @@ export class ContractFunction<
   }
 
   constructor(
-    public readonly contract: Contract,
+    public readonly contract: TContract,
     public readonly fragment: TFragment,
     public readonly options: FunctionOptions<TArgs> = {},
   ) {}
@@ -189,8 +205,9 @@ export class ContractFunction<
 
 export class CallFunction<
   TArgs extends any[] = [],
-  TReturn extends any = unknown
-> extends ContractFunction<TArgs, ethers.utils.FunctionFragment> {
+  TReturn extends any = unknown,
+  TContract extends Contract = Contract
+> extends ContractFunction<TArgs, FunctionFragment, TContract> {
   public async call(): Promise<TReturn> {
     const tx = await this.populate();
     if (this.contract.provider == null) {
@@ -210,7 +227,7 @@ export class CallFunction<
     return (result as any) as TReturn;
   }
 
-  public attach(contract: Contract): this {
+  public attach(contract: TContract): this {
     const formatted = this.fragment.format();
     if (!contract.abi.functions.hasOwnProperty(formatted)) {
       throw new Error('Failed to attach function to incompatible contract');
@@ -250,8 +267,9 @@ export class CallFunction<
 
 export class SendFunction<
   TArgs extends any[] = [],
-  TReturn extends any = void
-> extends CallFunction<TArgs, TReturn> {
+  TReturn extends any = void,
+  TContract extends Contract = Contract
+> extends CallFunction<TArgs, TReturn, TContract> {
   public async estimate(): Promise<ethers.BigNumber> {
     const tx = await this.populate();
     if (this.contract.provider == null) {
@@ -261,25 +279,45 @@ export class SendFunction<
     return this.contract.provider.estimateGas(tx);
   }
 
-  public send(wait?: true): Promise<ethers.ContractReceipt>;
-  public send(wait?: false): Promise<ethers.ContractTransaction>;
+  public send(
+    wait?: true,
+  ): Promise<ContractReceipt<SendFunction<TArgs, TReturn, TContract>>>;
+  public send(
+    wait?: false,
+  ): Promise<ContractTransaction<SendFunction<TArgs, TReturn, TContract>>>;
   public async send(
     wait: boolean = true,
-  ): Promise<ethers.ContractReceipt | ethers.ContractTransaction> {
+  ): Promise<
+    | ContractReceipt<SendFunction<TArgs, TReturn, TContract>>
+    | ContractTransaction<SendFunction<TArgs, TReturn, TContract>>
+  > {
     if (!this.contract.signer) {
       throw new Error('Missing signer');
     }
 
     const tx = await this.populate();
-    const response = await this.contract.signer.sendTransaction(tx);
-    return wait ? response.wait() : response;
+    const response = (await this.contract.signer.sendTransaction(
+      tx,
+    )) as ContractTransaction<SendFunction<TArgs, TReturn, TContract>>;
+    response.function = this;
+
+    if (!wait) {
+      return response;
+    }
+
+    const receipt = (await response.wait()) as ContractReceipt<
+      SendFunction<TArgs, TReturn, TContract>
+    >;
+    receipt.function = this;
+
+    return receipt;
   }
 }
 
 export class ConstructorFunction<
   TArgs extends any[] = [],
   TContract extends Contract = Contract
-> extends ContractFunction<TArgs, ConstructorFragment> {
+> extends ContractFunction<TArgs, ConstructorFragment, TContract> {
   public async call(): Promise<string> {
     const tx = await this.populate();
     if (this.contract.provider == null) {
@@ -298,24 +336,38 @@ export class ConstructorFunction<
     return this.contract.provider.estimateGas(tx);
   }
 
-  public send(wait?: true): Promise<TContract>;
-  public send(wait?: false): Promise<ethers.ContractTransaction>;
+  public send(
+    wait?: true,
+  ): Promise<ContractReceipt<ConstructorFunction<TArgs, TContract>>>;
+  public send(
+    wait?: false,
+  ): Promise<ContractTransaction<ConstructorFunction<TArgs, TContract>>>;
   public async send(
     wait: boolean = true,
-  ): Promise<TContract | ethers.ContractTransaction> {
+  ): Promise<
+    | ContractTransaction<ConstructorFunction<TArgs, TContract>>
+    | ContractReceipt<ConstructorFunction<TArgs, TContract>>
+  > {
     if (!this.contract.signer) {
       throw new Error('Missing signer');
     }
 
     const tx = await this.populate();
-    const response = await this.contract.signer.sendTransaction(tx);
+    const response = (await this.contract.signer.sendTransaction(
+      tx,
+    )) as ContractTransaction<ConstructorFunction<TArgs, TContract>>;
+    response.function = this;
 
     if (!wait) {
       return response;
     }
 
-    const receipt = await response.wait();
-    return (this.contract as any).attach(receipt.contractAddress);
+    const receipt = (await response.wait()) as ContractReceipt<
+      ConstructorFunction<TArgs, TContract>
+    >;
+    receipt.function = this;
+
+    return receipt;
   }
 
   protected async populate() {

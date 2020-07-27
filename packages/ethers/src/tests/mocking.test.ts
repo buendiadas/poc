@@ -8,21 +8,21 @@ import { provider } from './provider';
 describe('contract tagged template literals', () => {
   // prettier-ignore
   interface Token extends Contract<Token> {
-    'allowance': Call<(owner: string, spender: string) => ethers.BigNumber>;
-    'allowance(address,address)': Call<(owner: string, spender: string) => ethers.BigNumber>;
-    'allowance(address,uint)': Call<(owner: string, how: ethers.BigNumberish) => ethers.BigNumber>;
-    'approve': Send<(spender: string, amount: ethers.BigNumberish) => boolean>;
-    'approve(address,uint)': Send<(spender: string, amount: ethers.BigNumberish) => boolean>;
-    'balanceOf': Call<(account: string) => ethers.BigNumber>;
-    'balanceOf(address)': Call<(account: string) => ethers.BigNumber>;
-    'decimals': Call<() => ethers.BigNumber>;
-    'decimals()': Call<() => ethers.BigNumber>;
-    'name': Call<() => string>;
-    'name()': Call<() => string>;
-    'symbol': Call<() => string>;
-    'symbol()': Call<() => string>;
-    'transfer': Send<(to: string, amount: ethers.BigNumberish) => void>;
-    'transfer(address,uint256)': Send<(to: string, amount: ethers.BigNumberish) => void>;
+    'allowance': Call<(owner: string, spender: string) => ethers.BigNumber, Token>;
+    'allowance(address,address)': Call<(owner: string, spender: string) => ethers.BigNumber, Token>;
+    'allowance(address,uint)': Call<(owner: string, how: ethers.BigNumberish) => ethers.BigNumber, Token>;
+    'approve': Send<(spender: string, amount: ethers.BigNumberish) => boolean, Token>;
+    'approve(address,uint)': Send<(spender: string, amount: ethers.BigNumberish) => boolean, Token>;
+    'balanceOf': Call<(account: string) => ethers.BigNumber, Token>;
+    'balanceOf(address)': Call<(account: string) => ethers.BigNumber, Token>;
+    'decimals': Call<() => ethers.BigNumber, Token>;
+    'decimals()': Call<() => ethers.BigNumber, Token>;
+    'name': Call<() => string, Token>;
+    'name()': Call<() => string, Token>;
+    'symbol': Call<() => string, Token>;
+    'symbol()': Call<() => string, Token>;
+    'transfer': Send<(to: string, amount: ethers.BigNumberish) => void, Token>;
+    'transfer(address,uint256)': Send<(to: string, amount: ethers.BigNumberish) => void, Token>;
   }
 
   // prettier-ignore

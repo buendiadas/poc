@@ -70,12 +70,12 @@ export type DoppelgangerArgs = [_sighashes: ethers.utils.BytesLike[], _signature
 // prettier-ignore
 export interface Doppelganger extends Contract<Doppelganger> {
   // Shortcut functions.
-  __doppelganger__mockReturns: Send<(data: ethers.utils.BytesLike, value: ethers.utils.BytesLike) => void>;
-  __doppelganger__mockReverts: Send<(data: ethers.utils.BytesLike, reason: string) => void>;
+  __doppelganger__mockReturns: Send<(data: ethers.utils.BytesLike, value: ethers.utils.BytesLike) => void, Doppelganger>;
+  __doppelganger__mockReverts: Send<(data: ethers.utils.BytesLike, reason: string) => void, Doppelganger>;
   
   // Full function signature.
-  '__doppelganger__mockReturns(bytes,bytes)': Send<(data: ethers.utils.BytesLike, value: ethers.utils.BytesLike) => void>;
-  '__doppelganger__mockReverts(bytes,string)': Send<(data: ethers.utils.BytesLike, reason: string) => void>;
+  '__doppelganger__mockReturns(bytes,bytes)': Send<(data: ethers.utils.BytesLike, value: ethers.utils.BytesLike) => void, Doppelganger>;
+  '__doppelganger__mockReverts(bytes,string)': Send<(data: ethers.utils.BytesLike, reason: string) => void, Doppelganger>;
 }
 
 const bytecode = DoppelgangerCompilerOutput.bytecode;

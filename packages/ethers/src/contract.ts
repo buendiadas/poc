@@ -23,7 +23,7 @@ function ensureInterface(abi: Interface | PossibleInterface) {
   return new Interface(abi);
 }
 
-export function deploy<
+export async function deploy<
   TContract extends Contract = Contract,
   TArgs extends any[] = any
 >(contract: TContract, bytecode: string, ...args: TArgs): Promise<TContract> {
@@ -39,7 +39,14 @@ export function deploy<
     allowMissingPrefix: true,
   });
 
-  return fn.bytecode(hex).send();
+  const receipt = await fn.bytecode(hex).send();
+  const creation: TContract = receipt.function.contract.attach(
+    receipt.contractAddress,
+  );
+
+  (creation as any).deployment = receipt;
+
+  return creation;
 }
 
 // TODO: Add types and proxies for event handling.

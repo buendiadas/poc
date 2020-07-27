@@ -108,21 +108,27 @@ export function getType(
   return 'any';
 }
 
-export function generateFunction(fragment: ethers.utils.FunctionFragment) {
+export function generateFunction(
+  contract: string,
+  fragment: ethers.utils.FunctionFragment,
+) {
   const type = fragment.constant ? 'Call' : 'Send';
   const input = getInput(fragment);
   const output = getOutput(fragment);
-  return `${type}<(${input}) => ${output}>`;
+  return `${type}<(${input}) => ${output}, ${contract}>`;
 }
 
-export function generateFunctions(fragments: ethers.utils.FunctionFragment[]) {
+export function generateFunctions(
+  contract: string,
+  fragments: ethers.utils.FunctionFragment[],
+) {
   if (!fragments.length) {
     return '';
   }
 
   const [short, full] = fragments.reduce(
     ([short, full], fragment, index, array) => {
-      const type = generateFunction(fragment);
+      const type = generateFunction(contract, fragment);
       const found = array.findIndex(
         (current) => fragment.name === current.name,
       );
@@ -158,7 +164,7 @@ export function generateContract(
   abi: ethers.utils.Interface,
   crestproject: string = '@crestproject/ethers',
 ) {
-  const functions = generateFunctions(Object.values(abi.functions));
+  const functions = generateFunctions(name, Object.values(abi.functions));
   const constructor = generateConstructorArgs(abi.deploy);
   const generic = `${name}${constructor ? `, ${name}Args` : ''}`;
 
