@@ -31,6 +31,27 @@ function propertyOf<TOr = any>(
   return (obj as any)?.[property] ?? undefined;
 }
 
+function enhanceResponse<
+  TFunction extends
+    | SendFunction<any, any>
+    | ConstructorFunction<any> = SendFunction
+>(
+  fn: TFunction,
+  response: ethers.ContractTransaction,
+): ContractTransaction<TFunction> {
+  const wait = response.wait.bind(response);
+  const enhanced = (response as any) as ContractTransaction<TFunction>;
+  enhanced.function = fn;
+  enhanced.wait = async (confirmations?: number) => {
+    const receipt = await wait(confirmations);
+    const enhanced = (receipt as any) as ContractReceipt<TFunction>;
+    enhanced.function = fn;
+    return enhanced;
+  };
+
+  return enhanced;
+}
+
 export interface FunctionOptions<TArgs extends any[] = []> {
   args?: TArgs;
   value?: ethers.BigNumberish;
@@ -295,22 +316,17 @@ export class SendFunction<
       throw new Error('Missing signer');
     }
 
-    const tx = await this.populate();
-    const response = (await this.contract.signer.sendTransaction(
-      tx,
-    )) as ContractTransaction<SendFunction<TArgs, TReturn, TContract>>;
-    response.function = this;
+    const populated = await this.populate();
+    const response = await this.contract.signer.sendTransaction(populated);
+    const enhanced = enhanceResponse(this, response);
 
     if (!wait) {
-      return response;
+      return enhanced;
     }
 
-    const receipt = (await response.wait()) as ContractReceipt<
-      SendFunction<TArgs, TReturn, TContract>
+    return enhanced.wait() as Promise<
+      ContractReceipt<SendFunction<TArgs, TReturn, TContract>>
     >;
-    receipt.function = this;
-
-    return receipt;
   }
 }
 
@@ -351,23 +367,17 @@ export class ConstructorFunction<
     if (!this.contract.signer) {
       throw new Error('Missing signer');
     }
-
-    const tx = await this.populate();
-    const response = (await this.contract.signer.sendTransaction(
-      tx,
-    )) as ContractTransaction<ConstructorFunction<TArgs, TContract>>;
-    response.function = this;
+    const populated = await this.populate();
+    const response = await this.contract.signer.sendTransaction(populated);
+    const enhanced = enhanceResponse(this, response);
 
     if (!wait) {
-      return response;
+      return enhanced;
     }
 
-    const receipt = (await response.wait()) as ContractReceipt<
-      ConstructorFunction<TArgs, TContract>
+    return enhanced.wait() as Promise<
+      ContractReceipt<ConstructorFunction<TArgs, TContract>>
     >;
-    receipt.function = this;
-
-    return receipt;
   }
 
   protected async populate() {

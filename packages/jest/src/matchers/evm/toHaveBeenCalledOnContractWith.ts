@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { ContractFunction, resolveArguments } from '@crestproject/ethers';
-import { ensureParameters, forceFail } from './utils';
+import { ensureParameters } from './utils';
+import { forceFail } from '../utils';
 
 export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
   this: jest.MatcherContext,

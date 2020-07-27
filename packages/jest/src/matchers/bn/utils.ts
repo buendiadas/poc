@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { forceFail } from '../utils';
 
 export function printBigNumber(value: ethers.BigNumberish) {
   const bn = ethers.BigNumber.from(value);
@@ -22,23 +23,14 @@ export function ensureBigNumbers(
   try {
     receivedBn = ethers.BigNumber.from(received);
   } catch {
-    return forceFail(context, received, 'received');
+    return forceFail(context, received, 'The received value is not numberish');
   }
 
   try {
     expectedBn = ethers.BigNumber.from(expected);
   } catch {
-    return forceFail(context, expected, 'expected');
+    return forceFail(context, expected, 'The expected value is not numberish');
   }
 
   return callback(receivedBn, expectedBn);
-}
-
-function forceFail(context: jest.MatcherContext, value: any, name: string) {
-  const pass = context.isNot ? true : false;
-  const message = () =>
-    `The ${name} value is not numberish:\n\n` +
-    `  ${context.utils.printReceived(value)}`;
-
-  return { pass, message };
 }

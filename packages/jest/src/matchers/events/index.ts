@@ -1,0 +1,1 @@
+export { toHaveEmitted } from './toHaveEmitted';

@@ -15,6 +15,7 @@ export type EthereumMatchers<R> = {
   toBeReverted(): R;
   toBeRevertedWith(message: string): R;
   toBeReceipt(): R;
+  toHaveEmitted(name: string): R;
   toHaveBeenCalledOnContract(): R;
   toHaveBeenCalledOnContractTimes(count: number): R;
   toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
