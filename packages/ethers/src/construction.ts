@@ -31,10 +31,14 @@ export class GenericContractFactory {
     TConstructorArgs extends any[] = []
   >(abi: ethers.utils.Interface | PossibleInterface, bytecode?: string) {
     class SpecializedContract extends Contract<TContract> {
-      public static deploy(signer: ethers.Signer, ...args: TConstructorArgs) {
+      public static async deploy(
+        signer: ethers.Signer,
+        ...args: TConstructorArgs
+      ) {
         const address = ethers.constants.AddressZero;
         const contract = new SpecializedContract(address, signer) as TContract;
-        return deploy(contract, bytecode ?? '0x', ...args);
+        const receipt = await deploy(contract, bytecode ?? '0x', ...args);
+        return contract.attach(receipt.contractAddress);
       }
 
       public static mock(signer: ethers.Signer) {

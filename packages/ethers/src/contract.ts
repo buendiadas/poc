@@ -9,6 +9,7 @@ import {
   CallFunction,
   ConstructorFunction,
   ContractFunction,
+  ContractReceipt,
   resolveFunctionOptions,
   SendFunction,
 } from './function';
@@ -23,10 +24,14 @@ function ensureInterface(abi: Interface | PossibleInterface) {
   return new Interface(abi);
 }
 
-export async function deploy<
+export function deploy<
   TContract extends Contract = Contract,
   TArgs extends any[] = any
->(contract: TContract, bytecode: string, ...args: TArgs): Promise<TContract> {
+>(
+  contract: TContract,
+  bytecode: string,
+  ...args: TArgs
+): Promise<ContractReceipt<ConstructorFunction<TArgs, TContract>>> {
   const options = resolveFunctionOptions(...args);
   const constructor = contract.abi.deploy;
   const fn = new ConstructorFunction<TArgs, TContract>(
@@ -39,14 +44,7 @@ export async function deploy<
     allowMissingPrefix: true,
   });
 
-  const receipt = await fn.bytecode(hex).send();
-  const creation: TContract = receipt.function.contract.attach(
-    receipt.contractAddress,
-  );
-
-  (creation as any).deployment = receipt;
-
-  return creation;
+  return fn.bytecode(hex).send();
 }
 
 // TODO: Add types and proxies for event handling.

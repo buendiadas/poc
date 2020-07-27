@@ -82,8 +82,10 @@ const bytecode = DoppelgangerCompilerOutput.bytecode;
 const abi = DoppelgangerCompilerOutput.abi;
 
 export class Doppelganger extends Contract<Doppelganger> {
-  public static deploy(signer: ethers.Signer, ...args: DoppelgangerArgs): Promise<Doppelganger> {
-    const contract = new Doppelganger(abi, '0x', signer);
-    return deploy(contract, bytecode, ...args);
+  public static async deploy(signer: ethers.Signer, ...args: DoppelgangerArgs): Promise<Doppelganger> {
+    const address = ethers.constants.AddressZero;
+    const contract = new Doppelganger(abi, address, signer);
+    const receipt = await deploy(contract, bytecode ?? '0x', ...args);
+    return contract.attach(receipt.contractAddress);
   }
 }
