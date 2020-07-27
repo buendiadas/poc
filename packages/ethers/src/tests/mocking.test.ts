@@ -81,4 +81,13 @@ describe('contract tagged template literals', () => {
       mock.balanceOf(ethers.constants.AddressZero),
     ).rejects.toThrowError('Mock revert: YOU SHALL NOT PASS!');
   });
+
+  it('reverts with function signature on missing mock', async () => {
+    const signer = provider.getSigner(0);
+    const mock = await Token.mock(signer);
+
+    await expect(
+      mock.balanceOf(ethers.constants.AddressZero),
+    ).rejects.toThrowError('Mock not initialized: balanceOf(address)');
+  });
 });

@@ -60,7 +60,15 @@ export async function mock<TContract extends Contract = Contract>(
     throw new Error('Missing signer');
   }
 
-  const doppelganger = await Doppelganger.deploy(contract.signer);
+  const functions = Object.values(contract.abi.functions);
+  const hashes = functions.map((fragment) => contract.abi.getSighash(fragment));
+  const signatures = functions.map((fragment) => fragment.format());
+  const doppelganger = await Doppelganger.deploy(
+    contract.signer,
+    hashes,
+    signatures,
+  );
+
   const mocked = contract.attach(doppelganger.address);
   const proxy = new Proxy(mocked, {
     get: (target, prop: string, receiver) => {

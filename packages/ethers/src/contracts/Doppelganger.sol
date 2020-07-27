@@ -1,107 +1,103 @@
 /* solium-disable security/no-inline-assembly */
-pragma solidity ^0.6.3;
+pragma experimental ABIEncoderV2;
+pragma solidity ^0.6.8;
 
 contract Doppelganger {
     struct MockCall {
         bool initialized;
+        bytes value;
         bool reverts;
-        string revertsReason;
-        bytes returnValue;
+        string reason;
+    }
+
+    struct MockSignature {
+        bool initialized;
+        string signature;
     }
 
     mapping(bytes32 => MockCall) mockConfig;
+    mapping(bytes4 => MockSignature) mockSignatures;
+
+    constructor(bytes4[] memory _sighashes, string[] memory _signatures)
+        public
+    {
+        require(
+            _sighashes.length == _signatures.length,
+            "Signatures length mismatch"
+        );
+
+        for (uint256 i = 0; i < _sighashes.length; i++) {
+            mockSignatures[_sighashes[i]] = MockSignature({
+                initialized: true,
+                signature: _signatures[i]
+            });
+        }
+    }
 
     fallback() external payable {
-        MockCall storage mockCall = __doppelganger__internal__getMockCall();
+        MockCall memory mockCall = __doppelganger__internal__getMockCall();
         if (mockCall.reverts == true) {
-            revert(
-                string(
-                    abi.encodePacked("Mock revert: ", mockCall.revertsReason)
-                )
-            );
+            revert(string(abi.encodePacked("Mock revert: ", mockCall.reason)));
         }
 
-        __doppelganger__internal__mockReturn(mockCall.returnValue);
+        __doppelganger__internal__mockReturn(mockCall.value);
     }
 
     function __doppelganger__mockReverts(
-        bytes memory data,
-        string memory reason
+        bytes memory _data,
+        string memory _reason
     ) public {
-        mockConfig[keccak256(data)] = MockCall({
+        mockConfig[keccak256(_data)] = MockCall({
             initialized: true,
             reverts: true,
-            revertsReason: reason,
-            returnValue: ""
+            reason: _reason,
+            value: ""
         });
     }
 
-    function __doppelganger__mockReturns(bytes memory data, bytes memory value)
-        public
-    {
-        mockConfig[keccak256(data)] = MockCall({
+    function __doppelganger__mockReturns(
+        bytes memory _data,
+        bytes memory _value
+    ) public {
+        mockConfig[keccak256(_data)] = MockCall({
             initialized: true,
             reverts: false,
-            revertsReason: "",
-            returnValue: value
+            reason: "",
+            value: _value
         });
-    }
-
-    function __doppelganger__internal__toHexDigit(uint8 d)
-        internal
-        pure
-        returns (bytes1)
-    {
-        if (0 <= d && d <= 9) {
-            return bytes1(uint8(bytes1("0")) + d);
-        } else if (10 <= uint8(d) && uint8(d) <= 15) {
-            return bytes1(uint8(bytes1("a")) + d - 10);
-        }
-        revert();
-    }
-
-    function __doppelganger__internal__fromCode(bytes4 code)
-        internal
-        view
-        returns (string memory)
-    {
-        bytes memory result = new bytes(10);
-        result[0] = bytes1("0");
-        result[1] = bytes1("x");
-        for (uint256 i = 0; i < 4; ++i) {
-            result[2 * i + 2] = __doppelganger__internal__toHexDigit(
-                uint8(code[i]) / 16
-            );
-            result[2 * i + 3] = __doppelganger__internal__toHexDigit(
-                uint8(code[i]) % 16
-            );
-        }
-        return string(result);
     }
 
     function __doppelganger__internal__getMockCall()
         private
         view
-        returns (MockCall storage mockCall)
+        returns (MockCall memory mockCall)
     {
         mockCall = mockConfig[keccak256(msg.data)];
         if (mockCall.initialized == true) {
             // Mock method with specified arguments
             return mockCall;
         }
+
         mockCall = mockConfig[keccak256(abi.encodePacked(msg.sig))];
         if (mockCall.initialized == true) {
             // Mock method with any arguments
             return mockCall;
         }
-        revert(
-            string(
-                abi.encodePacked(
-                    "Mock on the method is not initialized: ",
-                    __doppelganger__internal__fromCode(msg.sig)
+
+        MockSignature memory mockSignature = mockSignatures[msg.sig];
+        if (mockSignature.initialized == true) {
+            // Mock method not initialized but signature is registered
+            revert(
+                string(
+                    abi.encodePacked(
+                        "Mock not initialized: ",
+                        mockSignature.signature
+                    )
                 )
-            )
-        );
+            );
+        }
+
+        revert("Mock not initialized");
     }
 
     function __doppelganger__internal__mockReturn(bytes memory ret)
