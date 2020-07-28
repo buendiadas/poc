@@ -43,10 +43,7 @@ contract Doppelganger {
         __doppelganger__internal__mockReturn(mockCall.value);
     }
 
-    function __doppelganger__mockForward(
-        bytes calldata _data,
-        address _callee
-    )
+    function __doppelganger__mockForward(bytes calldata _data, address _callee)
         external
         returns (bytes memory)
     {

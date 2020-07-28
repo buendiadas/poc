@@ -4,7 +4,7 @@ import { contract } from '../construction';
 import { randomAddress } from '../utils';
 import { Contract } from '../contract';
 import { provider } from './provider';
-import { ERC20 } from './contracts/ERC20'
+import { ERC20 } from './contracts/ERC20';
 
 describe('contract tagged template literals', () => {
   // prettier-ignore

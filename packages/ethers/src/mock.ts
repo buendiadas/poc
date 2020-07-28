@@ -1,7 +1,12 @@
 import { ethers } from 'ethers';
 import { Contract } from './contract';
 import { Doppelganger } from './doppelganger';
-import { ContractFunction, CallFunction, SendFunction, ContractReceipt } from './function';
+import {
+  ContractFunction,
+  CallFunction,
+  SendFunction,
+  ContractReceipt,
+} from './function';
 import { ProxiedFunction } from './types';
 import { resolveArguments, AddressLike } from './utils';
 
@@ -69,13 +74,19 @@ export async function mock<TContract extends Contract = Contract>(
     signatures,
   );
 
-  async function forward<TArgs extends any[] = any, TReturn = any, TContract extends Contract = Contract>(
-    fn: SendFunction<TArgs, TReturn, TContract> | CallFunction<TArgs, TReturn, TContract>,
+  async function forward<
+    TArgs extends any[] = any,
+    TReturn = any,
+    TContract extends Contract = Contract
+  >(
+    fn:
+      | SendFunction<TArgs, TReturn, TContract>
+      | CallFunction<TArgs, TReturn, TContract>,
     ...params: any
   ): Promise<any> {
     const fragment = fn.fragment;
     const callee = fn.contract;
-  
+
     const args = params
       ? await resolveArguments(fragment.inputs, params)
       : undefined;
@@ -83,21 +94,25 @@ export async function mock<TContract extends Contract = Contract>(
     const data = args
       ? fn.contract.abi.encodeFunctionData(fragment, args)
       : fn.contract.abi.getSighash(fragment);
-      
+
     const forward = doppelganger.__doppelganger__mockForward.args(data, callee);
     if (fn instanceof SendFunction) {
-      const receipt = await forward.send() as any;
-      const refined: ContractReceipt<SendFunction<TArgs, TReturn, TContract>> = receipt;
+      const receipt = (await forward.send()) as any;
+      const refined: ContractReceipt<SendFunction<
+        TArgs,
+        TReturn,
+        TContract
+      >> = receipt;
       refined.function = fn;
       return refined;
     }
-  
+
     const result = await forward.call();
     const decoded = fn.contract.abi.decodeFunctionResult(fragment, result);
     if (fragment.outputs?.length === 1) {
       return decoded[0];
     }
-  
+
     return decoded;
   }
 
@@ -133,7 +148,11 @@ export type MockContract<TContract extends Contract = Contract> = {
     ? TContract[TKey] & RefinableStub<Parameters<TContract[TKey]['args']>>
     : TContract[TKey];
 } & {
-  forward<TArgs extends any[] = any, TReturn = any, TContract extends Contract = Contract>(
+  forward<
+    TArgs extends any[] = any,
+    TReturn = any,
+    TContract extends Contract = Contract
+  >(
     send: SendFunction<TArgs, TReturn, TContract>,
     ...args: TArgs
   ): Promise<ContractReceipt<SendFunction<TArgs, TReturn, TContract>>>;
