@@ -1,2 +1,3 @@
 # TODO: Remove this again once prettier supports typescript v4
+src/tests/contracts
 src/doppelganger.ts
