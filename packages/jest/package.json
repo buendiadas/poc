@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/jest",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -34,8 +34,8 @@
     "postversion": "cp package.json dist"
   },
   "dependencies": {
-    "@crestproject/ethers": "^0.0.14",
-    "@crestproject/evm": "^0.0.14",
+    "@crestproject/ethers": "^0.0.15",
+    "@crestproject/evm": "^0.0.15",
     "ts-jest": "^26.1.3"
   },
   "devDependencies": {
