@@ -29,22 +29,6 @@ describe('evm', () => {
     expect(token.name).toHaveBeenCalledOnContract();
   });
 
-  it('toHaveBeenCalledOnContractTimes', async () => {
-    const { token, name } = await provider.snapshot(snapshot);
-
-    await expect(token.name()).resolves.toBe(name);
-    await expect(token.name()).resolves.toBe(name);
-    await expect(token.name()).resolves.toBe(name);
-    expect(token.name).toHaveBeenCalledOnContractTimes(3);
-
-    await expect(token.name()).resolves.toBe(name);
-    expect(token.name).toHaveBeenCalledOnContractTimes(4);
-
-    // Going back to the original snapshot resets the history.
-    await provider.snapshot(snapshot);
-    expect(token.name).toHaveBeenCalledOnContractTimes(0);
-  });
-
   it('toHaveBeenCalledOnContractWith', async () => {
     const { token, someone } = await provider.snapshot(snapshot);
 

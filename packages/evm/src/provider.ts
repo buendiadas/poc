@@ -47,7 +47,6 @@ export class BuidlerProvider extends ethers.providers.JsonRpcProvider {
       snapshot = { id: '', history: this.history, data };
     }
 
-    snapshot.history = snapshot.history.clone();
     snapshot.id = await this.provider.send('evm_snapshot', []);
 
     this.history = snapshot.history.clone();

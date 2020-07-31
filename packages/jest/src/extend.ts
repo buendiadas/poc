@@ -17,7 +17,6 @@ export type EthereumMatchers<R> = {
   toBeReceipt(): R;
   toHaveEmitted(name: string): R;
   toHaveBeenCalledOnContract(): R;
-  toHaveBeenCalledOnContractTimes(count: number): R;
   toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
     ...args: TArgs
   ): Promise<R>;

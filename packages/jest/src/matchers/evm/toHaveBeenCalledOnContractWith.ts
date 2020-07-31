@@ -20,13 +20,12 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
 
       const resolved = await resolveArguments(fragment.inputs, args);
       const signature = contract.abi.encodeFunctionData(fragment, resolved);
-      const calls = history
+      const expected = `function "${fragment.format()}"`;
+      const pass = history
         .calls(contract)
-        .filter((call) => call.startsWith(signature));
+        .some((call) => call.startsWith(signature));
 
       // TODO: Print serialized list of arguments
-      const expected = `function "${fragment.format()}"`;
-      const pass = calls.length !== 0;
       const message = pass
         ? () =>
             this.utils.matcherHint('.not.toHaveBeenCalledOnContractWith') +
@@ -37,7 +36,7 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
             )}\n` +
             `Actual:\n` +
             `  ${this.utils.printReceived(
-              `${expected} was called ${calls.length} times with these arguments`,
+              `${expected} has neen called with these arguments`,
             )}`
         : () =>
             this.utils.matcherHint('.toHaveBeenCalledOnContractWith') +
@@ -48,7 +47,7 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
             )}\n` +
             `Actual:\n` +
             `  ${this.utils.printReceived(
-              `${expected} was never called with these arguments`,
+              `${expected} has not been called with these arguments`,
             )}`;
 
       return { pass, message };

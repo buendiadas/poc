@@ -15,14 +15,12 @@ export function toHaveBeenCalledOnContract(
 ): jest.CustomMatcherResult {
   return ensureParameters(this, subject, (history, contract, fragment) => {
     const signature = fragment ? contract.abi.getSighash(fragment) : '0x';
-    const calls = history
-      .calls(contract)
-      .filter((call) => call.startsWith(signature));
-
     const method = fragment?.format();
     const expected = `${method ? `function "${method}"` : 'contract'}`;
+    const pass = history
+      .calls(contract)
+      .some((call) => call.startsWith(signature));
 
-    const pass = calls.length !== 0;
     const message = pass
       ? () =>
           this.utils.matcherHint('.not.toHaveBeenCalledOnContract') +
@@ -32,16 +30,14 @@ export function toHaveBeenCalledOnContract(
             `${expected} not to have been called`,
           )}\n` +
           `Actual:\n` +
-          `  ${this.utils.printReceived(
-            `${expected} was called ${calls.length} times`,
-          )}`
+          `  ${this.utils.printReceived(`${expected} has been called`)}`
       : () =>
           this.utils.matcherHint('.toHaveBeenCalledOnContract') +
           '\n\n' +
           `Expected:\n` +
           `  ${this.utils.printExpected(`${expected} to have been called`)}\n` +
           `Actual:\n` +
-          `  ${this.utils.printReceived(`${expected} was never called`)}`;
+          `  ${this.utils.printReceived(`${expected} has not been called`)}`;
 
     return { pass, message };
   });

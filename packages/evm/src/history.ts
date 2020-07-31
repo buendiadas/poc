@@ -27,6 +27,7 @@ export class History {
     const address = (contract as any)?.address
       ? (contract as any).address
       : contract;
+
     const checksum = ethers.utils.getAddress(address);
     return this.history.delete(checksum);
   }
@@ -35,18 +36,19 @@ export class History {
     const address = (contract as any)?.address
       ? (contract as any).address
       : contract;
+
     const checksum = ethers.utils.getAddress(address);
     return this.history.get(checksum) ?? [];
   }
 
   public record(message: Message) {
-    if (!message.to) {
+    const to = message.to ? ethers.utils.hexlify(message.to) : '0x';
+    if (to === '0x') {
       return;
     }
 
-    const to = ethers.utils.getAddress(ethers.utils.hexlify(message.to));
+    const checksum = ethers.utils.getAddress(to);
     const data = message.data ? ethers.utils.hexlify(message.data) : '0x';
-
-    this.history.set(to, this.calls(to).concat(data));
+    this.history.set(checksum, this.calls(checksum).concat(data));
   }
 }
