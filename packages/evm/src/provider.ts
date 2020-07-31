@@ -14,10 +14,12 @@ export interface Snapshot<TFixture> {
 }
 
 export class BuidlerProvider extends ethers.providers.JsonRpcProvider {
-  public history: History;
   public readonly snapshots = new Map<FixtureCreator<any>, Snapshot<any>>();
 
-  constructor(public readonly provider: EthereumProvider) {
+  constructor(
+    public readonly provider: EthereumProvider,
+    public history: History = new History(),
+  ) {
     super();
 
     // Re-route call history recording to whatever is the currently
@@ -26,8 +28,6 @@ export class BuidlerProvider extends ethers.providers.JsonRpcProvider {
     addListener(provider, 'beforeMessage', (message: Message) => {
       this.history.record(message);
     });
-
-    this.history = new History();
   }
 
   public send(method: string, params: any): Promise<any> {
