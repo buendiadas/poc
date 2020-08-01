@@ -172,6 +172,7 @@ export function generateContract(
   return `/* eslint-disable */
 import { ethers } from 'ethers';
 import { contract, Call, Send, AddressLike, Contract } from '${crestproject}';
+import ${name}Artifact from '${source}';
 
 ${constructor ? `export type ${name}Args = ${constructor};` : ''}
 
@@ -180,7 +181,7 @@ export interface ${name} extends Contract<${name}> {
   ${functions || '// No external functions'}
 }
 
-export const ${name} = contract.fromSolidity<${generic}>(${source});`;
+export const ${name} = contract.fromSolidity<${generic}>(${name}Artifact);`;
 }
 
 export function generateContractFile(

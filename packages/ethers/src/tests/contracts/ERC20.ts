@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { ethers } from 'ethers';
 import { contract, Call, Send, AddressLike, Contract } from '../..';
+import ERC20Artifact from '../artifacts/ERC20.json';
 
 export type ERC20Args = [name: string, symbol: string];
 
@@ -33,4 +34,4 @@ export interface ERC20 extends Contract<ERC20> {
   'transferFrom(address,address,uint256)': Send<(sender: AddressLike, recipient: AddressLike, amount: ethers.BigNumberish) => boolean>
 }
 
-export const ERC20 = contract.fromSolidity<ERC20, ERC20Args>(require('../artifacts/ERC20.json'));
+export const ERC20 = contract.fromSolidity<ERC20, ERC20Args>(ERC20Artifact);

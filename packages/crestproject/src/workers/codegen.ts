@@ -16,13 +16,15 @@ export async function generate(source: string, destination: string) {
   const name = path.basename(source).split('.').shift()!;
   const abi = new ethers.utils.Interface(contract.abi);
 
-  const relative = path.relative(destination, source);
-  const from = `require('${relative}')`;
+  let relative = path.relative(destination, source);
+  if (!relative.startsWith('.')) {
+    relative = `./${relative}`;
+  }
 
   const content = generateContractFile(
     name,
     abi,
-    from,
+    relative,
     '@crestproject/crestproject',
   );
 
