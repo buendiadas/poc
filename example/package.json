@@ -26,6 +26,13 @@
     "preset": "@crestproject/crestproject",
     "roots": [
       "<rootDir>/tests"
-    ]
+    ],
+    "globals": {
+      "ts-jest": {
+        "diagnostics": {
+          "warnOnly": true
+        }
+      }
+    }
   }
 }
