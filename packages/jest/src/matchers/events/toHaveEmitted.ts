@@ -1,3 +1,4 @@
+import { utils } from 'ethers';
 import { ContractReceipt } from '@crestproject/ethers';
 
 export function toHaveEmitted(
@@ -6,7 +7,9 @@ export function toHaveEmitted(
   event: string,
 ): jest.CustomMatcherResult {
   const abi = receipt.function.contract.abi;
-  const fragment = abi.getEvent(event);
+  const fragment = utils.EventFragment.isEventFragment(event)
+    ? event
+    : abi.getEvent(event);
   const topic = abi.getEventTopic(fragment);
   const matches = (receipt.logs ?? []).filter((item) => {
     return item.topics.includes(topic);
