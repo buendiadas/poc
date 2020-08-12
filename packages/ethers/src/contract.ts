@@ -1,10 +1,6 @@
-import {
-  Interface,
-  Fragment,
-  FunctionFragment,
-  JsonFragment,
-} from '@ethersproject/abi';
+import { Interface, FunctionFragment } from '@ethersproject/abi';
 import { ethers } from 'ethers';
+import { PossibleInterface, ensureInterface } from './utils';
 import {
   CallFunction,
   ConstructorFunction,
@@ -13,16 +9,6 @@ import {
   resolveFunctionOptions,
   SendFunction,
 } from './function';
-
-export type PossibleInterface = string | (Fragment | JsonFragment | string)[];
-
-function ensureInterface(abi: Interface | PossibleInterface) {
-  if (Interface.isInterface(abi)) {
-    return abi;
-  }
-
-  return new Interface(abi);
-}
 
 export function deploy<
   TContract extends Contract = Contract,

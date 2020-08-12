@@ -1,4 +1,5 @@
 import { ethers, Signer } from 'ethers';
+import { Interface, Fragment, JsonFragment } from '@ethersproject/abi';
 import { Contract } from './contract';
 
 export type AddressLike = Contract | Signer | string;
@@ -54,4 +55,13 @@ export function resolveArguments(
 export function randomAddress() {
   const address = ethers.utils.hexlify(ethers.utils.randomBytes(20));
   return ethers.utils.getAddress(address);
+}
+
+export type PossibleInterface = string | (Fragment | JsonFragment | string)[];
+export function ensureInterface(abi: Interface | PossibleInterface) {
+  if (Interface.isInterface(abi)) {
+    return abi;
+  }
+
+  return new Interface(abi);
 }

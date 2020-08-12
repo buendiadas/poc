@@ -16,7 +16,7 @@ export type Send<
   TContract extends Contract = Contract
 > = ProxiedFunction<SendDefinition<TSignature, TContract>>;
 
-type AnyFunction = (...args: any) => any;
+export type AnyFunction = (...args: any) => any;
 export type ProxiedFunction<
   TFunction extends FunctionDefinition
 > = DerivedFunction<TFunction> & ShortcutFunction<TFunction>;

@@ -1,8 +1,9 @@
 import { ethers } from 'ethers';
 import { JsonFragment } from '@ethersproject/abi';
 import { FunctionOptions } from './function';
-import { Contract, PossibleInterface, deploy } from './contract';
+import { Contract, deploy } from './contract';
 import { mock, MockContract } from './mock';
+import { ensureInterface, PossibleInterface } from './utils';
 
 export interface SolidityCompilerOutput {
   abi: JsonFragment[];
@@ -13,6 +14,7 @@ export interface ContractFactory<
   TContract extends Contract = Contract,
   TConstructorArgs extends any[] = []
 > {
+  abi: ethers.utils.Interface;
   mock(signer: ethers.Signer): Promise<MockContract<TContract>>;
   deploy(signer: ethers.Signer, ...args: TConstructorArgs): Promise<TContract>;
   deploy(
@@ -30,7 +32,16 @@ export class GenericContractFactory {
     TContract extends Contract = Contract,
     TConstructorArgs extends any[] = []
   >(abi: ethers.utils.Interface | PossibleInterface, bytecode?: string) {
+    let resolved = abi;
+    function resolveAbi() {
+      return (resolved = ensureInterface(resolved));
+    }
+
     class SpecializedContract extends Contract<TContract> {
+      public static get abi() {
+        return resolveAbi();
+      }
+
       public static async deploy(
         signer: ethers.Signer,
         ...args: TConstructorArgs
@@ -51,7 +62,7 @@ export class GenericContractFactory {
         address: string,
         provider: ethers.Signer | ethers.providers.Provider,
       ) {
-        super(abi, address, provider);
+        super(SpecializedContract.abi, address, provider);
       }
 
       public clone(
