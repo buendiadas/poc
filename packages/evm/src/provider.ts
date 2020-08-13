@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, BigNumberish, providers, utils } from 'ethers';
 import { EthereumProvider } from '@nomiclabs/buidler/types';
 import { History, Message } from './history';
 import { addListener } from './vm';
@@ -13,18 +13,24 @@ export interface Snapshot<TFixture> {
   id: string;
 }
 
-export class BuidlerProvider extends ethers.providers.JsonRpcProvider {
+export class BuidlerProvider extends providers.StaticJsonRpcProvider {
+  public readonly gas: BigNumber;
   public readonly snapshots = new Map<FixtureCreator<any>, Snapshot<any>>();
+  public history: History;
 
   constructor(
     public readonly provider: EthereumProvider,
-    public history: History = new History(),
+    gas: BigNumberish = 9500000,
   ) {
     super();
+
+    // Avoid calls to eth_estimateGas if a static gas limit is set.
+    this.gas = BigNumber.from(gas);
 
     // Re-route call history recording to whatever is the currently
     // active history object. Required for making history and snapshoting
     // work nicely together.
+    this.history = new History();
     addListener(provider, 'beforeMessage', (message: Message) => {
       this.history.record(message);
     });
@@ -53,5 +59,15 @@ export class BuidlerProvider extends ethers.providers.JsonRpcProvider {
     this.snapshots.set(creator, snapshot);
 
     return snapshot.data;
+  }
+
+  public async estimateGas(
+    transaction: utils.Deferrable<providers.TransactionRequest>,
+  ): Promise<BigNumber> {
+    if (this.gas && !this.gas.isZero()) {
+      return this.gas;
+    }
+
+    return super.estimateGas(transaction);
   }
 }
