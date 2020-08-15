@@ -1,7 +1,7 @@
 import { ethers, Signer, utils } from 'ethers';
 import { Interface, Fragment, JsonFragment } from '@ethersproject/abi';
 import { Contract } from './contract';
-import { ContractReceipt } from './function';
+import { ContractReceipt, SendFunction } from './function';
 
 export type AddressLike = Contract | Signer | string;
 
@@ -67,8 +67,9 @@ export function ensureInterface(abi: Interface | PossibleInterface) {
   return new Interface(abi);
 }
 
-export function extractEvent(
-  receipt: ContractReceipt,
+// TODO: Add proper return type based on the event fragment's underlying type.
+export function extractEvent<TFunction extends SendFunction<any, any>>(
+  receipt: ContractReceipt<TFunction>,
   event: string | utils.EventFragment,
 ) {
   const abi = receipt.function.contract.abi;
