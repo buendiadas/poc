@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { ethers, utils } from 'ethers';
 import { Contract } from './contract';
 import { Doppelganger } from './doppelganger';
 import {
@@ -6,9 +6,10 @@ import {
   CallFunction,
   SendFunction,
   ContractReceipt,
+  ConstructorFunction,
 } from './function';
 import { ProxiedFunction } from './types';
-import { resolveArguments, AddressLike } from './utils';
+import { resolveArguments } from './utils';
 
 function stub<TContract extends Contract = Contract>(
   doppelganger: Doppelganger,
@@ -79,12 +80,28 @@ export async function mock<TContract extends Contract = Contract>(
     TReturn = any,
     TContract extends Contract = Contract
   >(
-    fn:
+    subject:
       | SendFunction<TArgs, TReturn, TContract>
       | CallFunction<TArgs, TReturn, TContract>,
     ...params: any
   ): Promise<any> {
-    const fragment = fn.fragment;
+    const fn =
+      subject instanceof ContractFunction
+        ? subject
+        : typeof subject === 'function' &&
+          (subject as ContractFunction).ref instanceof ContractFunction
+        ? (subject as ContractFunction).ref
+        : undefined;
+
+    if (fn == null) {
+      throw new Error('Not a valid contract function');
+    }
+
+    if (fn instanceof ConstructorFunction) {
+      throw new Error('Constructor functions are not supported');
+    }
+
+    const fragment = fn.fragment as utils.FunctionFragment;
     const callee = fn.contract;
 
     const args = params

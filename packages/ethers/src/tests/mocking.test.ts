@@ -99,4 +99,19 @@ describe('contract tagged template literals', () => {
 
     await expect(mock.forward(token.name)).resolves.toBe('Test Token');
   });
+
+  it('can forward sends', async () => {
+    const signer = provider.getSigner(0);
+    const token = await ERC20.deploy(signer, 'Test Token', 'TEST');
+    const mock = await ERC20.mock(signer);
+
+    const spender = randomAddress();
+    const amount = ethers.utils.parseEther('1');
+    await expect(
+      mock.forward(token.approve, spender, amount),
+    ).resolves.toMatchObject({
+      transactionHash: expect.anything(),
+      transactionIndex: expect.anything(),
+    });
+  });
 });
