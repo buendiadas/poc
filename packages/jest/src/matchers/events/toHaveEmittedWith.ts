@@ -1,10 +1,11 @@
 import { utils } from 'ethers';
 import { ContractReceipt } from '@crestproject/ethers';
 
-export function toHaveEmitted(
+export function toHaveEmittedWith(
   this: jest.MatcherContext,
   receipt: ContractReceipt,
   event: string | utils.EventFragment,
+  matcher: (matches: utils.LogDescription[]) => void,
 ): jest.CustomMatcherResult {
   const abi = receipt.function.contract.abi;
   const fragment = utils.EventFragment.isEventFragment(event)
@@ -12,9 +13,9 @@ export function toHaveEmitted(
     : abi.getEvent(event);
 
   const topic = abi.getEventTopic(fragment);
-  const matches = (receipt.logs ?? []).filter((item) => {
-    return item.topics.includes(topic);
-  });
+  const matches = (receipt.logs ?? [])
+    .filter((item) => item.topics.includes(topic))
+    .map((log) => abi.parseLog(log));
 
   const signature = fragment.format();
   const pass = !!matches?.length;
@@ -37,6 +38,8 @@ export function toHaveEmitted(
         `  ${this.utils.printReceived(
           `Event was emitted ${matches?.length ?? 0} times`,
         )}`;
+
+  matcher(matches);
 
   return { pass, message };
 }

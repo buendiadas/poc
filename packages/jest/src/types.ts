@@ -13,7 +13,11 @@ export type EthereumMatchers<R> = {
   toBeReverted(): R;
   toBeRevertedWith(message: string): R;
   toBeReceipt(): R;
-  toHaveEmitted(name: string | utils.EventFragment): R;
+  toHaveEmitted(event: string | utils.EventFragment): R;
+  toHaveEmittedWith(
+    event: string | utils.EventFragment,
+    matcher: (matches: utils.LogDescription[]) => void,
+  ): R;
   toHaveBeenCalledOnContract(): R;
   toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
     ...args: TArgs

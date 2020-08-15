@@ -32,4 +32,20 @@ describe('events', () => {
     tx = token.approve(someone, amount);
     await expect(tx).resolves.toHaveEmitted('Approval');
   });
+
+  it('toHaveEmittedWith', async () => {
+    const { token, deployer, someone } = await provider.snapshot(snapshot);
+    const amount = ethers.utils.parseEther('100');
+
+    tx = token.approve(someone, amount);
+    await expect(tx).resolves.toHaveEmittedWith('Approval', (matches) => {
+      matches.forEach((match) => {
+        expect(match.args).toMatchObject({
+          owner: deployer,
+          spender: someone,
+          value: amount,
+        });
+      });
+    });
+  });
 });
