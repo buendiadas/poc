@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/evm",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -33,7 +33,7 @@
     "postversion": "cp package.json dist"
   },
   "devDependencies": {
-    "@crestproject/ethers": "^0.0.26",
+    "@crestproject/ethers": "^0.0.27",
     "@nomiclabs/buidler": "^1.3.8",
     "ethers": "^5.0.5"
   },
