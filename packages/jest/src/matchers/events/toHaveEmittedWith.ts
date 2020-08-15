@@ -1,5 +1,5 @@
 import { utils } from 'ethers';
-import { ContractReceipt } from '@crestproject/ethers';
+import { ContractReceipt, extractEvent } from '@crestproject/ethers';
 
 export function toHaveEmittedWith(
   this: jest.MatcherContext,
@@ -12,11 +12,7 @@ export function toHaveEmittedWith(
     ? event
     : abi.getEvent(event);
 
-  const topic = abi.getEventTopic(fragment);
-  const matches = (receipt.logs ?? [])
-    .filter((item) => item.topics.includes(topic))
-    .map((log) => abi.parseLog(log));
-
+  const matches = extractEvent(receipt, fragment);
   const signature = fragment.format();
   const pass = !!matches?.length;
   const message = pass

@@ -1,6 +1,7 @@
-import { ethers, Signer } from 'ethers';
+import { ethers, Signer, utils } from 'ethers';
 import { Interface, Fragment, JsonFragment } from '@ethersproject/abi';
 import { Contract } from './contract';
+import { ContractReceipt } from './function';
 
 export type AddressLike = Contract | Signer | string;
 
@@ -64,4 +65,21 @@ export function ensureInterface(abi: Interface | PossibleInterface) {
   }
 
   return new Interface(abi);
+}
+
+export function extractEvent(
+  receipt: ContractReceipt,
+  event: string | utils.EventFragment,
+) {
+  const abi = receipt.function.contract.abi;
+  const fragment = utils.EventFragment.isEventFragment(event)
+    ? event
+    : abi.getEvent(event);
+
+  const topic = abi.getEventTopic(fragment);
+  const matches = (receipt.logs ?? [])
+    .filter((item) => item.topics.includes(topic))
+    .map((log) => abi.parseLog(log));
+
+  return matches;
 }
