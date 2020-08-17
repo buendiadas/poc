@@ -158,7 +158,7 @@ export function generateConstructorArgs(fragment: ConstructorFragment) {
   return input ? `[${input}]` : '';
 }
 
-export function generateContract(
+export function generateContractForSolidityArtifact(
   name: string,
   source: string,
   abi: ethers.utils.Interface,
@@ -184,11 +184,29 @@ export interface ${name} extends Contract<${name}> {
 export const ${name} = contract.fromSolidity<${generic}>(${name}Artifact);`;
 }
 
-export function generateContractFile(
+export function generateContractForSignatures(
   name: string,
   abi: ethers.utils.Interface,
-  source: string,
   crestproject: string = '@crestproject/ethers',
 ) {
-  return formatOutput(generateContract(name, source, abi, crestproject));
+  const functions = generateFunctions(name, Object.values(abi.functions));
+  const constructor = generateConstructorArgs(abi.deploy);
+  const generic = `${name}${constructor ? `, ${name}Args` : ''}`;
+  const formatted = abi.format();
+
+  // prettier-ignore
+  return `/* eslint-disable */
+import { ethers } from 'ethers';
+import { contract, Call, Send, AddressLike, Contract } from '${crestproject}';
+
+${constructor ? `export type ${name}Args = ${constructor};` : ''}
+
+// prettier-ignore
+export interface ${name} extends Contract<${name}> {
+  ${functions || '// No external functions'}
+}
+
+export const ${name} = contract.fromSignatures<${generic}>\`
+  ${Array.isArray(formatted) ? formatted.join('\n  ') : formatted}
+\`;`;
 }

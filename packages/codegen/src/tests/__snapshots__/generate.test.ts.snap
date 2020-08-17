@@ -1,6 +1,60 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`code generator generates code 1`] = `
+exports[`code generator generates code for ethers signatures 1`] = `
+"/* eslint-disable */
+import { ethers } from 'ethers';
+import { contract, Call, Send, AddressLike, Contract } from '@crestproject/ethers';
+
+export type ERC20Args = [name: string, symbol: string];
+
+// prettier-ignore
+export interface ERC20 extends Contract<ERC20> {
+  // Shortcuts (using function name of first overload)
+  allowance: Call<(owner: AddressLike, spender: AddressLike) => ethers.BigNumber, ERC20>
+  approve: Send<(spender: AddressLike, amount: ethers.BigNumberish) => boolean, ERC20>
+  balanceOf: Call<(account: AddressLike) => ethers.BigNumber, ERC20>
+  decimals: Call<() => ethers.BigNumber, ERC20>
+  decreaseAllowance: Send<(spender: AddressLike, subtractedValue: ethers.BigNumberish) => boolean, ERC20>
+  increaseAllowance: Send<(spender: AddressLike, addedValue: ethers.BigNumberish) => boolean, ERC20>
+  name: Call<() => string, ERC20>
+  symbol: Call<() => string, ERC20>
+  totalSupply: Call<() => ethers.BigNumber, ERC20>
+  transfer: Send<(recipient: AddressLike, amount: ethers.BigNumberish) => boolean, ERC20>
+  transferFrom: Send<(sender: AddressLike, recipient: AddressLike, amount: ethers.BigNumberish) => boolean, ERC20>
+
+  // Explicit accessors (using full function signature)
+  'allowance(address,address)': Call<(owner: AddressLike, spender: AddressLike) => ethers.BigNumber, ERC20>
+  'approve(address,uint256)': Send<(spender: AddressLike, amount: ethers.BigNumberish) => boolean, ERC20>
+  'balanceOf(address)': Call<(account: AddressLike) => ethers.BigNumber, ERC20>
+  'decimals()': Call<() => ethers.BigNumber, ERC20>
+  'decreaseAllowance(address,uint256)': Send<(spender: AddressLike, subtractedValue: ethers.BigNumberish) => boolean, ERC20>
+  'increaseAllowance(address,uint256)': Send<(spender: AddressLike, addedValue: ethers.BigNumberish) => boolean, ERC20>
+  'name()': Call<() => string, ERC20>
+  'symbol()': Call<() => string, ERC20>
+  'totalSupply()': Call<() => ethers.BigNumber, ERC20>
+  'transfer(address,uint256)': Send<(recipient: AddressLike, amount: ethers.BigNumberish) => boolean, ERC20>
+  'transferFrom(address,address,uint256)': Send<(sender: AddressLike, recipient: AddressLike, amount: ethers.BigNumberish) => boolean, ERC20>
+}
+
+export const ERC20 = contract.fromSignatures<ERC20, ERC20Args>\`
+  constructor(string name, string symbol)
+  event Approval(address indexed owner, address indexed spender, uint256 value)
+  event Transfer(address indexed from, address indexed to, uint256 value)
+  function allowance(address owner, address spender) view returns (uint256)
+  function approve(address spender, uint256 amount) returns (bool)
+  function balanceOf(address account) view returns (uint256)
+  function decimals() view returns (uint8)
+  function decreaseAllowance(address spender, uint256 subtractedValue) returns (bool)
+  function increaseAllowance(address spender, uint256 addedValue) returns (bool)
+  function name() view returns (string)
+  function symbol() view returns (string)
+  function totalSupply() view returns (uint256)
+  function transfer(address recipient, uint256 amount) returns (bool)
+  function transferFrom(address sender, address recipient, uint256 amount) returns (bool)
+\`;"
+`;
+
+exports[`code generator generates code for solidity artifacts 1`] = `
 "/* eslint-disable */
 import { ethers } from 'ethers';
 import { contract, Call, Send, AddressLike, Contract } from '@crestproject/ethers';

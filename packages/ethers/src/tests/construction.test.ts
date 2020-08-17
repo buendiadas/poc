@@ -27,7 +27,7 @@ describe('contract tagged template literals', () => {
   }
 
   // prettier-ignore
-  const Token = contract.fromSignature<Token>`
+  const Token = contract.fromSignatures<Token>`
     function allowance(address owner, address spender) view returns (uint256)
     function allowance(address owner, uint how) view returns (uint256)
     function approve(address spender, uint256 amount) returns (bool)

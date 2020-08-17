@@ -1,9 +1,13 @@
 import path from 'path';
 import { ethers } from 'ethers';
-import { generateContractFile } from '..';
+import { formatOutput } from '../utils';
+import {
+  generateContractForSolidityArtifact,
+  generateContractForSignatures,
+} from '../generate';
 
 describe('code generator', () => {
-  it('generates code', () => {
+  it('generates code for solidity artifacts', () => {
     const contract = require('./contracts/ERC20.json');
     const source = path.resolve(__dirname, 'contracts/ERC20.json');
     const destination = path.resolve(__dirname, 'ERC20.ts');
@@ -14,8 +18,18 @@ describe('code generator', () => {
     }
 
     const abi = new ethers.utils.Interface(contract.abi);
-    const output = generateContractFile('ERC20', abi, relative);
+    const output = generateContractForSolidityArtifact('ERC20', relative, abi);
+    const formatted = formatOutput(output);
 
-    expect(output).toMatchSnapshot();
+    expect(formatted).toMatchSnapshot();
+  });
+
+  it('generates code for ethers signatures', () => {
+    const contract = require('./contracts/ERC20.json');
+    const abi = new ethers.utils.Interface(contract.abi);
+    const output = generateContractForSignatures('ERC20', abi);
+    const formatted = formatOutput(output);
+
+    expect(formatted).toMatchSnapshot();
   });
 });

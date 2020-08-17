@@ -79,7 +79,7 @@ export class GenericContractFactory {
     >;
   }
 
-  public fromSignature<TContract extends Contract = Contract>(
+  public fromSignatures<TContract extends Contract = Contract>(
     signatures: TemplateStringsArray,
   ) {
     const trimmed = signatures
