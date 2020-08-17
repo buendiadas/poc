@@ -72,21 +72,24 @@ export function ensureInterface(abi: Interface | PossibleInterface) {
   return new Interface(abi);
 }
 
-export function ensureEvent(event: string | EventFragment, abi?: Interface) {
+export type PossibleEvent = string | Fragment | JsonFragment;
+export function ensureEvent(event: string | PossibleEvent, abi?: Interface) {
   if (EventFragment.isEventFragment(event)) {
     return event;
   }
 
-  if (event.indexOf('(') !== -1) {
-    return EventFragment.from(event);
+  if (typeof event === 'string') {
+    if (event.indexOf('(') !== -1) {
+      return EventFragment.from(event);
+    }
+
+    const fragment = abi?.getEvent(event);
+    if (fragment != null) {
+      return fragment;
+    }
   }
 
-  const fragment = abi?.getEvent(event);
-  if (fragment == null) {
-    throw new Error('Failed to resolve event');
-  }
-
-  return fragment;
+  throw new Error('Failed to resolve event');
 }
 
 // TODO: Add proper return type based on the event fragment's underlying type.
