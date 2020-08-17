@@ -34,4 +34,4 @@ export interface ERC20 extends Contract<ERC20> {
   'transferFrom(address,address,uint256)': Send<(sender: AddressLike, recipient: AddressLike, amount: ethers.BigNumberish) => boolean>
 }
 
-export const ERC20 = contract.fromSolidity<ERC20, ERC20Args>(ERC20Artifact);
+export const ERC20 = contract.fromArtifact<ERC20, ERC20Args>(ERC20Artifact);

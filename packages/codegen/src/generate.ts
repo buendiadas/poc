@@ -181,7 +181,7 @@ export interface ${name} extends Contract<${name}> {
   ${functions || '// No external functions'}
 }
 
-export const ${name} = contract.fromSolidity<${generic}>(${name}Artifact);`;
+export const ${name} = contract.fromArtifact<${generic}>(${name}Artifact);`;
 }
 
 export function generateContractForSignatures(

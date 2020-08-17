@@ -19,12 +19,20 @@ export const builder = (yargs: yargs.Argv) =>
       describe: 'The output directory.',
       demandOption: true,
       type: 'string',
+    })
+    .positional('format', {
+      describe: 'The output format.',
+      choices: ['artifact', 'signatures'],
+      default: 'artifact',
+      demandOption: true,
+      type: 'string',
     });
 
 type Args = ReturnType<typeof builder>['argv'];
 
 export const handler = async (args: Args) => {
   const cwd = process.cwd();
+  const format = args.format;
   const matches = glob.sync(args.input, {
     absolute: true,
     nodir: true,
@@ -52,7 +60,9 @@ export const handler = async (args: Args) => {
 
   const mutex = throat(workerCount);
   const run = (match: string, destination: string) => {
-    return mutex(async () => (worker as any).generate(match, destination));
+    return mutex(async () =>
+      (worker as any).generate(match, destination, format),
+    );
   };
 
   const stdout = worker.getStdout();
