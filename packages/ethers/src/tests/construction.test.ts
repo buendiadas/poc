@@ -71,7 +71,7 @@ describe('contract tagged template literals', () => {
   });
 
   it('does not allow attaching a function instance to an imcompatible contract', () => {
-    const IncompatibleContract = contract.fromSignature`
+    const IncompatibleContract = contract.fromSignatures`
       function other(address) view returns (string)
     `;
 
@@ -83,7 +83,7 @@ describe('contract tagged template literals', () => {
   });
 
   it('does allow attaching a function instance to a compatible contract', () => {
-    const CompatibleContract = contract.fromSignature`
+    const CompatibleContract = contract.fromSignatures`
       function allowance(address owner, address spender) view returns (uint256)
     `;
 
