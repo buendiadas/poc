@@ -1,5 +1,10 @@
 import { ethers, Signer, utils } from 'ethers';
-import { Interface, Fragment, JsonFragment } from '@ethersproject/abi';
+import {
+  Interface,
+  Fragment,
+  JsonFragment,
+  EventFragment,
+} from '@ethersproject/abi';
 import { Contract } from './contract';
 import { ContractReceipt, SendFunction } from './function';
 
@@ -67,16 +72,31 @@ export function ensureInterface(abi: Interface | PossibleInterface) {
   return new Interface(abi);
 }
 
+export function ensureEvent(event: string | EventFragment, abi?: Interface) {
+  if (EventFragment.isEventFragment(event)) {
+    return event;
+  }
+
+  if (event.indexOf('(') !== -1) {
+    return EventFragment.from(event);
+  }
+
+  const fragment = abi?.getEvent(event);
+  if (fragment == null) {
+    throw new Error('Failed to resolve event');
+  }
+
+  return fragment;
+}
+
 // TODO: Add proper return type based on the event fragment's underlying type.
 export function extractEvent<TFunction extends SendFunction<any, any>>(
   receipt: ContractReceipt<TFunction>,
-  event: string | utils.EventFragment,
+  event: string | EventFragment,
 ) {
-  const abi = receipt.function.contract.abi;
-  const fragment = utils.EventFragment.isEventFragment(event)
-    ? event
-    : abi.getEvent(event);
-
+  const contract = receipt.function.contract.abi;
+  const fragment = ensureEvent(event, contract);
+  const abi = new Interface([fragment]);
   const topic = abi.getEventTopic(fragment);
   const matches = (receipt.logs ?? [])
     .filter((item) => item.topics.includes(topic))
