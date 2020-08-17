@@ -2,11 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import { ethers } from 'ethers';
 import {
+  formatOutput,
   generateContractForSolidityArtifact,
   generateContractForSignatures,
 } from '@crestproject/codegen';
 import { SolidityCompilerOutput } from '@crestproject/ethers';
-import { formatOutput } from '../../../codegen/dist';
 
 export type OutputType = 'artifact' | 'signatures';
 
