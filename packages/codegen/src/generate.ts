@@ -170,6 +170,7 @@ export function generateContractForSolidityArtifact(
 
   // prettier-ignore
   return `/* eslint-disable */
+// @ts-nocheck
 import { ethers } from 'ethers';
 import { contract, Call, Send, AddressLike, Contract } from '${crestproject}';
 import ${name}Artifact from '${source}';
@@ -196,6 +197,7 @@ export function generateContractForSignatures(
 
   // prettier-ignore
   return `/* eslint-disable */
+// @ts-nocheck
 import { ethers } from 'ethers';
 import { contract, Call, Send, AddressLike, Contract } from '${crestproject}';
 

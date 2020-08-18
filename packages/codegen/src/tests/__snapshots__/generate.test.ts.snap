@@ -2,6 +2,7 @@
 
 exports[`code generator generates code for ethers signatures 1`] = `
 "/* eslint-disable */
+// @ts-nocheck
 import { ethers } from 'ethers';
 import { contract, Call, Send, AddressLike, Contract } from '@crestproject/ethers';
 
@@ -56,6 +57,7 @@ export const ERC20 = contract.fromSignatures<ERC20, ERC20Args>\`
 
 exports[`code generator generates code for solidity artifacts 1`] = `
 "/* eslint-disable */
+// @ts-nocheck
 import { ethers } from 'ethers';
 import { contract, Call, Send, AddressLike, Contract } from '@crestproject/ethers';
 import ERC20Artifact from './contracts/ERC20.json';
