@@ -21,9 +21,20 @@ function stub<TContract extends Contract = Contract>(
 
   return {
     given: (...input: any) => stub(doppelganger, contract, func, input),
+    reset: async () => {
+      const args = params
+        ? await resolveArguments(func.inputs ?? [], params)
+        : undefined;
+
+      const data = args
+        ? contract.abi.encodeFunctionData(func, args)
+        : contract.abi.getSighash(func);
+
+      return doppelganger.__doppelganger__mockReset(data);
+    },
     reverts: async (reason: string) => {
       const args = params
-        ? await resolveArguments(func.inputs, params)
+        ? await resolveArguments(func.inputs ?? [], params)
         : undefined;
 
       const data = args
@@ -42,7 +53,7 @@ function stub<TContract extends Contract = Contract>(
       }
 
       const args = params
-        ? await resolveArguments(func.inputs, params)
+        ? await resolveArguments(func.inputs ?? [], params)
         : undefined;
 
       const data = args
@@ -50,10 +61,10 @@ function stub<TContract extends Contract = Contract>(
         : contract.abi.getSighash(func);
 
       const resolved = output?.length
-        ? await resolveArguments(func.outputs, output)
+        ? await resolveArguments(func.outputs ?? [], output)
         : undefined;
 
-      const encoded = encoder.encode(func.outputs, resolved);
+      const encoded = encoder.encode(func.outputs ?? [], resolved);
       return doppelganger.__doppelganger__mockReturns(data, encoded);
     },
   };
@@ -182,6 +193,7 @@ export type MockContract<TContract extends Contract = Contract> = {
 export type Stub<TOutput extends any[] = any[]> = {
   returns(...args: TOutput): Promise<ethers.ContractReceipt>;
   reverts(reason: string): Promise<ethers.ContractReceipt>;
+  reset(): Promise<ethers.ContractReceipt>;
 };
 
 export type RefinableStub<
@@ -189,4 +201,5 @@ export type RefinableStub<
   TOutput extends any[] = any[]
 > = Stub<TOutput> & {
   given(...args: TInput): Stub<TOutput>;
+  reset(): Promise<ethers.ContractReceipt>;
 };

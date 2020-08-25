@@ -114,4 +114,46 @@ describe('contract tagged template literals', () => {
       transactionIndex: expect.anything(),
     });
   });
+
+  it('can reset previously set mocks', async () => {
+    const signer = provider.getSigner(0);
+    const token = await Token.mock(signer);
+
+    let result;
+
+    await token.balanceOf.returns(123);
+    result = await token.balanceOf(ethers.constants.AddressZero);
+    expect(result.toString()).toBe('123');
+
+    await token.balanceOf.reset();
+    result = token.balanceOf(ethers.constants.AddressZero);
+    await expect(result).rejects.toThrowError(
+      'Mock not initialized: balanceOf(address)',
+    );
+  });
+
+  it('can reset previously set mocks with specific args', async () => {
+    const signer = provider.getSigner(0);
+    const token = await Token.mock(signer);
+
+    let result;
+
+    await token.balanceOf.returns(123);
+    result = await token.balanceOf(ethers.constants.AddressZero);
+    expect(result.toString()).toBe('123');
+
+    await token.balanceOf.given(ethers.constants.AddressZero).returns(456);
+    result = await token.balanceOf(ethers.constants.AddressZero);
+    expect(result.toString()).toBe('456');
+
+    await token.balanceOf.given(ethers.constants.AddressZero).reset();
+    result = await token.balanceOf(ethers.constants.AddressZero);
+    expect(result.toString()).toBe('123');
+
+    await token.balanceOf.reset();
+    result = token.balanceOf(ethers.constants.AddressZero);
+    await expect(result).rejects.toThrowError(
+      'Mock not initialized: balanceOf(address)',
+    );
+  });
 });

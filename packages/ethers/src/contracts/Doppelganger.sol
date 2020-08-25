@@ -53,6 +53,10 @@ contract Doppelganger {
         return returnData;
     }
 
+    function __doppelganger__mockReset(bytes calldata _data) external {
+        delete mockConfig[keccak256(_data)];
+    }
+
     function __doppelganger__mockReverts(
         bytes calldata _data,
         string calldata _reason
