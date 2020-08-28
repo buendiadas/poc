@@ -44,8 +44,5 @@
     "roots": [
       "<rootDir>/src"
     ]
-  },
-  "dependencies": {
-    "fs-extra": "^8.1.0"
   }
 }
