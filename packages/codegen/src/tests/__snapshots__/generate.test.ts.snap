@@ -4,7 +4,13 @@ exports[`code generator generates code for ethers signatures 1`] = `
 "/* eslint-disable */
 // @ts-nocheck
 import { ethers } from 'ethers';
-import { contract, Call, Send, AddressLike, Contract } from '@crestproject/ethers';
+import {
+  contract,
+  Call,
+  Send,
+  AddressLike,
+  Contract,
+} from '@crestproject/ethers';
 
 export type ERC20Args = [name: string, symbol: string];
 
@@ -52,14 +58,21 @@ export const ERC20 = contract.fromSignatures<ERC20, ERC20Args>\`
   function totalSupply() view returns (uint256)
   function transfer(address recipient, uint256 amount) returns (bool)
   function transferFrom(address sender, address recipient, uint256 amount) returns (bool)
-\`;"
+\`;
+"
 `;
 
 exports[`code generator generates code for solidity artifacts 1`] = `
 "/* eslint-disable */
 // @ts-nocheck
 import { ethers } from 'ethers';
-import { contract, Call, Send, AddressLike, Contract } from '@crestproject/ethers';
+import {
+  contract,
+  Call,
+  Send,
+  AddressLike,
+  Contract,
+} from '@crestproject/ethers';
 import ERC20Artifact from './contracts/ERC20.json';
 
 export type ERC20Args = [name: string, symbol: string];
@@ -93,5 +106,6 @@ export interface ERC20 extends Contract<ERC20> {
   'transferFrom(address,address,uint256)': Send<(sender: AddressLike, recipient: AddressLike, amount: ethers.BigNumberish) => boolean, ERC20>
 }
 
-export const ERC20 = contract.fromArtifact<ERC20, ERC20Args>(ERC20Artifact);"
+export const ERC20 = contract.fromArtifact<ERC20, ERC20Args>(ERC20Artifact);
+"
 `;

@@ -1,6 +1,12 @@
 /* eslint-disable */
 import { ethers } from 'ethers';
-import { contract, Call, Send, AddressLike, Contract } from '@crestproject/ethers';
+import {
+  contract,
+  Call,
+  Send,
+  AddressLike,
+  Contract,
+} from '@crestproject/ethers';
 import ERC20Artifact from '../artifacts/ERC20.json';
 
 export type ERC20Args = [name: string, symbol: string];
