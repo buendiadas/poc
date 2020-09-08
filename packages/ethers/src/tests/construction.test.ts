@@ -3,7 +3,7 @@ import { contract } from '../construction';
 import { Call, Send } from '../types';
 import { Contract } from '../contract';
 import { SendFunction, CallFunction } from '../function';
-import { randomAddress } from '../utils';
+import { randomAddress } from '../utils/randomAddress';
 import { provider } from './provider';
 
 describe('contract tagged template literals', () => {

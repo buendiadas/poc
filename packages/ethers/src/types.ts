@@ -1,3 +1,4 @@
+import { Signer } from 'ethers';
 import { Contract } from './contract';
 import {
   CallFunction,
@@ -5,6 +6,9 @@ import {
   FunctionOptions,
   SendFunction,
 } from './function';
+
+export type AddressLike = Contract | Signer | string;
+export type AddressLikeSync = Contract | string;
 
 export type Call<
   TSignature extends AnyFunction = AnyFunction,

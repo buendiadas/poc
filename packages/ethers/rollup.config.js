@@ -1,35 +1,17 @@
-import sourcemaps from 'rollup-plugin-sourcemaps';
-import node from 'rollup-plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 
 export default [
   {
     input: 'dist/index.js',
     output: {
-      file: 'dist/index.umd.js',
-      format: 'umd',
-      name: 'crestprojectEthers',
+      file: 'dist/index.cjs',
+      format: 'cjs',
       sourcemap: true,
       exports: 'named',
+      externalLiveBindings: false,
     },
-    plugins: [node(), sourcemaps()],
-    onwarn,
-  },
-  {
-    input: 'dist/index.js',
-    output: {
-      file: 'dist/index.esm.js',
-      format: 'esm',
-      sourcemap: true,
-    },
-    plugins: [node(), sourcemaps()],
-    onwarn,
+    external: ['@ethersproject/abi', 'ethers'],
+    plugins: [resolve(), commonjs()],
   },
 ];
-
-export function onwarn(message) {
-  const suppressed = ['UNRESOLVED_IMPORT', 'THIS_IS_UNDEFINED'];
-
-  if (!suppressed.find((code) => message.code === code)) {
-    return console.warn(message.message);
-  }
-}

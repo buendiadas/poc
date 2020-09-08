@@ -1,6 +1,5 @@
 import { Interface, FunctionFragment } from '@ethersproject/abi';
 import { ethers } from 'ethers';
-import { PossibleInterface, ensureInterface } from './utils';
 import {
   CallFunction,
   ConstructorFunction,
@@ -9,6 +8,7 @@ import {
   resolveFunctionOptions,
   SendFunction,
 } from './function';
+import { ensureInterface, PossibleInterface } from './utils/ensureInterface';
 
 export function deploy<
   TContract extends Contract = Contract,

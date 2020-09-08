@@ -9,7 +9,7 @@ import {
   ConstructorFunction,
 } from './function';
 import { ProxiedFunction } from './types';
-import { resolveArguments } from './utils';
+import { resolveArguments } from './utils/resolveArguments';
 
 function stub<TContract extends Contract = Contract>(
   doppelganger: Doppelganger,

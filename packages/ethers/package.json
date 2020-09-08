@@ -18,9 +18,9 @@
   "contributors": [
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
-  "main": "index.js",
-  "module": "index.esm.js",
-  "browser": "index.umd.js",
+  "types": "index.d.ts",
+  "main": "index.cjs",
+  "module": "index.js",
   "scripts": {
     "clean": "rimraf dist coverage",
     "prebuild": "rimraf dist",
@@ -34,11 +34,9 @@
     "preversion": "yarn typecheck && yarn lint && yarn build",
     "postversion": "cp package.json dist"
   },
-  "devDependencies": {
-    "ethers": "^5.0.5"
-  },
-  "peerDependencies": {
-    "ethers": "^5.0.5"
+  "dependencies": {
+    "@ethersproject/abi": "^5.0.4",
+    "ethers": "^5.0.12"
   },
   "jest": {
     "preset": "ts-jest",

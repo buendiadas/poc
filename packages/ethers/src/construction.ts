@@ -3,7 +3,7 @@ import { JsonFragment } from '@ethersproject/abi';
 import { FunctionOptions } from './function';
 import { Contract, deploy } from './contract';
 import { mock, MockContract } from './mock';
-import { ensureInterface, PossibleInterface } from './utils';
+import { PossibleInterface, ensureInterface } from './utils/ensureInterface';
 
 export interface SolidityCompilerOutput {
   abi: JsonFragment[];

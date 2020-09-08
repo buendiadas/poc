@@ -1,8 +1,6 @@
 import { ethers } from 'ethers';
 import { Contract, deploy } from './contract';
-import { ContractReceipt, SendFunction, CallFunction } from './function';
-import { Send } from './types';
-import { AddressLike, resolveArguments } from './utils';
+import { AddressLike, Send } from './types';
 
 export const DoppelgangerCompilerOutput = {
   abi: [

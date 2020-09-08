@@ -3,15 +3,28 @@ import {
   ConstructorFragment,
   FunctionFragment,
 } from '@ethersproject/abi';
-import { ethers } from 'ethers';
+import {
+  BigNumber,
+  BigNumberish,
+  BytesLike,
+  ethers,
+  PopulatedTransaction,
+  ContractReceipt as EthersContractReceipt,
+  ContractTransaction as EthersContractTransaction,
+  providers,
+  Signer,
+  utils,
+} from 'ethers';
 import { Contract } from './contract';
-import { AddressLike, resolveAddress, resolveArguments } from './utils';
+import { AddressLike } from './types';
+import { resolveAddress } from './utils/resolveAddress';
+import { resolveArguments } from './utils/resolveArguments';
 
 export interface ContractReceipt<
   TFunction extends
     | SendFunction<any, any>
     | ConstructorFunction<any> = SendFunction
-> extends ethers.ContractReceipt {
+> extends EthersContractReceipt {
   function: TFunction;
 }
 
@@ -19,7 +32,7 @@ export interface ContractTransaction<
   TFunction extends
     | SendFunction<any, any>
     | ConstructorFunction<any> = SendFunction
-> extends ethers.ContractTransaction {
+> extends EthersContractTransaction {
   function: TFunction;
 }
 
@@ -54,13 +67,13 @@ function enhanceResponse<
 
 export interface FunctionOptions<TArgs extends any[] = []> {
   args?: TArgs;
-  value?: ethers.BigNumberish;
-  nonce?: ethers.BigNumberish;
-  gas?: ethers.BigNumberish;
-  price?: ethers.BigNumberish;
-  block?: ethers.providers.BlockTag;
+  value?: BigNumberish;
+  nonce?: BigNumberish;
+  gas?: BigNumberish;
+  price?: BigNumberish;
+  block?: providers.BlockTag;
   from?: AddressLike;
-  bytecode?: ethers.BytesLike;
+  bytecode?: BytesLike;
 }
 
 // TODO: Use param types to validate this instead.
@@ -68,11 +81,11 @@ export function isFunctionOptions<TArgs extends any[] = []>(
   value: any,
 ): value is FunctionOptions<TArgs> {
   if (typeof value === 'object' && !Array.isArray(value)) {
-    if (ethers.BigNumber.isBigNumber(value)) {
+    if (BigNumber.isBigNumber(value)) {
       return false;
     }
 
-    if (ethers.Signer.isSigner(value)) {
+    if (Signer.isSigner(value)) {
       return false;
     }
 
@@ -177,11 +190,11 @@ export class ContractFunction<
     return this.refine({ args });
   }
 
-  public value(value?: ethers.BigNumberish) {
+  public value(value?: BigNumberish) {
     return this.refine({ value });
   }
 
-  public bytecode(bytecode?: ethers.BytesLike) {
+  public bytecode(bytecode?: BytesLike) {
     return this.refine({ bytecode });
   }
 
@@ -189,11 +202,11 @@ export class ContractFunction<
     return this.refine({ nonce });
   }
 
-  public block(block?: ethers.providers.BlockTag) {
+  public block(block?: providers.BlockTag) {
     return this.refine({ block });
   }
 
-  public gas(limit?: ethers.BigNumberish, price?: ethers.BigNumberish) {
+  public gas(limit?: BigNumberish, price?: BigNumberish) {
     return this.refine({ gas: limit, price });
   }
 
@@ -229,7 +242,7 @@ export class CallFunction<
   TReturn extends any = unknown,
   TContract extends Contract = Contract
 > extends ContractFunction<TArgs, FunctionFragment, TContract> {
-  protected populated?: Promise<ethers.PopulatedTransaction>;
+  protected populated?: Promise<PopulatedTransaction>;
 
   public async call(): Promise<TReturn> {
     const tx = await this.populate();
@@ -277,16 +290,16 @@ export class CallFunction<
               from: await resolveAddress(this.options.from),
             }),
             ...(this.options.nonce && {
-              nonce: ethers.BigNumber.from(this.options.nonce).toNumber(),
+              nonce: BigNumber.from(this.options.nonce).toNumber(),
             }),
             ...(this.options.value && {
-              value: ethers.BigNumber.from(this.options.value),
+              value: BigNumber.from(this.options.value),
             }),
             ...(this.options.price && {
-              gasPrice: ethers.BigNumber.from(this.options.price),
+              gasPrice: BigNumber.from(this.options.price),
             }),
             ...(this.options.gas && {
-              gasLimit: ethers.BigNumber.from(this.options.gas),
+              gasLimit: BigNumber.from(this.options.gas),
             }),
           });
         } catch (error) {
@@ -304,7 +317,7 @@ export class SendFunction<
   TReturn extends any = void,
   TContract extends Contract = Contract
 > extends CallFunction<TArgs, TReturn, TContract> {
-  public async estimate(): Promise<ethers.BigNumber> {
+  public async estimate(): Promise<BigNumber> {
     const tx = await this.populate();
     if (this.contract.provider == null) {
       throw new Error('Missing provider');
@@ -347,7 +360,7 @@ export class ConstructorFunction<
   TArgs extends any[] = [],
   TContract extends Contract = Contract
 > extends ContractFunction<TArgs, ConstructorFragment, TContract> {
-  protected populated?: Promise<ethers.PopulatedTransaction>;
+  protected populated?: Promise<PopulatedTransaction>;
 
   public async call(): Promise<string> {
     const tx = await this.populate();
@@ -358,7 +371,7 @@ export class ConstructorFunction<
     return this.contract.provider.call(tx);
   }
 
-  public async estimate(): Promise<ethers.BigNumber> {
+  public async estimate(): Promise<BigNumber> {
     const tx = await this.populate();
     if (this.contract.provider == null) {
       throw new Error('Missing provider');
@@ -407,8 +420,8 @@ export class ConstructorFunction<
           const args = await resolveArguments(inputs, this.options.args);
 
           // Set the data to the bytecode + the encoded constructor arguments
-          const data = ethers.utils.hexlify(
-            ethers.utils.concat([
+          const data = utils.hexlify(
+            utils.concat([
               this.options.bytecode,
               this.contract.abi.encodeDeploy(args),
             ]),
@@ -417,13 +430,13 @@ export class ConstructorFunction<
           resolve({
             data,
             ...(this.options.nonce && {
-              nonce: ethers.BigNumber.from(this.options.nonce).toNumber(),
+              nonce: BigNumber.from(this.options.nonce).toNumber(),
             }),
             ...(this.options.price && {
-              gasPrice: ethers.BigNumber.from(this.options.price),
+              gasPrice: BigNumber.from(this.options.price),
             }),
             ...(this.options.gas && {
-              gasLimit: ethers.BigNumber.from(this.options.gas),
+              gasLimit: BigNumber.from(this.options.gas),
             }),
           });
         } catch (error) {

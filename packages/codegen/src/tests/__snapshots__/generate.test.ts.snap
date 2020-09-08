@@ -10,7 +10,7 @@ import {
   Send,
   AddressLike,
   Contract,
-} from '@crestproject/crestproject';
+} from '@crestproject/ethers';
 
 export type ERC20Args = [name: string, symbol: string];
 
@@ -72,7 +72,7 @@ import {
   Send,
   AddressLike,
   Contract,
-} from '@crestproject/crestproject';
+} from '@crestproject/ethers';
 import ERC20Artifact from './contracts/ERC20.json';
 
 export type ERC20Args = [name: string, symbol: string];

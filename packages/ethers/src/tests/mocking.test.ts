@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Call, Send } from '../types';
 import { contract } from '../construction';
-import { randomAddress } from '../utils';
+import { randomAddress } from '../utils/randomAddress';
 import { Contract } from '../contract';
 import { provider } from './provider';
 import { ERC20 } from './contracts/ERC20';

@@ -1,6 +1,5 @@
 import { ConstructorFragment } from '@ethersproject/abi';
 import { ethers } from 'ethers';
-import { formatOutput } from './utils';
 
 export function getInput(fragment: ConstructorFragment) {
   const inputs = fragment.inputs.map((input, index) => {
@@ -162,7 +161,7 @@ export function generateContractForSolidityArtifact(
   name: string,
   source: string,
   abi: ethers.utils.Interface,
-  crestproject: string = '@crestproject/crestproject',
+  crestproject: string = '@crestproject/ethers',
 ) {
   const functions = generateFunctions(name, Object.values(abi.functions));
   const constructor = generateConstructorArgs(abi.deploy);
@@ -188,7 +187,7 @@ export const ${name} = contract.fromArtifact<${generic}>(${name}Artifact);`;
 export function generateContractForSignatures(
   name: string,
   abi: ethers.utils.Interface,
-  crestproject: string = '@crestproject/crestproject',
+  crestproject: string = '@crestproject/ethers',
 ) {
   const functions = generateFunctions(name, Object.values(abi.functions));
   const constructor = generateConstructorArgs(abi.deploy);
