@@ -229,6 +229,8 @@ export class CallFunction<
   TReturn extends any = unknown,
   TContract extends Contract = Contract
 > extends ContractFunction<TArgs, FunctionFragment, TContract> {
+  protected populated?: Promise<ethers.PopulatedTransaction>;
+
   public async call(): Promise<TReturn> {
     const tx = await this.populate();
     if (this.contract.provider == null) {
@@ -257,32 +259,43 @@ export class CallFunction<
     return new (this.constructor as any)(contract, this.fragment, this.options);
   }
 
-  protected async populate() {
-    const inputs = this.fragment.inputs;
-    const args = await resolveArguments(inputs, this.options.args);
-    const data = this.contract.abi.encodeFunctionData(this.fragment, args);
+  public async populate(refresh = false) {
+    if (!this.populated || refresh) {
+      this.populated = new Promise(async (resolve, reject) => {
+        try {
+          const inputs = this.fragment.inputs;
+          const args = await resolveArguments(inputs, this.options.args);
+          const data = this.contract.abi.encodeFunctionData(
+            this.fragment,
+            args,
+          );
 
-    const tx: ethers.PopulatedTransaction = {
-      to: this.contract.address,
-      data,
-      ...(this.options.from && {
-        from: await resolveAddress(this.options.from),
-      }),
-      ...(this.options.nonce && {
-        nonce: ethers.BigNumber.from(this.options.nonce).toNumber(),
-      }),
-      ...(this.options.value && {
-        value: ethers.BigNumber.from(this.options.value),
-      }),
-      ...(this.options.price && {
-        gasPrice: ethers.BigNumber.from(this.options.price),
-      }),
-      ...(this.options.gas && {
-        gasLimit: ethers.BigNumber.from(this.options.gas),
-      }),
-    };
+          resolve({
+            to: this.contract.address,
+            data,
+            ...(this.options.from && {
+              from: await resolveAddress(this.options.from),
+            }),
+            ...(this.options.nonce && {
+              nonce: ethers.BigNumber.from(this.options.nonce).toNumber(),
+            }),
+            ...(this.options.value && {
+              value: ethers.BigNumber.from(this.options.value),
+            }),
+            ...(this.options.price && {
+              gasPrice: ethers.BigNumber.from(this.options.price),
+            }),
+            ...(this.options.gas && {
+              gasLimit: ethers.BigNumber.from(this.options.gas),
+            }),
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    }
 
-    return tx;
+    return this.populated;
   }
 }
 
@@ -334,6 +347,8 @@ export class ConstructorFunction<
   TArgs extends any[] = [],
   TContract extends Contract = Contract
 > extends ContractFunction<TArgs, ConstructorFragment, TContract> {
+  protected populated?: Promise<ethers.PopulatedTransaction>;
+
   public async call(): Promise<string> {
     const tx = await this.populate();
     if (this.contract.provider == null) {
@@ -380,35 +395,43 @@ export class ConstructorFunction<
     >;
   }
 
-  protected async populate() {
-    if (!this.options.bytecode) {
-      throw new Error('Missing bytecode');
+  public async populate(refresh = false) {
+    if (!this.populated || refresh) {
+      this.populated = new Promise(async (resolve, reject) => {
+        try {
+          if (!this.options.bytecode) {
+            throw new Error('Missing bytecode');
+          }
+
+          const inputs = this.fragment.inputs;
+          const args = await resolveArguments(inputs, this.options.args);
+
+          // Set the data to the bytecode + the encoded constructor arguments
+          const data = ethers.utils.hexlify(
+            ethers.utils.concat([
+              this.options.bytecode,
+              this.contract.abi.encodeDeploy(args),
+            ]),
+          );
+
+          resolve({
+            data,
+            ...(this.options.nonce && {
+              nonce: ethers.BigNumber.from(this.options.nonce).toNumber(),
+            }),
+            ...(this.options.price && {
+              gasPrice: ethers.BigNumber.from(this.options.price),
+            }),
+            ...(this.options.gas && {
+              gasLimit: ethers.BigNumber.from(this.options.gas),
+            }),
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
     }
 
-    const inputs = this.fragment.inputs;
-    const args = await resolveArguments(inputs, this.options.args);
-
-    // Set the data to the bytecode + the encoded constructor arguments
-    const data = ethers.utils.hexlify(
-      ethers.utils.concat([
-        this.options.bytecode,
-        this.contract.abi.encodeDeploy(args),
-      ]),
-    );
-
-    const tx: ethers.PopulatedTransaction = {
-      data,
-      ...(this.options.nonce && {
-        nonce: ethers.BigNumber.from(this.options.nonce).toNumber(),
-      }),
-      ...(this.options.price && {
-        gasPrice: ethers.BigNumber.from(this.options.price),
-      }),
-      ...(this.options.gas && {
-        gasLimit: ethers.BigNumber.from(this.options.gas),
-      }),
-    };
-
-    return tx;
+    return this.populated;
   }
 }

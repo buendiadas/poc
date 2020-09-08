@@ -1,4 +1,4 @@
-import { ethers, Signer, utils } from 'ethers';
+import { ethers, Signer } from 'ethers';
 import {
   Interface,
   Fragment,
@@ -9,6 +9,15 @@ import { Contract } from './contract';
 import { ContractReceipt, SendFunction } from './function';
 
 export type AddressLike = Contract | Signer | string;
+export type AddressLikeSync = Contract | string;
+
+export function resolveAddressSync(value: AddressLikeSync): string {
+  if (value instanceof Contract) {
+    return resolveAddressSync(value.address);
+  }
+
+  return ethers.utils.getAddress(value);
+}
 
 export async function resolveAddress(value: AddressLike): Promise<string> {
   if (value instanceof Contract) {
