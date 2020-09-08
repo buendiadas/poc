@@ -23,7 +23,7 @@ export async function generate(
     },
   );
 
-  const imports = '@crestproject/crestproject';
+  const imports = '@crestproject/ethers';
   const name = path.basename(source).split('.').shift()!;
   const abi = new ethers.utils.Interface(contract.abi);
 
