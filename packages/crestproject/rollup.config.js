@@ -7,7 +7,7 @@ export default [
     output: {
       file: 'dist/index.umd.js',
       format: 'umd',
-      name: 'crestproject',
+      name: 'crestprojectCore',
       sourcemap: true,
       exports: 'named',
     },

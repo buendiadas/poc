@@ -5,9 +5,9 @@ export default [
   {
     input: 'dist/index.js',
     output: {
-      file: 'dist/bundle.umd.js',
+      file: 'dist/index.umd.js',
       format: 'umd',
-      name: 'melonJs',
+      name: 'crestprojectEthers',
       sourcemap: true,
       exports: 'named',
     },
@@ -17,7 +17,7 @@ export default [
   {
     input: 'dist/index.js',
     output: {
-      file: 'dist/bundle.esm.js',
+      file: 'dist/index.esm.js',
       format: 'esm',
       sourcemap: true,
     },
