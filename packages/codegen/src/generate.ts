@@ -162,7 +162,7 @@ export function generateContractForSolidityArtifact(
   name: string,
   source: string,
   abi: ethers.utils.Interface,
-  crestproject: string = '@crestproject/ethers',
+  crestproject: string = '@crestproject/crestproject',
 ) {
   const functions = generateFunctions(name, Object.values(abi.functions));
   const constructor = generateConstructorArgs(abi.deploy);
@@ -188,7 +188,7 @@ export const ${name} = contract.fromArtifact<${generic}>(${name}Artifact);`;
 export function generateContractForSignatures(
   name: string,
   abi: ethers.utils.Interface,
-  crestproject: string = '@crestproject/ethers',
+  crestproject: string = '@crestproject/crestproject',
 ) {
   const functions = generateFunctions(name, Object.values(abi.functions));
   const constructor = generateConstructorArgs(abi.deploy);
