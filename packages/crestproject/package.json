@@ -19,7 +19,8 @@
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
   "main": "index.js",
-  "browser": "browser.js",
+  "module": "index.esm.js",
+  "browser": "index.umd.js",
   "bin": {
     "crestproject": "cli.js"
   },
@@ -27,7 +28,7 @@
     "clean": "rimraf dist coverage",
     "cli": "ts-node src/cli",
     "prebuild": "rimraf dist",
-    "build": "tsc --project tsconfig.json",
+    "build": "tsc --project tsconfig.json && rollup --config",
     "postbuild": "cp package.json ../../LICENSE ../../README.md dist && chmod +x dist/cli.js",
     "watch": "yarn build --watch",
     "format": "prettier --write src/{*,**/*}.{ts,sol}",
