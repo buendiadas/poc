@@ -86,7 +86,7 @@ export async function mock<TContract extends Contract = Contract>(
     signatures
   );
 
-  async function forward<
+  const forward = async <
     TArgs extends any[] = any,
     TReturn = any,
     TContract extends Contract = Contract
@@ -95,7 +95,7 @@ export async function mock<TContract extends Contract = Contract>(
       | SendFunction<TArgs, TReturn, TContract>
       | CallFunction<TArgs, TReturn, TContract>,
     ...params: any
-  ): Promise<any> {
+  ): Promise<any> => {
     const fn =
       subject instanceof ContractFunction
         ? subject
@@ -142,7 +142,7 @@ export async function mock<TContract extends Contract = Contract>(
     }
 
     return decoded;
-  }
+  };
 
   const mocked = contract.attach(doppelganger.address);
   (mocked as any).forward = forward;
