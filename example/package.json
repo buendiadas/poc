@@ -1,6 +1,6 @@
 {
   "name": "example",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "private": true,
   "scripts": {
     "prepare": "yarn build",
@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@crestproject/crestproject": "^0.0.45",
+    "@crestproject/crestproject": "^0.0.46",
     "@openzeppelin/contracts": "^3.2.0",
     "eslint-plugin-prettier": "3.1.4",
     "husky": "^4.3.0",
