@@ -4,12 +4,18 @@
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
+  "main": "dist/index.js",
+  "module": "dist/mjs.esm.js",
+  "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "bin",
     "src",
     "jest-preset.js"
   ],
+  "bin": {
+    "crestproject": "bin/index.js"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -23,9 +29,6 @@
   "contributors": [
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
-  "bin": {
-    "crestproject": "bin/index.js"
-  },
   "scripts": {
     "prepare": "yarn build",
     "start": "tsdx watch",
