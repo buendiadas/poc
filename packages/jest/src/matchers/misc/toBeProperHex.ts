@@ -1,7 +1,7 @@
 export function toBeProperHex(
   this: jest.MatcherContext,
   received: string,
-  length?: number,
+  length?: number
 ) {
   const repeat = length == null ? '*' : `{${length}}`;
   const pass = new RegExp(`^0x[0-9-a-fA-F]${repeat}$`).test(received);

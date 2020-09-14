@@ -5,7 +5,7 @@ export function toHaveEmittedWith(
   this: jest.MatcherContext,
   receipt: ContractReceipt,
   event: string | utils.EventFragment,
-  matcher: (matches: utils.LogDescription[]) => void,
+  matcher: (matches: utils.LogDescription[]) => void
 ): jest.CustomMatcherResult {
   const abi = receipt.function.contract.abi;
   const fragment = utils.EventFragment.isEventFragment(event)
@@ -23,7 +23,7 @@ export function toHaveEmittedWith(
         `  ${this.utils.printExpected(signature)}\n` +
         `Actual:\n` +
         `  ${this.utils.printReceived(
-          `Event was emitted ${matches?.length ?? 0} times`,
+          `Event was emitted ${matches?.length ?? 0} times`
         )}`
     : () =>
         this.utils.matcherHint('.toHaveEmitted') +
@@ -32,7 +32,7 @@ export function toHaveEmittedWith(
         `  ${this.utils.printExpected(signature)}\n` +
         `Actual:\n` +
         `  ${this.utils.printReceived(
-          `Event was emitted ${matches?.length ?? 0} times`,
+          `Event was emitted ${matches?.length ?? 0} times`
         )}`;
 
   matcher(matches);

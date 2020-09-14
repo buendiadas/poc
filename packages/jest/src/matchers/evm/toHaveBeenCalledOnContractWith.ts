@@ -32,25 +32,25 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
             '\n\n' +
             `Expected:\n` +
             `  ${this.utils.printExpected(
-              `${expected} not to have been called with specified arguments`,
+              `${expected} not to have been called with specified arguments`
             )}\n` +
             `Actual:\n` +
             `  ${this.utils.printReceived(
-              `${expected} has neen called with these arguments`,
+              `${expected} has neen called with these arguments`
             )}`
         : () =>
             this.utils.matcherHint('.toHaveBeenCalledOnContractWith') +
             '\n\n' +
             `Expected:\n` +
             `  ${this.utils.printExpected(
-              `${expected} to have been called with specified arguments`,
+              `${expected} to have been called with specified arguments`
             )}\n` +
             `Actual:\n` +
             `  ${this.utils.printReceived(
-              `${expected} has not been called with these arguments`,
+              `${expected} has not been called with these arguments`
             )}`;
 
       return { pass, message };
-    },
+    }
   );
 }

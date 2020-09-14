@@ -15,7 +15,7 @@ function stub<TContract extends Contract = Contract>(
   doppelganger: Doppelganger,
   contract: TContract,
   func: ethers.utils.FunctionFragment,
-  params?: any[],
+  params?: any[]
 ) {
   const encoder = ethers.utils.defaultAbiCoder;
 
@@ -48,7 +48,7 @@ function stub<TContract extends Contract = Contract>(
         const formatted = func.format();
 
         throw new Error(
-          `Attempting to mock return value of function with no outputs: ${formatted}`,
+          `Attempting to mock return value of function with no outputs: ${formatted}`
         );
       }
 
@@ -71,7 +71,7 @@ function stub<TContract extends Contract = Contract>(
 }
 
 export async function mock<TContract extends Contract = Contract>(
-  contract: TContract,
+  contract: TContract
 ): Promise<MockContract<TContract>> {
   if (!contract.signer) {
     throw new Error('Missing signer');
@@ -83,7 +83,7 @@ export async function mock<TContract extends Contract = Contract>(
   const doppelganger = await Doppelganger.deploy(
     contract.signer,
     hashes,
-    signatures,
+    signatures
   );
 
   async function forward<

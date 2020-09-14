@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ethers } from 'ethers';
 import { Contract, deploy } from './contract';
 import { AddressLike, Send } from './types';
@@ -104,7 +105,7 @@ export const DoppelgangerCompilerOutput = {
 
 export type DoppelgangerArgs = [
   _sighashes: ethers.utils.BytesLike[],
-  _signatures: string[],
+  _signatures: string[]
 ];
 
 // prettier-ignore

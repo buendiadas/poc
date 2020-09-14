@@ -8,7 +8,7 @@ export type MatcherCallback<
 > = (
   history: History,
   contract: Contract,
-  fragment?: ethers.utils.FunctionFragment,
+  fragment?: ethers.utils.FunctionFragment
 ) => TReturn;
 
 export function ensureParameters<
@@ -19,7 +19,7 @@ export function ensureParameters<
 >(
   context: jest.MatcherContext,
   subject: TSubject,
-  callback: MatcherCallback<TReturn>,
+  callback: MatcherCallback<TReturn>
 ): TReturn {
   const fn =
     subject instanceof ContractFunction

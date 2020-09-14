@@ -23,7 +23,7 @@ export function deploy<
   const fn = new ConstructorFunction<TArgs, TContract>(
     contract,
     constructor,
-    options,
+    options
   );
 
   const hex = ethers.utils.hexlify(bytecode ?? '', {
@@ -50,7 +50,7 @@ export class Contract<TContract extends Contract = any> {
   constructor(
     abi: Interface | PossibleInterface,
     public readonly address: string,
-    provider: ethers.providers.Provider | ethers.Signer,
+    provider: ethers.providers.Provider | ethers.Signer
   ) {
     this.abi = ensureInterface(abi);
     if (ethers.Signer.isSigner(provider)) {
@@ -109,6 +109,8 @@ export class Contract<TContract extends Contract = any> {
             if (fn instanceof CallFunction) {
               return fn.call();
             }
+
+            throw new Error('Invalid function call');
           },
         });
       },
@@ -117,7 +119,7 @@ export class Contract<TContract extends Contract = any> {
 
   public clone(
     address: string,
-    provider: ethers.Signer | ethers.providers.Provider,
+    provider: ethers.Signer | ethers.providers.Provider
   ): TContract {
     return new Contract(this.abi, address, provider) as any;
   }

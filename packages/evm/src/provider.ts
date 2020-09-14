@@ -1,10 +1,10 @@
+import type { EthereumProvider } from '@nomiclabs/buidler/types';
 import { BigNumber, BigNumberish, providers, utils } from 'ethers';
-import { EthereumProvider } from '@nomiclabs/buidler/types';
 import { History, Message } from './history';
 import { addListener } from './vm';
 
 export type FixtureCreator<TFixture> = (
-  provider: BuidlerProvider,
+  provider: BuidlerProvider
 ) => Promise<TFixture>;
 
 export interface Snapshot<TFixture> {
@@ -20,7 +20,7 @@ export class BuidlerProvider extends providers.StaticJsonRpcProvider {
 
   constructor(
     public readonly provider: EthereumProvider,
-    gas: BigNumberish = 9500000,
+    gas: BigNumberish = 9500000
   ) {
     super();
 
@@ -41,7 +41,7 @@ export class BuidlerProvider extends providers.StaticJsonRpcProvider {
   }
 
   public async snapshot<T>(
-    creator: FixtureCreator<T> = () => Promise.resolve(null as any),
+    creator: FixtureCreator<T> = () => Promise.resolve(null as any)
   ): Promise<T> {
     let snapshot: Snapshot<T>;
 
@@ -62,7 +62,7 @@ export class BuidlerProvider extends providers.StaticJsonRpcProvider {
   }
 
   public async estimateGas(
-    transaction: utils.Deferrable<providers.TransactionRequest>,
+    transaction: utils.Deferrable<providers.TransactionRequest>
   ): Promise<BigNumber> {
     if (this.gas && !this.gas.isZero()) {
       return this.gas;

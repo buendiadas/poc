@@ -4,7 +4,7 @@ import { ContractReceipt, extractEvent } from '@crestproject/ethers';
 export function toHaveEmitted(
   this: jest.MatcherContext,
   receipt: ContractReceipt,
-  event: string | utils.EventFragment,
+  event: string | utils.EventFragment
 ): jest.CustomMatcherResult {
   const abi = receipt.function.contract.abi;
   const fragment = utils.EventFragment.isEventFragment(event)
@@ -22,7 +22,7 @@ export function toHaveEmitted(
         `  ${this.utils.printExpected(signature)}\n` +
         `Actual:\n` +
         `  ${this.utils.printReceived(
-          `Event was emitted ${matches?.length ?? 0} times`,
+          `Event was emitted ${matches?.length ?? 0} times`
         )}`
     : () =>
         this.utils.matcherHint('.toHaveEmitted') +
@@ -31,7 +31,7 @@ export function toHaveEmitted(
         `  ${this.utils.printExpected(signature)}\n` +
         `Actual:\n` +
         `  ${this.utils.printReceived(
-          `Event was emitted ${matches?.length ?? 0} times`,
+          `Event was emitted ${matches?.length ?? 0} times`
         )}`;
 
   return { pass, message };

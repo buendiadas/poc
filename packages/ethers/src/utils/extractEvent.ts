@@ -5,7 +5,7 @@ import { ensureEvent } from './ensureEvent';
 // TODO: Add proper return type based on the event fragment's underlying type.
 export function extractEvent<TFunction extends SendFunction<any, any>>(
   receipt: ContractReceipt<TFunction>,
-  event: string | EventFragment,
+  event: string | EventFragment
 ) {
   const contract = receipt.function.contract.abi;
   const fragment = ensureEvent(event, contract);

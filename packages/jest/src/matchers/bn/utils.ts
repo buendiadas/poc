@@ -8,14 +8,14 @@ export function printBigNumber(value: ethers.BigNumberish) {
 
 export type MatcherCallback = (
   received: ethers.BigNumber,
-  expected: ethers.BigNumber,
+  expected: ethers.BigNumber
 ) => jest.CustomMatcherResult;
 
 export function ensureBigNumbers(
   context: jest.MatcherContext,
   received: any,
   expected: any,
-  callback: MatcherCallback,
+  callback: MatcherCallback
 ) {
   let receivedBn: ethers.BigNumber;
   let expectedBn: ethers.BigNumber;

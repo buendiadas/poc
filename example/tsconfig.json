@@ -1,9 +1,20 @@
 {
-  "extends": "../tsconfig.json",
+  "include": ["src", "types"],
   "compilerOptions": {
-    "noEmit": true,
-    "resolveJsonModule": true
-  },
-  "include": ["tests"],
-  "exclude": []
+    "module": "esnext",
+    "lib": ["dom", "esnext"],
+    "importHelpers": true,
+    "declaration": true,
+    "sourceMap": true,
+    "rootDir": "./src",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "jsx": "react",
+    "esModuleInterop": true
+  }
 }

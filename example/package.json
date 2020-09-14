@@ -3,30 +3,42 @@
   "version": "0.0.42",
   "private": true,
   "scripts": {
-    "clean": "rimraf build coverage",
-    "compile": "waffle compile",
+    "prepare": "yarn build",
+    "compile": "buidler compile",
     "codegen": "crestproject codegen \"build/**.json\" tests/contracts",
-    "build": "yarn compile && yarn codegen",
-    "format": "prettier --write {tests,contracts}/{*,**/*}.{ts,sol}",
-    "lint": "prettier --list-different {tests,contracts}/{*,**/*}.{ts,sol}",
-    "test": "jest",
-    "typecheck": "tsc --project tsconfig.json --noEmit"
+    "build": "yarn compile && yarn codegen && tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint src tests --ignore-pattern tests/contracts/**/*.ts",
+    "format": "yarn lint --fix",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@crestproject/crestproject": "^0.0.42",
-    "@crestproject/ethers": "^0.0.42",
-    "@crestproject/evm": "^0.0.42",
-    "@crestproject/jest": "^0.0.42",
-    "@nomiclabs/buidler": "^1.3.8",
-    "@openzeppelin/contracts": "^3.1.0",
-    "ethereum-waffle": "^3.0.2",
-    "jest": "^26.1.0",
-    "prettier": "^2.0.5",
-    "prettier-plugin-solidity": "^1.0.0-alpha.54",
-    "ts-jest": "^26.1.2"
+    "@openzeppelin/contracts": "^3.2.0",
+    "eslint-plugin-prettier": "3.1.4",
+    "husky": "^4.3.0",
+    "prettier": "^2.1.1",
+    "tsdx": "^0.13.3",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.2"
+  },
+  "resolutions": {
+    "@typescript-eslint/parser": "^4.1.0",
+    "typescript": "^4.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
   },
   "jest": {
-    "preset": "@crestproject/jest",
+    "preset": "@crestproject/crestproject",
     "roots": [
       "<rootDir>/tests"
     ],

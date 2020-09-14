@@ -4,8 +4,15 @@
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
+  "main": "dist/index.js",
+  "module": "dist/mjs.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "jest-preset.js"
+  ],
   "publishConfig": {
-    "directory": "dist",
     "access": "public"
   },
   "repository": {
@@ -18,41 +25,45 @@
   "contributors": [
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
-  "types": "index.d.ts",
-  "main": "index.js",
   "scripts": {
-    "clean": "rimraf dist coverage",
-    "prebuild": "rimraf dist",
-    "build": "tsc --project tsconfig.json",
-    "postbuild": "cp package.json ../../LICENSE ../../README.md dist",
-    "watch": "yarn build --watch",
-    "format": "prettier --write src/{*,**/*}.{ts,sol}",
-    "lint": "prettier --list-different src/{*,**/*}.{ts,sol}",
-    "test": "jest",
-    "typecheck": "tsc --project tsconfig.json --noEmit",
-    "preversion": "yarn typecheck && yarn lint && yarn build",
-    "postversion": "cp package.json dist"
+    "prepare": "yarn build",
+    "start": "tsdx watch",
+    "build": "tsdx build --target node --format cjs && tsc --project tsconfig.preset.json",
+    "test": "tsdx test",
+    "lint": "tsdx lint --ignore-pattern tests/contracts/**/*.ts",
+    "format": "yarn lint --fix",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@crestproject/ethers": "^0.0.42",
     "@crestproject/evm": "^0.0.42",
-    "fs-extra": "^9.0.1"
+    "ethers": "^5.0.12",
+    "ts-jest": "^26.1.3"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.1",
-    "ethers": "^5.0.5"
+    "eslint-plugin-prettier": "3.1.4",
+    "husky": "^4.3.0",
+    "prettier": "^2.1.1",
+    "tsdx": "^0.13.3",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.2"
   },
-  "peerDependencies": {
-    "ethers": "^5.0.5",
-    "ts-jest": "^26.1.3"
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
   },
   "jest": {
     "preset": "ts-jest",
     "setupFilesAfterEnv": [
-      "<rootDir>/src/tests/setup.ts"
-    ],
-    "roots": [
-      "<rootDir>/src"
+      "<rootDir>/tests/setup.ts"
     ]
   }
 }

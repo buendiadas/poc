@@ -15,7 +15,7 @@ export interface BaseContractFactory<TContract extends Contract = Contract> {
   mock(signer: ethers.Signer): Promise<MockContract<TContract>>;
   new (
     address?: string,
-    provider?: ethers.Signer | ethers.providers.Provider,
+    provider?: ethers.Signer | ethers.providers.Provider
   ): TContract;
 }
 
@@ -31,7 +31,7 @@ export interface ContractFactory<
   deploy(
     signer: ethers.Signer,
     bytecode: string,
-    options: FunctionOptions<TConstructorArgs>,
+    options: FunctionOptions<TConstructorArgs>
   ): Promise<TContract>;
 }
 
@@ -42,7 +42,7 @@ export interface ContractFactoryWithBytecode<
   deploy(signer: ethers.Signer, ...args: TConstructorArgs): Promise<TContract>;
   deploy(
     signer: ethers.Signer,
-    options: FunctionOptions<TConstructorArgs>,
+    options: FunctionOptions<TConstructorArgs>
   ): Promise<TContract>;
 }
 
@@ -79,14 +79,14 @@ export class GenericContractFactory {
 
       constructor(
         address: string,
-        provider: ethers.Signer | ethers.providers.Provider,
+        provider: ethers.Signer | ethers.providers.Provider
       ) {
         super(SpecializedContract.abi, address, provider);
       }
 
       public clone(
         address: string,
-        provider: ethers.Signer | ethers.providers.Provider,
+        provider: ethers.Signer | ethers.providers.Provider
       ): TContract {
         return new SpecializedContract(address, provider) as TContract;
       }
@@ -141,14 +141,14 @@ export class GenericContractFactory {
 
       constructor(
         address: string,
-        provider: ethers.Signer | ethers.providers.Provider,
+        provider: ethers.Signer | ethers.providers.Provider
       ) {
         super(SpecializedContract.abi, address, provider);
       }
 
       public clone(
         address: string,
-        provider: ethers.Signer | ethers.providers.Provider,
+        provider: ethers.Signer | ethers.providers.Provider
       ): TContract {
         return new SpecializedContract(address, provider) as TContract;
       }
@@ -200,14 +200,14 @@ export class GenericContractFactory {
 
       constructor(
         address: string,
-        provider: ethers.Signer | ethers.providers.Provider,
+        provider: ethers.Signer | ethers.providers.Provider
       ) {
         super(SpecializedContract.abi, address, provider);
       }
 
       public clone(
         address: string,
-        provider: ethers.Signer | ethers.providers.Provider,
+        provider: ethers.Signer | ethers.providers.Provider
       ): TContract {
         return new SpecializedContract(address, provider) as TContract;
       }

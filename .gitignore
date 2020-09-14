@@ -8,6 +8,3 @@ dist/
 # Ignore all dotfiles except those listed
 .*
 !.gitignore
-!.prettierrc
-!.prettierignore
-!.travis.yml

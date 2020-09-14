@@ -60,7 +60,7 @@ export function getRawOutput(fragment: ConstructorFragment) {
 
 export function getType(
   param: ethers.utils.ParamType,
-  flexible?: boolean,
+  flexible?: boolean
 ): string {
   if (param.type === 'array' || param.type.substr(-1) === ']') {
     const type = getType(param.arrayChildren, flexible);
@@ -109,7 +109,7 @@ export function getType(
 
 export function generateFunction(
   contract: string,
-  fragment: ethers.utils.FunctionFragment,
+  fragment: ethers.utils.FunctionFragment
 ) {
   const type = fragment.constant ? 'Call' : 'Send';
   const input = getInput(fragment);
@@ -119,7 +119,7 @@ export function generateFunction(
 
 export function generateFunctions(
   contract: string,
-  fragments: ethers.utils.FunctionFragment[],
+  fragments: ethers.utils.FunctionFragment[]
 ) {
   if (!fragments.length) {
     return '';
@@ -129,7 +129,7 @@ export function generateFunctions(
     ([short, full], fragment, index, array) => {
       const type = generateFunction(contract, fragment);
       const found = array.findIndex(
-        (current) => fragment.name === current.name,
+        (current) => fragment.name === current.name
       );
 
       // Only create a shortcut for the first function overload.
@@ -142,7 +142,7 @@ export function generateFunctions(
 
       return [short, full] as [string[], string[]];
     },
-    [[], []] as [string[], string[]],
+    [[], []] as [string[], string[]]
   );
 
   return `// Shortcuts (using function name of first overload)
@@ -161,7 +161,7 @@ export function generateContractForSolidityArtifact(
   name: string,
   source: string,
   abi: ethers.utils.Interface,
-  crestproject: string = '@crestproject/ethers',
+  crestproject: string = '@crestproject/ethers'
 ) {
   const functions = generateFunctions(name, Object.values(abi.functions));
   const constructor = generateConstructorArgs(abi.deploy);
@@ -187,7 +187,7 @@ export const ${name} = contract.fromArtifact<${generic}>(${name}Artifact);`;
 export function generateContractForSignatures(
   name: string,
   abi: ethers.utils.Interface,
-  crestproject: string = '@crestproject/ethers',
+  crestproject: string = '@crestproject/ethers'
 ) {
   const functions = generateFunctions(name, Object.values(abi.functions));
   const constructor = generateConstructorArgs(abi.deploy);

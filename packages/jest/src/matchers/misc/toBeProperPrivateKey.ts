@@ -1,6 +1,6 @@
 export function toBeProperPrivateKey(
   this: jest.MatcherContext,
-  received: string,
+  received: string
 ) {
   const pass = new RegExp('^0x[0-9-a-fA-F]{64}$').test(received);
   const message = pass

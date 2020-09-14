@@ -1,8 +1,21 @@
 {
-  "extends": "../../tsconfig.json",
+  "include": ["src", "types"],
+  "exclude": ["src/cli.ts", "src/commands", "src/workers"],
   "compilerOptions": {
-    "outDir": "dist" /* Redirect output structure to the directory. */,
-    "rootDir": "src" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
-  },
-  "include": ["src"]
+    "module": "esnext",
+    "lib": ["dom", "esnext"],
+    "importHelpers": true,
+    "declaration": true,
+    "sourceMap": true,
+    "rootDir": "./src",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "jsx": "react",
+    "esModuleInterop": true
+  }
 }

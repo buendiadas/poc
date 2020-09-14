@@ -3,14 +3,14 @@ import { resolveAddress } from './resolveAddress';
 
 export function resolveArguments(
   params: utils.ParamType | utils.ParamType[],
-  value: any,
+  value: any
 ): Promise<any> {
   if (Array.isArray(params)) {
     return Promise.all(
       params.map((type, index) => {
         const inner = Array.isArray(value) ? value[index] : value[type.name];
         return resolveArguments(type, inner);
-      }),
+      })
     );
   }
 
@@ -30,7 +30,7 @@ export function resolveArguments(
     return Promise.all(
       value.map((inner) => {
         return resolveArguments(params.arrayChildren, inner);
-      }),
+      })
     );
   }
 

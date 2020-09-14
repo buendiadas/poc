@@ -4,7 +4,7 @@ import { printBigNumber, ensureBigNumbers } from './utils';
 export function toBeGteBigNumber(
   this: jest.MatcherContext,
   received: ethers.BigNumberish,
-  expected: ethers.BigNumberish,
+  expected: ethers.BigNumberish
 ) {
   return ensureBigNumbers(this, received, expected, (received, expected) => {
     const receivedBn = ethers.BigNumber.from(received);

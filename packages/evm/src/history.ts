@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { utils } from 'ethers';
 import { Contract } from '@crestproject/ethers';
 
 export interface Message {
@@ -28,7 +28,7 @@ export class History {
       ? (contract as any).address
       : contract;
 
-    const checksum = ethers.utils.getAddress(address);
+    const checksum = utils.getAddress(address);
     return this.history.delete(checksum);
   }
 
@@ -37,18 +37,18 @@ export class History {
       ? (contract as any).address
       : contract;
 
-    const checksum = ethers.utils.getAddress(address);
+    const checksum = utils.getAddress(address);
     return this.history.get(checksum) ?? [];
   }
 
   public record(message: Message) {
-    const to = message.to ? ethers.utils.hexlify(message.to) : '0x';
+    const to = message.to ? utils.hexlify(message.to) : '0x';
     if (to === '0x') {
       return;
     }
 
-    const checksum = ethers.utils.getAddress(to);
-    const data = message.data ? ethers.utils.hexlify(message.data) : '0x';
+    const checksum = utils.getAddress(to);
+    const data = message.data ? utils.hexlify(message.data) : '0x';
     this.history.set(checksum, this.calls(checksum).concat(data));
   }
 }

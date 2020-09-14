@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { BuidlerProvider } from '@crestproject/evm';
+import { BuidlerProvider } from '@crestproject/crestproject';
 import { AmIRichAlready } from './contracts/AmIRichAlready';
 import { BasicToken } from './contracts/BasicToken';
 
@@ -25,7 +25,7 @@ async function deploy(provider: BuidlerProvider) {
 describe('example', () => {
   it('makes the poor rich', async () => {
     const { balance, contract, token, rich, poor } = await provider.snapshot(
-      deploy,
+      deploy
     );
 
     const check = contract.check;
@@ -38,7 +38,7 @@ describe('example', () => {
     await expect(check.from(rich).call()).resolves.toBeTruthy();
 
     await expect(token.transfer(poor, balance)).rejects.toBeRevertedWith(
-      'transfer amount exceeds balance',
+      'transfer amount exceeds balance'
     );
 
     const remaining = balance.sub(richness);
@@ -48,7 +48,7 @@ describe('example', () => {
 
   it('make everyone poor', async () => {
     const { balance, contract, token, rich, poor } = await provider.snapshot(
-      deploy,
+      deploy
     );
 
     const stranger = '0x0000000000000000000000000000000000000001';

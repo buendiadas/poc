@@ -1,10 +1,10 @@
-import { EthereumProvider } from '@nomiclabs/buidler/types';
-import { EventEmitter } from 'events';
+import type { EthereumProvider } from '@nomiclabs/buidler/types';
+import type { EventEmitter } from 'events';
 
 export function addListener(
   provider: EthereumProvider,
   event: string,
-  handler: (...args: any) => void,
+  handler: (...args: any) => void
 ) {
   const internal = provider as any;
   const init = internal._init.bind(internal);
