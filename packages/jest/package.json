@@ -5,7 +5,6 @@
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
   "main": "dist/index.js",
-  "module": "dist/mjs.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
