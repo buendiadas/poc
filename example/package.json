@@ -5,7 +5,7 @@
   "scripts": {
     "prepare": "yarn build",
     "compile": "buidler compile",
-    "codegen": "crestproject codegen \"build/**.json\" tests/contracts",
+    "codegen": "crestproject codegen artifacts/**/*.json tests/contracts",
     "build": "yarn compile && yarn codegen",
     "test": "tsdx test",
     "lint": "tsdx lint src tests --ignore-pattern tests/contracts/**/*.ts",

@@ -10,4 +10,4 @@ yargs
   .pkgConf('crestproject')
   .commandDir('commands', { extensions })
   .demandCommand(1, '')
-  .help();
+  .help().argv;

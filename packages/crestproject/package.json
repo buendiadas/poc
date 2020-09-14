@@ -14,7 +14,7 @@
     "jest-preset.js"
   ],
   "bin": {
-    "crestproject": "bin/index.js"
+    "crestproject": "bin/crestproject"
   },
   "publishConfig": {
     "access": "public"
@@ -32,7 +32,7 @@
   "scripts": {
     "prepare": "yarn build",
     "start": "tsdx watch",
-    "build": "tsdx build && tsc --project tsconfig.cli.json && chmod +x bin/index.js",
+    "build": "tsdx build && tsc --project tsconfig.cli.json",
     "test": "tsdx test",
     "lint": "tsdx lint src tests --ignore-pattern src/contracts/**/*.ts",
     "format": "yarn lint --fix",
