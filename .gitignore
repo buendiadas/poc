@@ -3,7 +3,6 @@ node_modules/
 dist/
 artifacts/
 cache/
-codegen/
 
 # Ignore log files
 *.log
