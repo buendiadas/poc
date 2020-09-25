@@ -1,5 +1,5 @@
 import path from 'path';
-import { ethers } from 'ethers';
+import { utils } from 'ethers';
 import { formatOutput } from '../src/utils';
 import {
   generateContractForSolidityArtifact,
@@ -17,7 +17,7 @@ describe('code generator', () => {
       relative = `./${relative}`;
     }
 
-    const abi = new ethers.utils.Interface(contract.abi);
+    const abi = new utils.Interface(contract.abi);
     const output = generateContractForSolidityArtifact('ERC20', relative, abi);
     const formatted = formatOutput(output);
 
@@ -26,7 +26,7 @@ describe('code generator', () => {
 
   it('generates code for ethers signatures', () => {
     const contract = require('./contracts/ERC20.json');
-    const abi = new ethers.utils.Interface(contract.abi);
+    const abi = new utils.Interface(contract.abi);
     const output = generateContractForSignatures('ERC20', abi);
     const formatted = formatOutput(output);
 

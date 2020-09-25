@@ -1,7 +1,7 @@
+import { utils } from 'ethers';
 import { network } from '@nomiclabs/buidler';
 import { BuidlerProvider } from '@crestproject/evm';
 import { ERC20 } from './contracts/ERC20';
-import { ethers } from 'ethers';
 
 async function snapshot(provider: BuidlerProvider) {
   const [deployer, someone] = await provider.listAccounts();
@@ -27,7 +27,7 @@ describe('events', () => {
 
   it('toHaveEmitted', async () => {
     const { token, someone } = await provider.snapshot(snapshot);
-    const amount = ethers.utils.parseEther('100');
+    const amount = utils.parseEther('100');
 
     tx = token.approve(someone, amount);
     await expect(tx).resolves.toHaveEmitted('Approval');
@@ -35,7 +35,7 @@ describe('events', () => {
 
   it('toHaveEmittedWith', async () => {
     const { token, deployer, someone } = await provider.snapshot(snapshot);
-    const amount = ethers.utils.parseEther('100');
+    const amount = utils.parseEther('100');
 
     tx = token.approve(someone, amount);
     await expect(tx).resolves.toHaveEmittedWith('Approval', (matches) => {

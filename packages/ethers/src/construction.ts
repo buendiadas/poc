@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { constants, providers, utils, Signer } from 'ethers';
 import { JsonFragment } from '@ethersproject/abi';
 import { FunctionOptions } from './function';
 import { Contract, deploy } from './contract';
@@ -11,12 +11,9 @@ export interface SolidityCompilerOutput {
 }
 
 export interface BaseContractFactory<TContract extends Contract = Contract> {
-  abi: ethers.utils.Interface;
-  mock(signer: ethers.Signer): Promise<MockContract<TContract>>;
-  new (
-    address?: string,
-    provider?: ethers.Signer | ethers.providers.Provider
-  ): TContract;
+  abi: utils.Interface;
+  mock(signer: Signer): Promise<MockContract<TContract>>;
+  new (address?: string, provider?: Signer | providers.Provider): TContract;
 }
 
 export interface ContractFactory<
@@ -24,12 +21,12 @@ export interface ContractFactory<
   TConstructorArgs extends any[] = []
 > extends BaseContractFactory<TContract> {
   deploy(
-    signer: ethers.Signer,
+    signer: Signer,
     bytecode: string,
     ...args: TConstructorArgs
   ): Promise<TContract>;
   deploy(
-    signer: ethers.Signer,
+    signer: Signer,
     bytecode: string,
     options: FunctionOptions<TConstructorArgs>
   ): Promise<TContract>;
@@ -39,9 +36,9 @@ export interface ContractFactoryWithBytecode<
   TContract extends Contract = Contract,
   TConstructorArgs extends any[] = []
 > extends BaseContractFactory<TContract> {
-  deploy(signer: ethers.Signer, ...args: TConstructorArgs): Promise<TContract>;
+  deploy(signer: Signer, ...args: TConstructorArgs): Promise<TContract>;
   deploy(
-    signer: ethers.Signer,
+    signer: Signer,
     options: FunctionOptions<TConstructorArgs>
   ): Promise<TContract>;
 }
@@ -50,7 +47,7 @@ export class GenericContractFactory {
   public createFactoryForArtifact<
     TContract extends Contract = Contract,
     TConstructorArgs extends any[] = []
-  >(abi: ethers.utils.Interface | PossibleInterface, bytecode?: string) {
+  >(abi: utils.Interface | PossibleInterface, bytecode?: string) {
     let resolved = abi;
     function resolveAbi() {
       return (resolved = ensureInterface(resolved));
@@ -61,32 +58,26 @@ export class GenericContractFactory {
         return resolveAbi();
       }
 
-      public static async deploy(
-        signer: ethers.Signer,
-        ...args: TConstructorArgs
-      ) {
-        const address = ethers.constants.AddressZero;
+      public static async deploy(signer: Signer, ...args: TConstructorArgs) {
+        const address = constants.AddressZero;
         const contract = new SpecializedContract(address, signer) as TContract;
         const receipt = await deploy(contract, bytecode ?? '0x', ...args);
         return contract.attach(receipt.contractAddress);
       }
 
-      public static mock(signer: ethers.Signer) {
-        const address = ethers.constants.AddressZero;
+      public static mock(signer: Signer) {
+        const address = constants.AddressZero;
         const contract = new SpecializedContract(address, signer) as TContract;
         return mock(contract);
       }
 
-      constructor(
-        address: string,
-        provider: ethers.Signer | ethers.providers.Provider
-      ) {
+      constructor(address: string, provider: Signer | providers.Provider) {
         super(SpecializedContract.abi, address, provider);
       }
 
       public clone(
         address: string,
-        provider: ethers.Signer | ethers.providers.Provider
+        provider: Signer | providers.Provider
       ): TContract {
         return new SpecializedContract(address, provider) as TContract;
       }
@@ -108,7 +99,7 @@ export class GenericContractFactory {
       .split('\n')
       .map((item) => item.trim());
 
-    let resolved: ethers.utils.Interface;
+    let resolved: utils.Interface;
     function resolveAbi() {
       if (resolved == null) {
         resolved = ensureInterface(abi);
@@ -123,32 +114,29 @@ export class GenericContractFactory {
       }
 
       public static async deploy(
-        signer: ethers.Signer,
+        signer: Signer,
         bytecode: string,
         ...args: TConstructorArgs
       ) {
-        const address = ethers.constants.AddressZero;
+        const address = constants.AddressZero;
         const contract = new SpecializedContract(address, signer) as TContract;
         const receipt = await deploy(contract, bytecode, ...args);
         return contract.attach(receipt.contractAddress);
       }
 
-      public static mock(signer: ethers.Signer) {
-        const address = ethers.constants.AddressZero;
+      public static mock(signer: Signer) {
+        const address = constants.AddressZero;
         const contract = new SpecializedContract(address, signer) as TContract;
         return mock(contract);
       }
 
-      constructor(
-        address: string,
-        provider: ethers.Signer | ethers.providers.Provider
-      ) {
+      constructor(address: string, provider: Signer | providers.Provider) {
         super(SpecializedContract.abi, address, provider);
       }
 
       public clone(
         address: string,
-        provider: ethers.Signer | ethers.providers.Provider
+        provider: Signer | providers.Provider
       ): TContract {
         return new SpecializedContract(address, provider) as TContract;
       }
@@ -168,7 +156,7 @@ export class GenericContractFactory {
     const abi = json?.abi;
     const bytecode = json?.bytecode;
 
-    let resolved: ethers.utils.Interface;
+    let resolved: utils.Interface;
     function resolveAbi() {
       if (resolved == null) {
         resolved = ensureInterface(abi);
@@ -182,32 +170,26 @@ export class GenericContractFactory {
         return resolveAbi();
       }
 
-      public static async deploy(
-        signer: ethers.Signer,
-        ...args: TConstructorArgs
-      ) {
-        const address = ethers.constants.AddressZero;
+      public static async deploy(signer: Signer, ...args: TConstructorArgs) {
+        const address = constants.AddressZero;
         const contract = new SpecializedContract(address, signer) as TContract;
         const receipt = await deploy(contract, bytecode ?? '0x', ...args);
         return contract.attach(receipt.contractAddress);
       }
 
-      public static mock(signer: ethers.Signer) {
-        const address = ethers.constants.AddressZero;
+      public static mock(signer: Signer) {
+        const address = constants.AddressZero;
         const contract = new SpecializedContract(address, signer) as TContract;
         return mock(contract);
       }
 
-      constructor(
-        address: string,
-        provider: ethers.Signer | ethers.providers.Provider
-      ) {
+      constructor(address: string, provider: Signer | providers.Provider) {
         super(SpecializedContract.abi, address, provider);
       }
 
       public clone(
         address: string,
-        provider: ethers.Signer | ethers.providers.Provider
+        provider: Signer | providers.Provider
       ): TContract {
         return new SpecializedContract(address, provider) as TContract;
       }

@@ -1,6 +1,6 @@
+import { utils } from 'ethers';
 import { Contract, ContractFunction } from '@crestproject/ethers';
 import { BuidlerProvider, History } from '@crestproject/evm';
-import { ethers } from 'ethers';
 import { forceFail } from '../utils';
 
 export type MatcherCallback<
@@ -8,7 +8,7 @@ export type MatcherCallback<
 > = (
   history: History,
   contract: Contract,
-  fragment?: ethers.utils.FunctionFragment
+  fragment?: utils.FunctionFragment
 ) => TReturn;
 
 export function ensureParameters<

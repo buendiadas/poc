@@ -1,14 +1,14 @@
-import { ethers } from 'ethers';
+import { BigNumber, BigNumberish } from 'ethers';
 import { forceFail } from '../utils';
 
-export function printBigNumber(value: ethers.BigNumberish) {
-  const bn = ethers.BigNumber.from(value);
+export function printBigNumber(value: BigNumberish) {
+  const bn = BigNumber.from(value);
   return `${bn.toString()} (${bn.toHexString()})`;
 }
 
 export type MatcherCallback = (
-  received: ethers.BigNumber,
-  expected: ethers.BigNumber
+  received: BigNumber,
+  expected: BigNumber
 ) => jest.CustomMatcherResult;
 
 export function ensureBigNumbers(
@@ -17,17 +17,17 @@ export function ensureBigNumbers(
   expected: any,
   callback: MatcherCallback
 ) {
-  let receivedBn: ethers.BigNumber;
-  let expectedBn: ethers.BigNumber;
+  let receivedBn: BigNumber;
+  let expectedBn: BigNumber;
 
   try {
-    receivedBn = ethers.BigNumber.from(received);
+    receivedBn = BigNumber.from(received);
   } catch {
     return forceFail(context, received, 'The received value is not numberish');
   }
 
   try {
-    expectedBn = ethers.BigNumber.from(expected);
+    expectedBn = BigNumber.from(expected);
   } catch {
     return forceFail(context, expected, 'The expected value is not numberish');
   }

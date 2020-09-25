@@ -1,5 +1,5 @@
 import { ConstructorFragment } from '@ethersproject/abi';
-import { ethers } from 'ethers';
+import { utils } from 'ethers';
 
 export function getInput(fragment: ConstructorFragment) {
   const inputs = fragment.inputs.map((input, index) => {
@@ -12,7 +12,7 @@ export function getInput(fragment: ConstructorFragment) {
 }
 
 export function getOutput(fragment: ConstructorFragment) {
-  if (!ethers.utils.FunctionFragment.isFunctionFragment(fragment)) {
+  if (!utils.FunctionFragment.isFunctionFragment(fragment)) {
     return 'void';
   }
 
@@ -45,7 +45,7 @@ export function getOutput(fragment: ConstructorFragment) {
 }
 
 export function getRawOutput(fragment: ConstructorFragment) {
-  if (!ethers.utils.FunctionFragment.isFunctionFragment(fragment)) {
+  if (!utils.FunctionFragment.isFunctionFragment(fragment)) {
     return '[]';
   }
 
@@ -58,10 +58,7 @@ export function getRawOutput(fragment: ConstructorFragment) {
   return `[${outputs.join(', ')}]`;
 }
 
-export function getType(
-  param: ethers.utils.ParamType,
-  flexible?: boolean
-): string {
+export function getType(param: utils.ParamType, flexible?: boolean): string {
   if (param.type === 'array' || param.type.substr(-1) === ']') {
     const type = getType(param.arrayChildren, flexible);
     const matches = param.type.match(/\[([0-9]*)\]$/);
@@ -97,11 +94,15 @@ export function getType(
   }
 
   if (param.type.substring(0, 5) === 'bytes') {
-    return flexible ? 'ethers.utils.BytesLike' : 'string';
+    return flexible ? 'BytesLike' : 'string';
   }
 
   if (param.type.substring(0, 4) === 'uint') {
-    return flexible ? 'ethers.BigNumberish' : 'ethers.BigNumber';
+    return flexible ? 'BigNumberish' : 'BigNumber';
+  }
+
+  if (param.type.substring(0, 3) === 'int') {
+    return flexible ? 'BigNumberish' : 'BigNumber';
   }
 
   return 'any';
@@ -109,7 +110,7 @@ export function getType(
 
 export function generateFunction(
   contract: string,
-  fragment: ethers.utils.FunctionFragment
+  fragment: utils.FunctionFragment
 ) {
   const type = fragment.constant ? 'Call' : 'Send';
   const input = getInput(fragment);
@@ -119,7 +120,7 @@ export function generateFunction(
 
 export function generateFunctions(
   contract: string,
-  fragments: ethers.utils.FunctionFragment[]
+  fragments: utils.FunctionFragment[]
 ) {
   if (!fragments.length) {
     return '';
@@ -160,7 +161,7 @@ export function generateConstructorArgs(fragment: ConstructorFragment) {
 export function generateContractForSolidityArtifact(
   name: string,
   source: string,
-  abi: ethers.utils.Interface,
+  abi: utils.Interface,
   crestproject: string = '@crestproject/ethers'
 ) {
   const functions = generateFunctions(name, Object.values(abi.functions));
@@ -170,7 +171,7 @@ export function generateContractForSolidityArtifact(
   // prettier-ignore
   return `/* eslint-disable */
 // @ts-nocheck
-import { ethers } from 'ethers';
+import { BytesLike, BigNumber, BigNumberish } from 'ethers';
 import { contract, Call, Send, AddressLike, Contract } from '${crestproject}';
 import ${name}Artifact from '${source}';
 
@@ -186,7 +187,7 @@ export const ${name} = contract.fromArtifact<${generic}>(${name}Artifact);`;
 
 export function generateContractForSignatures(
   name: string,
-  abi: ethers.utils.Interface,
+  abi: utils.Interface,
   crestproject: string = '@crestproject/ethers'
 ) {
   const functions = generateFunctions(name, Object.values(abi.functions));
@@ -197,7 +198,7 @@ export function generateContractForSignatures(
   // prettier-ignore
   return `/* eslint-disable */
 // @ts-nocheck
-import { ethers } from 'ethers';
+import { BytesLike, BigNumber, BigNumberish } from 'ethers';
 import { contract, Call, Send, AddressLike, Contract } from '${crestproject}';
 
 ${constructor ? `export type ${name}Args = ${constructor};` : ''}

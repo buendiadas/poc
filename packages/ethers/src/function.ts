@@ -7,7 +7,6 @@ import {
   BigNumber,
   BigNumberish,
   BytesLike,
-  ethers,
   PopulatedTransaction,
   ContractReceipt as EthersContractReceipt,
   ContractTransaction as EthersContractTransaction,
@@ -50,7 +49,7 @@ function enhanceResponse<
     | ConstructorFunction<any> = SendFunction
 >(
   fn: TFunction,
-  response: ethers.ContractTransaction
+  response: EthersContractTransaction
 ): ContractTransaction<TFunction> {
   const wait = response.wait.bind(response);
   const enhanced = (response as any) as ContractTransaction<TFunction>;

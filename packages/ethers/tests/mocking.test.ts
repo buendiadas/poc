@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, BigNumberish, constants, utils } from 'ethers';
 import { Call, Send } from '../src/types';
 import { contract } from '../src/construction';
 import { randomAddress } from '../src/utils/randomAddress';
@@ -9,21 +9,21 @@ import { ERC20 } from './contracts/ERC20';
 describe('contract tagged template literals', () => {
   // prettier-ignore
   interface Token extends Contract<Token> {
-    'allowance': Call<(owner: string, spender: string) => ethers.BigNumber, Token>;
-    'allowance(address,address)': Call<(owner: string, spender: string) => ethers.BigNumber, Token>;
-    'allowance(address,uint)': Call<(owner: string, how: ethers.BigNumberish) => ethers.BigNumber, Token>;
-    'approve': Send<(spender: string, amount: ethers.BigNumberish) => boolean, Token>;
-    'approve(address,uint)': Send<(spender: string, amount: ethers.BigNumberish) => boolean, Token>;
-    'balanceOf': Call<(account: string) => ethers.BigNumber, Token>;
-    'balanceOf(address)': Call<(account: string) => ethers.BigNumber, Token>;
-    'decimals': Call<() => ethers.BigNumber, Token>;
-    'decimals()': Call<() => ethers.BigNumber, Token>;
+    'allowance': Call<(owner: string, spender: string) => BigNumber, Token>;
+    'allowance(address,address)': Call<(owner: string, spender: string) => BigNumber, Token>;
+    'allowance(address,uint)': Call<(owner: string, how: BigNumberish) => BigNumber, Token>;
+    'approve': Send<(spender: string, amount: BigNumberish) => boolean, Token>;
+    'approve(address,uint)': Send<(spender: string, amount: BigNumberish) => boolean, Token>;
+    'balanceOf': Call<(account: string) => BigNumber, Token>;
+    'balanceOf(address)': Call<(account: string) => BigNumber, Token>;
+    'decimals': Call<() => BigNumber, Token>;
+    'decimals()': Call<() => BigNumber, Token>;
     'name': Call<() => string, Token>;
     'name()': Call<() => string, Token>;
     'symbol': Call<() => string, Token>;
     'symbol()': Call<() => string, Token>;
-    'transfer': Send<(to: string, amount: ethers.BigNumberish) => void, Token>;
-    'transfer(address,uint256)': Send<(to: string, amount: ethers.BigNumberish) => void, Token>;
+    'transfer': Send<(to: string, amount: BigNumberish) => void, Token>;
+    'transfer(address,uint256)': Send<(to: string, amount: BigNumberish) => void, Token>;
   }
 
   // prettier-ignore
@@ -50,7 +50,7 @@ describe('contract tagged template literals', () => {
     const token = await Token.mock(signer);
 
     await token.balanceOf.returns(123);
-    const result = await token.balanceOf(ethers.constants.AddressZero);
+    const result = await token.balanceOf(constants.AddressZero);
 
     expect(result.toString()).toBe('123');
   });
@@ -75,21 +75,21 @@ describe('contract tagged template literals', () => {
     const mock = await Token.mock(signer);
 
     await mock.balanceOf
-      .given(ethers.constants.AddressZero)
+      .given(constants.AddressZero)
       .reverts('YOU SHALL NOT PASS!');
 
-    await expect(
-      mock.balanceOf(ethers.constants.AddressZero)
-    ).rejects.toThrowError('Mock revert: YOU SHALL NOT PASS!');
+    await expect(mock.balanceOf(constants.AddressZero)).rejects.toThrowError(
+      'Mock revert: YOU SHALL NOT PASS!'
+    );
   });
 
   it('reverts with function signature on missing mock', async () => {
     const signer = provider.getSigner(0);
     const mock = await Token.mock(signer);
 
-    await expect(
-      mock.balanceOf(ethers.constants.AddressZero)
-    ).rejects.toThrowError('Mock not initialized: balanceOf(address)');
+    await expect(mock.balanceOf(constants.AddressZero)).rejects.toThrowError(
+      'Mock not initialized: balanceOf(address)'
+    );
   });
 
   it('can forward calls', async () => {
@@ -106,7 +106,7 @@ describe('contract tagged template literals', () => {
     const mock = await ERC20.mock(signer);
 
     const spender = randomAddress();
-    const amount = ethers.utils.parseEther('1');
+    const amount = utils.parseEther('1');
     await expect(
       mock.forward(token.approve, spender, amount)
     ).resolves.toMatchObject({
@@ -122,11 +122,11 @@ describe('contract tagged template literals', () => {
     let result;
 
     await token.balanceOf.returns(123);
-    result = await token.balanceOf(ethers.constants.AddressZero);
+    result = await token.balanceOf(constants.AddressZero);
     expect(result.toString()).toBe('123');
 
     await token.balanceOf.reset();
-    result = token.balanceOf(ethers.constants.AddressZero);
+    result = token.balanceOf(constants.AddressZero);
     await expect(result).rejects.toThrowError(
       'Mock not initialized: balanceOf(address)'
     );
@@ -139,19 +139,19 @@ describe('contract tagged template literals', () => {
     let result;
 
     await token.balanceOf.returns(123);
-    result = await token.balanceOf(ethers.constants.AddressZero);
+    result = await token.balanceOf(constants.AddressZero);
     expect(result.toString()).toBe('123');
 
-    await token.balanceOf.given(ethers.constants.AddressZero).returns(456);
-    result = await token.balanceOf(ethers.constants.AddressZero);
+    await token.balanceOf.given(constants.AddressZero).returns(456);
+    result = await token.balanceOf(constants.AddressZero);
     expect(result.toString()).toBe('456');
 
-    await token.balanceOf.given(ethers.constants.AddressZero).reset();
-    result = await token.balanceOf(ethers.constants.AddressZero);
+    await token.balanceOf.given(constants.AddressZero).reset();
+    result = await token.balanceOf(constants.AddressZero);
     expect(result.toString()).toBe('123');
 
     await token.balanceOf.reset();
-    result = token.balanceOf(ethers.constants.AddressZero);
+    result = token.balanceOf(constants.AddressZero);
     await expect(result).rejects.toThrowError(
       'Mock not initialized: balanceOf(address)'
     );

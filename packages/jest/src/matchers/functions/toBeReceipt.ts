@@ -1,6 +1,6 @@
-import { ethers } from 'ethers';
+import { ContractReceipt } from 'ethers';
 
-function isReceipt(value: any): value is ethers.ContractReceipt {
+function isReceipt(value: any): value is ContractReceipt {
   if (typeof value === 'object') {
     return (
       value.hasOwnProperty('transactionHash') &&

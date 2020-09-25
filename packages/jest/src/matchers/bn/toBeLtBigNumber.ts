@@ -1,10 +1,10 @@
-import { ethers } from 'ethers';
+import { BigNumberish } from 'ethers';
 import { ensureBigNumbers, printBigNumber } from './utils';
 
 export function toBeLtBigNumber(
   this: jest.MatcherContext,
-  received: ethers.BigNumberish,
-  expected: ethers.BigNumberish
+  received: BigNumberish,
+  expected: BigNumberish
 ) {
   return ensureBigNumbers(this, received, expected, (received, expected) => {
     const receivedStr = this.utils.printReceived(printBigNumber(received));

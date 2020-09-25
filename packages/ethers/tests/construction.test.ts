@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, BigNumberish, constants } from 'ethers';
 import { contract } from '../src/construction';
 import { Call, Send } from '../src/types';
 import { Contract } from '../src/contract';
@@ -9,21 +9,21 @@ import { provider } from './provider';
 describe('contract tagged template literals', () => {
   // prettier-ignore
   interface Token extends Contract<Token> {
-    'allowance': Call<(owner: string, spender: string) => ethers.BigNumber>;
-    'allowance(address,address)': Call<(owner: string, spender: string) => ethers.BigNumber>;
-    'allowance(address,uint)': Call<(owner: string, how: ethers.BigNumberish) => ethers.BigNumber>;
-    'approve': Send<(spender: string, amount: ethers.BigNumberish) => boolean>;
-    'approve(address,uint)': Send<(spender: string, amount: ethers.BigNumberish) => boolean>;
-    'balanceOf': Call<(account: string) => ethers.BigNumber>;
-    'balanceOf(address)': Call<(account: string) => ethers.BigNumber>;
-    'decimals': Call<() => ethers.BigNumber>;
-    'decimals()': Call<() => ethers.BigNumber>;
+    'allowance': Call<(owner: string, spender: string) => BigNumber>;
+    'allowance(address,address)': Call<(owner: string, spender: string) => BigNumber>;
+    'allowance(address,uint)': Call<(owner: string, how: BigNumberish) => BigNumber>;
+    'approve': Send<(spender: string, amount: BigNumberish) => boolean>;
+    'approve(address,uint)': Send<(spender: string, amount: BigNumberish) => boolean>;
+    'balanceOf': Call<(account: string) => BigNumber>;
+    'balanceOf(address)': Call<(account: string) => BigNumber>;
+    'decimals': Call<() => BigNumber>;
+    'decimals()': Call<() => BigNumber>;
     'name': Call<() => string>;
     'name()': Call<() => string>;
     'symbol': Call<() => string>;
     'symbol()': Call<() => string>;
-    'transfer': Send<(to: string, amount: ethers.BigNumberish) => void>;
-    'transfer(address,uint256)': Send<(to: string, amount: ethers.BigNumberish) => void>;
+    'transfer': Send<(to: string, amount: BigNumberish) => void>;
+    'transfer(address,uint256)': Send<(to: string, amount: BigNumberish) => void>;
   }
 
   // prettier-ignore
@@ -38,7 +38,7 @@ describe('contract tagged template literals', () => {
     function transfer(address recipient, uint256 amount) returns (bool)
   `;
 
-  const address = ethers.constants.AddressZero;
+  const address = constants.AddressZero;
   const token = new Token(address, provider.getSigner(0));
 
   it('factory creates a contract instance', async () => {

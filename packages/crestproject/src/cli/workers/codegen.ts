@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { ethers } from 'ethers';
+import { utils } from 'ethers';
 import {
   formatOutput,
   generateContractForSolidityArtifact,
@@ -25,7 +25,7 @@ export async function generate(
 
   const imports = '@crestproject/ethers';
   const name = path.basename(source).split('.').shift()!;
-  const abi = new ethers.utils.Interface(contract.abi);
+  const abi = new utils.Interface(contract.abi);
 
   let content: string;
   if (type === 'signatures') {

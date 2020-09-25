@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { utils } from 'ethers';
 import { BuidlerProvider } from '@crestproject/crestproject';
 import { AmIRichAlready } from './contracts/AmIRichAlready';
 import { BasicToken } from './contracts/BasicToken';
@@ -9,7 +9,7 @@ async function deploy(provider: BuidlerProvider) {
     provider.getSigner(1),
   ]);
 
-  const balance = ethers.utils.parseEther('100000000000000');
+  const balance = utils.parseEther('100000000000000');
   const token = await BasicToken.deploy(rich, balance);
   const contract = await AmIRichAlready.deploy(rich, token.address);
 
@@ -32,7 +32,7 @@ describe('example', () => {
     await expect(check.from(rich).call()).resolves.toBeTruthy();
     await expect(check.from(poor).call()).resolves.toBeFalsy();
 
-    const richness = ethers.utils.parseEther('10000000');
+    const richness = utils.parseEther('10000000');
     await token.transfer(poor, richness);
     await expect(check.from(poor).call()).resolves.toBeTruthy();
     await expect(check.from(rich).call()).resolves.toBeTruthy();

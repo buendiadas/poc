@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { utils } from 'ethers';
 import { ContractFunction, resolveArguments } from '@crestproject/ethers';
 import { ensureParameters } from './utils';
 import { forceFail } from '../utils';
@@ -12,7 +12,7 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
     this,
     subject,
     async (history, contract, fragment) => {
-      if (!ethers.utils.FunctionFragment.isFunctionFragment(fragment)) {
+      if (!utils.FunctionFragment.isFunctionFragment(fragment)) {
         const error =
           'Missing or invalid function fragment for call history assertion';
         return forceFail(this, subject, error);

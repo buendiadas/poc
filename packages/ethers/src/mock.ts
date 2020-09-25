@@ -1,4 +1,4 @@
-import { ethers, utils } from 'ethers';
+import { utils, ContractReceipt as EthersContractReceipt } from 'ethers';
 import { Contract } from './contract';
 import { Doppelganger } from './doppelganger';
 import {
@@ -14,10 +14,10 @@ import { resolveArguments } from './utils/resolveArguments';
 function stub<TContract extends Contract = Contract>(
   doppelganger: Doppelganger,
   contract: TContract,
-  func: ethers.utils.FunctionFragment,
+  func: utils.FunctionFragment,
   params?: any[]
 ) {
-  const encoder = ethers.utils.defaultAbiCoder;
+  const encoder = utils.defaultAbiCoder;
 
   return {
     given: (...input: any) => stub(doppelganger, contract, func, input),
@@ -191,9 +191,9 @@ export type MockContract<TContract extends Contract = Contract> = {
 };
 
 export type Stub<TOutput extends any[] = any[]> = {
-  returns(...args: TOutput): Promise<ethers.ContractReceipt>;
-  reverts(reason: string): Promise<ethers.ContractReceipt>;
-  reset(): Promise<ethers.ContractReceipt>;
+  returns(...args: TOutput): Promise<EthersContractReceipt>;
+  reverts(reason: string): Promise<EthersContractReceipt>;
+  reset(): Promise<EthersContractReceipt>;
 };
 
 export type RefinableStub<
@@ -201,5 +201,5 @@ export type RefinableStub<
   TOutput extends any[] = any[]
 > = Stub<TOutput> & {
   given(...args: TInput): Stub<TOutput>;
-  reset(): Promise<ethers.ContractReceipt>;
+  reset(): Promise<EthersContractReceipt>;
 };
