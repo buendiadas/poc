@@ -37,6 +37,12 @@ export function deploy<
 export class Contract<TContract extends Contract = any> {
   public readonly abi: Interface;
 
+  // @ts-ignore
+  private readonly __TYPE__ = 'CONTRACT';
+  public static isContract(contract: any): contract is Contract {
+    return contract?.__TYPE__ === 'CONTRACT';
+  }
+
   private readonly _signer?: Signer = undefined;
   public get signer() {
     return this._signer;
@@ -98,15 +104,15 @@ export class Contract<TContract extends Contract = any> {
           },
           apply: (_, __, args) => {
             const fn = instance.args.apply(instance, args);
-            if (fn instanceof ConstructorFunction) {
+            if (ConstructorFunction.isConstructorFunction(fn)) {
               return fn.send();
             }
 
-            if (fn instanceof SendFunction) {
+            if (SendFunction.isSendFunction(fn)) {
               return fn.send();
             }
 
-            if (fn instanceof CallFunction) {
+            if (CallFunction.isCallFunction(fn)) {
               return fn.call();
             }
 

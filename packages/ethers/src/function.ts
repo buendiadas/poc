@@ -88,7 +88,7 @@ export function isFunctionOptions<TArgs extends any[] = []>(
       return false;
     }
 
-    if (value instanceof Contract) {
+    if (Contract.isContract(value)) {
       return false;
     }
 
@@ -130,6 +130,14 @@ export class ContractFunction<
   TFragment extends Fragment = Fragment,
   TContract extends Contract = Contract
 > {
+  // @ts-ignore
+  protected readonly __TYPE__: string = 'FUNCTION';
+  public static isContractFunction(
+    fn: any
+  ): fn is ContractFunction<any, any, any> {
+    return fn?.__TYPE__?.startsWith('FUNCTION');
+  }
+
   public static create<
     TArgs extends any[] = [],
     TFragment extends Fragment = Fragment,
@@ -241,6 +249,12 @@ export class CallFunction<
   TReturn extends any = unknown,
   TContract extends Contract = Contract
 > extends ContractFunction<TArgs, FunctionFragment, TContract> {
+  // @ts-ignore
+  protected readonly __TYPE__: string = 'FUNCTION:CALL';
+  public static isCallFunction(fn: any): fn is CallFunction<any, any, any> {
+    return fn?.__TYPE__ === 'FUNCTION:CALL';
+  }
+
   protected populated?: Promise<PopulatedTransaction>;
 
   public async call(): Promise<TReturn> {
@@ -282,11 +296,17 @@ export class CallFunction<
             args
           );
 
+          const from = this.options.from
+            ? this.options.from
+            : typeof this.options.from === 'undefined' && this.contract.signer
+            ? this.contract.signer
+            : undefined;
+
           resolve({
             to: this.contract.address,
             data,
-            ...(this.options.from && {
-              from: await resolveAddress(this.options.from),
+            ...(from && {
+              from: await resolveAddress(from),
             }),
             ...(this.options.nonce && {
               nonce: BigNumber.from(this.options.nonce).toNumber(),
@@ -316,6 +336,12 @@ export class SendFunction<
   TReturn extends any = void,
   TContract extends Contract = Contract
 > extends CallFunction<TArgs, TReturn, TContract> {
+  // @ts-ignore
+  protected readonly __TYPE__: string = 'FUNCTION:SEND';
+  public static isSendFunction(fn: any): fn is SendFunction<any, any, any> {
+    return fn?.__TYPE__ === 'FUNCTION:SEND';
+  }
+
   public async estimate(): Promise<BigNumber> {
     const tx = await this.populate();
     if (this.contract.provider == null) {
@@ -359,6 +385,14 @@ export class ConstructorFunction<
   TArgs extends any[] = [],
   TContract extends Contract = Contract
 > extends ContractFunction<TArgs, ConstructorFragment, TContract> {
+  // @ts-ignore
+  protected readonly __TYPE__: string = 'FUNCTION:CONSTRUCTOR';
+  public static isConstructorFunction(
+    fn: any
+  ): fn is ConstructorFunction<any, any> {
+    return fn?.__TYPE__ === 'FUNCTION:CONSTRUCTOR';
+  }
+
   protected populated?: Promise<PopulatedTransaction>;
 
   public async call(): Promise<string> {
@@ -426,8 +460,17 @@ export class ConstructorFunction<
             ])
           );
 
+          const from = this.options.from
+            ? this.options.from
+            : typeof this.options.from === 'undefined' && this.contract.signer
+            ? this.contract.signer
+            : undefined;
+
           resolve({
             data,
+            ...(from && {
+              from: await resolveAddress(from),
+            }),
             ...(this.options.nonce && {
               nonce: BigNumber.from(this.options.nonce).toNumber(),
             }),

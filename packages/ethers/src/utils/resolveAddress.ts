@@ -3,7 +3,7 @@ import { Contract } from '../contract';
 import { AddressLike, AddressLikeSync } from '../types';
 
 export async function resolveAddress(value: AddressLike): Promise<string> {
-  if (value instanceof Contract) {
+  if (Contract.isContract(value)) {
     return resolveAddress(value.address);
   }
 
@@ -15,7 +15,7 @@ export async function resolveAddress(value: AddressLike): Promise<string> {
 }
 
 export function resolveAddressSync(value: AddressLikeSync): string {
-  if (value instanceof Contract) {
+  if (Contract.isContract(value)) {
     return resolveAddressSync(value.address);
   }
 

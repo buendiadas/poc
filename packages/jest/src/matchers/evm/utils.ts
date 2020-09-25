@@ -21,20 +21,18 @@ export function ensureParameters<
   subject: TSubject,
   callback: MatcherCallback<TReturn>
 ): TReturn {
-  const fn =
-    subject instanceof ContractFunction
-      ? subject
-      : typeof subject === 'function' &&
-        (subject as ContractFunction).ref instanceof ContractFunction
-      ? (subject as ContractFunction).ref
-      : undefined;
+  const fn = ContractFunction.isContractFunction(subject)
+    ? subject
+    : typeof subject === 'function' &&
+      ContractFunction.isContractFunction((subject as ContractFunction)?.ref)
+    ? (subject as ContractFunction).ref
+    : undefined;
 
-  const contract =
-    fn instanceof ContractFunction
-      ? fn.contract
-      : subject instanceof Contract
-      ? subject
-      : undefined;
+  const contract = ContractFunction.isContractFunction(fn)
+    ? fn.contract
+    : Contract.isContract(subject)
+    ? subject
+    : undefined;
 
   if (!contract) {
     const error =
@@ -49,6 +47,8 @@ export function ensureParameters<
     return forceFail(context, subject, error) as TReturn;
   }
 
-  const fragment = fn instanceof ContractFunction ? fn.fragment : undefined;
+  const fragment = ContractFunction.isContractFunction(fn)
+    ? fn.fragment
+    : undefined;
   return callback(history, contract, fragment);
 }

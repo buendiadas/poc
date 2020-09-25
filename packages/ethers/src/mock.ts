@@ -96,19 +96,18 @@ export async function mock<TContract extends Contract = Contract>(
       | CallFunction<TArgs, TReturn, TContract>,
     ...params: any
   ): Promise<any> => {
-    const fn =
-      subject instanceof ContractFunction
-        ? subject
-        : typeof subject === 'function' &&
-          (subject as ContractFunction).ref instanceof ContractFunction
-        ? (subject as ContractFunction).ref
-        : undefined;
+    const fn = ContractFunction.isContractFunction(subject)
+      ? subject
+      : typeof subject === 'function' &&
+        ContractFunction.isContractFunction(subject as ContractFunction)
+      ? (subject as ContractFunction).ref
+      : undefined;
 
     if (fn == null) {
       throw new Error('Not a valid contract function');
     }
 
-    if (fn instanceof ConstructorFunction) {
+    if (ConstructorFunction.isConstructorFunction(fn)) {
       throw new Error('Constructor functions are not supported');
     }
 
@@ -124,7 +123,7 @@ export async function mock<TContract extends Contract = Contract>(
       : fn.contract.abi.getSighash(fragment);
 
     const forward = doppelganger.__doppelganger__mockForward.args(data, callee);
-    if (fn instanceof SendFunction) {
+    if (SendFunction.isSendFunction(fn)) {
       const receipt = (await forward.send()) as any;
       const refined: ContractReceipt<SendFunction<
         TArgs,
@@ -151,7 +150,7 @@ export async function mock<TContract extends Contract = Contract>(
     get: (target, prop: string, receiver) => {
       const value = Reflect.get(target, prop, receiver);
       const fn = value?.ref;
-      if (!(fn instanceof ContractFunction)) {
+      if (!ContractFunction.isContractFunction(fn)) {
         return value;
       }
 
