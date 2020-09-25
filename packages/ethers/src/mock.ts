@@ -144,7 +144,7 @@ export async function mock<TContract extends Contract = Contract>(
   };
 
   const mocked = contract.attach(doppelganger.address);
-  (mocked as any).forward = forward;
+  mocked.forward = forward;
 
   const proxy = new Proxy(mocked, {
     get: (target, prop: string, receiver) => {

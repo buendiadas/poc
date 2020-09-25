@@ -38,7 +38,7 @@ export class Contract<TContract extends Contract = any> {
   public readonly abi: Interface;
 
   // @ts-ignore
-  private readonly __TYPE__ = 'CONTRACT';
+  private readonly __TYPE__?: string = 'CONTRACT';
   public static isContract(contract: any): contract is Contract {
     return contract?.__TYPE__ === 'CONTRACT';
   }

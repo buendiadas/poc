@@ -131,7 +131,7 @@ export class ContractFunction<
   TContract extends Contract = Contract
 > {
   // @ts-ignore
-  protected readonly __TYPE__: string = 'FUNCTION';
+  protected readonly __TYPE__?: string = 'FUNCTION';
   public static isContractFunction(
     fn: any
   ): fn is ContractFunction<any, any, any> {
@@ -250,7 +250,7 @@ export class CallFunction<
   TContract extends Contract = Contract
 > extends ContractFunction<TArgs, FunctionFragment, TContract> {
   // @ts-ignore
-  protected readonly __TYPE__: string = 'FUNCTION:CALL';
+  protected readonly __TYPE__?: string = 'FUNCTION:CALL';
   public static isCallFunction(fn: any): fn is CallFunction<any, any, any> {
     return fn?.__TYPE__ === 'FUNCTION:CALL';
   }
@@ -337,7 +337,7 @@ export class SendFunction<
   TContract extends Contract = Contract
 > extends CallFunction<TArgs, TReturn, TContract> {
   // @ts-ignore
-  protected readonly __TYPE__: string = 'FUNCTION:SEND';
+  protected readonly __TYPE__?: string = 'FUNCTION:SEND';
   public static isSendFunction(fn: any): fn is SendFunction<any, any, any> {
     return fn?.__TYPE__ === 'FUNCTION:SEND';
   }
@@ -386,7 +386,7 @@ export class ConstructorFunction<
   TContract extends Contract = Contract
 > extends ContractFunction<TArgs, ConstructorFragment, TContract> {
   // @ts-ignore
-  protected readonly __TYPE__: string = 'FUNCTION:CONSTRUCTOR';
+  protected readonly __TYPE__?: string = 'FUNCTION:CONSTRUCTOR';
   public static isConstructorFunction(
     fn: any
   ): fn is ConstructorFunction<any, any> {
