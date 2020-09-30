@@ -1,5 +1,5 @@
 {
-  "name": "@crestproject/jest",
+  "name": "@crestproject/buidler",
   "version": "0.0.50",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
@@ -8,8 +8,7 @@
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
-    "src",
-    "jest-preset.js"
+    "src"
   ],
   "publishConfig": {
     "access": "public"
@@ -29,19 +28,17 @@
     "start": "tsdx watch",
     "build": "tsdx build --target node --format cjs && tsc --project tsconfig.preset.json",
     "test": "tsdx test",
-    "lint": "tsdx lint --ignore-pattern tests/contracts/**/*.ts",
+    "lint": "tsdx lint src tests --ignore-pattern tests/contracts/**/*.ts",
     "format": "yarn lint --fix",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@crestproject/ethers": "^0.0.50",
     "@crestproject/evm": "^0.0.50",
-    "ethers": "^5.0.12",
-    "ts-jest": "^26.1.3"
+    "@nomiclabs/buidler": "^1.3.8",
+    "ethers": "^5.0.12"
   },
   "devDependencies": {
-    "@crestproject/buidler": "^0.0.50",
-    "@types/fs-extra": "^9.0.1",
     "eslint-plugin-prettier": "3.1.4",
     "husky": "^4.3.0",
     "prettier": "^2.1.1",
@@ -59,11 +56,5 @@
     "semi": true,
     "singleQuote": true,
     "trailingComma": "es5"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "setupFilesAfterEnv": [
-      "<rootDir>/tests/setup.ts"
-    ]
   }
 }

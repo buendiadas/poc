@@ -1,4 +1,4 @@
-import type { EthereumProvider } from '@nomiclabs/buidler/types';
+import type { EthereumProvider } from './imports';
 import type { EventEmitter } from 'events';
 
 export function addListener(

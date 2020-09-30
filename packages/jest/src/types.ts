@@ -1,5 +1,5 @@
 import { BigNumberish, utils } from 'ethers';
-import { BuidlerProvider } from '@crestproject/evm';
+import { EthereumTestnetProvider } from '@crestproject/evm';
 
 export type EthereumMatchers<R> = {
   toBeProperAddress(): R;
@@ -26,7 +26,7 @@ export type EthereumMatchers<R> = {
 
 declare global {
   namespace globalThis {
-    var provider: BuidlerProvider;
+    var provider: EthereumTestnetProvider;
   }
 
   namespace jest {

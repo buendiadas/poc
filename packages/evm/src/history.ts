@@ -1,13 +1,13 @@
 import { utils } from 'ethers';
 import { Contract } from '@crestproject/ethers';
 
-export interface Message {
+export interface EvmMessage {
   to: Buffer;
   data: Buffer;
 }
 
 export class History {
-  private readonly history = new Map<string, string[]>();
+  private history = new Map<string, string[]>();
 
   public constructor(seed?: Map<string, string[]>) {
     if (seed != null) {
@@ -17,6 +17,10 @@ export class History {
 
   public clone() {
     return new History(this.history);
+  }
+
+  public override(history: History) {
+    this.history = new Map(history.history);
   }
 
   public clear() {
@@ -41,7 +45,7 @@ export class History {
     return this.history.get(checksum) ?? [];
   }
 
-  public record(message: Message) {
+  public record(message: EvmMessage) {
     const to = message.to ? utils.hexlify(message.to) : '0x';
     if (to === '0x') {
       return;

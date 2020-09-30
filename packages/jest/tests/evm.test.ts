@@ -1,5 +1,5 @@
 import { network } from '@nomiclabs/buidler';
-import { BuidlerProvider } from '@crestproject/evm';
+import { BuidlerProvider } from '@crestproject/buidler';
 import { ERC20 } from './contracts/ERC20';
 
 async function snapshot(provider: BuidlerProvider) {
@@ -47,7 +47,7 @@ describe('evm', () => {
 
     await mock.transfer.given(someone, '123').returns(true);
     await expect(
-      mock.transfer.args(someone, '123').call(),
+      mock.transfer.args(someone, '123').call()
     ).resolves.toBeTruthy();
 
     expect(mock.transfer).toHaveBeenCalledOnContract();

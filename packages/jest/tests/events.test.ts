@@ -1,7 +1,9 @@
 import { utils } from 'ethers';
 import { network } from '@nomiclabs/buidler';
-import { BuidlerProvider } from '@crestproject/evm';
+import { BuidlerProvider } from '@crestproject/buidler';
 import { ERC20 } from './contracts/ERC20';
+
+const provider = new BuidlerProvider(network.provider);
 
 async function snapshot(provider: BuidlerProvider) {
   const [deployer, someone] = await provider.listAccounts();
@@ -23,8 +25,6 @@ async function snapshot(provider: BuidlerProvider) {
 let tx;
 
 describe('events', () => {
-  const provider = new BuidlerProvider(network.provider);
-
   it('toHaveEmitted', async () => {
     const { token, someone } = await provider.snapshot(snapshot);
     const amount = utils.parseEther('100');

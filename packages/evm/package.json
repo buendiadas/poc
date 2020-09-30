@@ -5,7 +5,6 @@
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
   "main": "dist/index.js",
-  "module": "dist/evm.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
@@ -27,15 +26,14 @@
   "scripts": {
     "prepare": "yarn build",
     "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "tsdx build --target node --format cjs",
     "test": "tsdx test",
-    "lint": "tsdx lint src tests --ignore-pattern tests/contracts/**/*.ts",
+    "lint": "tsdx lint src tests",
     "format": "yarn lint --fix",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@crestproject/ethers": "^0.0.50",
-    "@nomiclabs/buidler": "^1.3.8",
     "ethers": "^5.0.12"
   },
   "devDependencies": {

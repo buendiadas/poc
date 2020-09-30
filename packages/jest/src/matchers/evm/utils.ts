@@ -1,6 +1,6 @@
 import { utils } from 'ethers';
 import { Contract, ContractFunction } from '@crestproject/ethers';
-import { BuidlerProvider, History } from '@crestproject/evm';
+import { EthereumTestnetProvider, History } from '@crestproject/evm';
 import { forceFail } from '../utils';
 
 export type MatcherCallback<
@@ -40,7 +40,7 @@ export function ensureParameters<
     return forceFail(context, subject, error) as TReturn;
   }
 
-  const history = (contract?.provider as BuidlerProvider)?.history;
+  const history = (contract?.provider as EthereumTestnetProvider)?.history;
   if (!history) {
     const error =
       'Invalid or unsupported provider for contract call history assertion';
