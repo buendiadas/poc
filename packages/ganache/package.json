@@ -1,0 +1,60 @@
+{
+  "name": "@crestproject/ganache",
+  "version": "0.0.52",
+  "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
+  "license": "MIT",
+  "homepage": "https://github.com/crestproject",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "jest-preset.js"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crestproject/poc"
+  },
+  "bugs": {
+    "url": "https://github.com/crestproject/poc/issues"
+  },
+  "contributors": [
+    "Sebastian Siemssen <fubhy@fubhy.com>"
+  ],
+  "scripts": {
+    "prepare": "yarn build",
+    "start": "tsdx watch",
+    "build": "tsdx build --target node --format cjs && tsc --project tsconfig.preset.json",
+    "lint": "tsdx lint src tests --ignore-pattern tests/contracts/**/*.ts",
+    "format": "yarn lint --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@crestproject/ethers": "^0.0.52",
+    "@crestproject/evm": "^0.0.52",
+    "ethers": "^5.0.12",
+    "ganache-core": "^2.12.1"
+  },
+  "devDependencies": {
+    "eslint-plugin-prettier": "3.1.4",
+    "husky": "^4.3.0",
+    "prettier": "^2.1.1",
+    "tsdx": "^0.13.3",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  }
+}

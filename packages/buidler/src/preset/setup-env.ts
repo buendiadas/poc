@@ -1,4 +1,6 @@
 import NodeEnvironment from 'jest-environment-node';
+import { config } from '@nomiclabs/buidler';
+import { BuidlerProvider, addCompilationResult } from '@crestproject/buidler';
 import {
   buidlerNetworkName,
   createProvider as createProviderInternal,
@@ -6,8 +8,6 @@ import {
   EthereumProvider,
   ResolvedBuidlerConfig,
 } from '../imports';
-import { config } from '@nomiclabs/buidler';
-import { BuidlerProvider, addCompilationResult } from '@crestproject/buidler';
 
 function createProvider(config: ResolvedBuidlerConfig) {
   const compilerVersion = config.solc.version;
