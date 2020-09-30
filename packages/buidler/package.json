@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/buidler",
-  "version": "0.0.50",
+  "version": "0.0.51",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -33,8 +33,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@crestproject/ethers": "^0.0.50",
-    "@crestproject/evm": "^0.0.50",
+    "@crestproject/ethers": "^0.0.51",
+    "@crestproject/evm": "^0.0.51",
     "@nomiclabs/buidler": "^1.3.8",
     "ethers": "^5.0.12"
   },
