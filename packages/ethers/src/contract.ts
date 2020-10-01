@@ -36,6 +36,7 @@ export function deploy<
 // TODO: Add types and proxies for event handling.
 export class Contract<TContract extends Contract = any> {
   public readonly abi: Interface;
+  public deployment?: ContractReceipt<ConstructorFunction<any, TContract>>;
 
   // @ts-ignore
   private readonly __TYPE__?: string = 'CONTRACT';

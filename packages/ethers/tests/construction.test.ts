@@ -5,6 +5,7 @@ import { Contract } from '../src/contract';
 import { SendFunction, CallFunction } from '../src/function';
 import { randomAddress } from '../src/utils/randomAddress';
 import { provider } from './provider';
+import { ERC20 } from './contracts/ERC20';
 
 describe('contract tagged template literals', () => {
   // prettier-ignore
@@ -45,14 +46,16 @@ describe('contract tagged template literals', () => {
     expect(token).toBeInstanceOf(Token);
   });
 
-  it('shortcut directly invokes call for transactions', () => {
-    expect(token.allowance(randomAddress(), randomAddress())).toBeInstanceOf(
-      Promise
-    );
+  it('shortcut directly invokes call for transactions', async () => {
+    const call = token.allowance(randomAddress(), randomAddress());
+    expect(call).toBeInstanceOf(Promise);
+    await expect(call).rejects.toThrowError();
   });
 
-  it('shortcut directly invokes send for transactions', () => {
-    expect(token.transfer(randomAddress(), 123)).toBeInstanceOf(Promise);
+  it('shortcut directly invokes send for transactions', async () => {
+    const call = token.transfer(randomAddress(), 123);
+    expect(call).toBeInstanceOf(Promise);
+    await expect(call).resolves.toMatchObject({});
   });
 
   it('shortcut syntax allows chaining methods', () => {
@@ -91,5 +94,16 @@ describe('contract tagged template literals', () => {
     const allowance = token.allowance;
     expect(() => allowance.attach(compatible as any)).not.toThrow();
     expect(allowance.attach(compatible as any)).toBeInstanceOf(CallFunction);
+  });
+
+  it('can access receipt of deployment', async () => {
+    const signer = provider.getSigner(0);
+    const token = ERC20.deploy(signer, 'My Token', 'MTOK');
+
+    await expect(
+      token.then((contract) => contract.deployment)
+    ).resolves.toMatchObject({
+      contractAddress: expect.stringMatching(/^0x/),
+    });
   });
 });

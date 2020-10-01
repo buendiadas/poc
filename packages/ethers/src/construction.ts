@@ -54,6 +54,10 @@ export class GenericContractFactory {
     }
 
     class SpecializedContract extends Contract<TContract> {
+      public static get bytecode() {
+        return bytecode;
+      }
+
       public static get abi() {
         return resolveAbi();
       }
@@ -62,7 +66,9 @@ export class GenericContractFactory {
         const address = constants.AddressZero;
         const contract = new SpecializedContract(address, signer) as TContract;
         const receipt = await deploy(contract, bytecode ?? '0x', ...args);
-        return contract.attach(receipt.contractAddress);
+        const instance = contract.attach(receipt.contractAddress);
+        instance.deployment = receipt;
+        return instance;
       }
 
       public static mock(signer: Signer) {
@@ -153,8 +159,8 @@ export class GenericContractFactory {
     TConstructorArgs extends any[] = []
   >(artifact: SolidityCompilerOutput) {
     const json = typeof artifact === 'string' ? JSON.parse(artifact) : artifact;
-    const abi = json?.abi;
-    const bytecode = json?.bytecode;
+    const abi = json?.abi as JsonFragment[];
+    const bytecode = json?.bytecode as string;
 
     let resolved: utils.Interface;
     function resolveAbi() {
@@ -166,6 +172,10 @@ export class GenericContractFactory {
     }
 
     class SpecializedContract extends Contract<TContract> {
+      public static get bytecode() {
+        return bytecode;
+      }
+
       public static get abi() {
         return resolveAbi();
       }
@@ -174,7 +184,9 @@ export class GenericContractFactory {
         const address = constants.AddressZero;
         const contract = new SpecializedContract(address, signer) as TContract;
         const receipt = await deploy(contract, bytecode ?? '0x', ...args);
-        return contract.attach(receipt.contractAddress);
+        const instance = contract.attach(receipt.contractAddress);
+        instance.deployment = receipt;
+        return instance;
       }
 
       public static mock(signer: Signer) {
