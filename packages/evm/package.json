@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/evm",
-  "version": "0.0.53",
+  "version": "0.0.54",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -33,7 +33,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@crestproject/ethers": "^0.0.53",
+    "@crestproject/ethers": "^0.0.54",
     "ethers": "^5.0.12"
   },
   "devDependencies": {
