@@ -1,9 +1,9 @@
 import { utils } from 'ethers';
-import { BuidlerProvider } from '@crestproject/crestproject';
+import { EthereumTestnetProvider } from '@crestproject/crestproject';
 import { AmIRichAlready } from './contracts/AmIRichAlready';
 import { BasicToken } from './contracts/BasicToken';
 
-async function deploy(provider: BuidlerProvider) {
+async function deploy(provider: EthereumTestnetProvider) {
   const [rich, poor] = await Promise.all([
     provider.getSigner(0),
     provider.getSigner(1),
