@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/artifactory",
-  "version": "0.0.57",
+  "version": "0.0.58",
   "private": true,
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -9,7 +9,7 @@
     "build": "buidler compile && node codegen && tsdx build --target node --format cjs"
   },
   "devDependencies": {
-    "@crestproject/codegen": "^0.0.57",
+    "@crestproject/codegen": "^0.0.58",
     "@nomiclabs/buidler": "^1.4.8",
     "eslint-plugin-prettier": "3.1.4",
     "husky": "^4.3.0",

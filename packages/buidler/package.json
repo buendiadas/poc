@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/buidler",
-  "version": "0.0.57",
+  "version": "0.0.58",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -34,11 +34,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@crestproject/ethers": "^0.0.57",
-    "@crestproject/evm": "^0.0.57"
+    "@crestproject/ethers": "^0.0.58",
+    "@crestproject/evm": "^0.0.58"
   },
   "devDependencies": {
-    "@crestproject/artifactory": "^0.0.57",
+    "@crestproject/artifactory": "^0.0.58",
     "@nomiclabs/buidler": "^1.4.8",
     "eslint-plugin-prettier": "3.1.4",
     "ethers": "^5.0.18",
