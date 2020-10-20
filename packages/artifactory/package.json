@@ -10,13 +10,13 @@
   },
   "devDependencies": {
     "@crestproject/codegen": "^0.0.57",
-    "@nomiclabs/buidler": "^1.3.8",
+    "@nomiclabs/buidler": "^1.4.8",
     "eslint-plugin-prettier": "3.1.4",
     "husky": "^4.3.0",
-    "prettier": "^2.1.1",
-    "tsdx": "^0.13.3",
-    "tslib": "^2.0.1",
-    "typescript": "^4.0.2"
+    "prettier": "^2.1.2",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.0.3",
+    "typescript": "^4.0.3"
   },
   "resolutions": {
     "@typescript-eslint/parser": "^4.1.0",
