@@ -1,5 +1,6 @@
 module.exports = {
-  setupFilesAfterEnv: [require.resolve('./dist/preset/setup-after-env')],
+  setupFilesAfterEnv: [require.resolve('./jest-setup')],
+  testTimeout: 60000,
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
   },

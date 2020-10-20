@@ -1,22 +1,16 @@
 {
-  "name": "@crestproject/example",
+  "name": "@crestproject/artifactory",
   "version": "0.0.56",
   "private": true,
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "prepare": "yarn build",
-    "compile": "buidler compile",
-    "codegen": "crestproject codegen artifacts/**/*.json tests/contracts",
-    "build": "yarn compile && yarn codegen",
-    "test": "jest",
-    "lint": "tsdx lint src tests --ignore-pattern tests/contracts/**/*.ts",
-    "format": "yarn lint --fix",
-    "typecheck": "tsc --noEmit"
+    "build": "buidler compile && node codegen && tsdx build --target node --format cjs"
   },
   "devDependencies": {
-    "@crestproject/buidler": "^0.0.56",
-    "@crestproject/crestproject": "^0.0.56",
-    "@crestproject/ganache": "^0.0.56",
-    "@openzeppelin/contracts": "^3.2.0",
+    "@crestproject/codegen": "^0.0.56",
+    "@nomiclabs/buidler": "^1.3.8",
     "eslint-plugin-prettier": "3.1.4",
     "husky": "^4.3.0",
     "prettier": "^2.1.1",

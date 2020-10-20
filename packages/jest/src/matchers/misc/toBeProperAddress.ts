@@ -1,18 +1,20 @@
-export function toBeProperAddress(this: jest.MatcherContext, received: string) {
+import { printReceived, matcherHint } from 'jest-matcher-utils';
+
+export function toBeProperAddress(received: string) {
   const pass = new RegExp('^0x[0-9-a-fA-F]{40}$').test(received);
   const message = pass
     ? () =>
-        this.utils.matcherHint('.not.toBeProperAddress') +
+        matcherHint('.not.toBeProperAddress') +
         '\n\n' +
         `Expected value to not be a proper address\n` +
         `Received:\n` +
-        `  ${this.utils.printReceived(received)}`
+        `  ${printReceived(received)}`
     : () =>
-        this.utils.matcherHint('.toBeProperAddress') +
+        matcherHint('.toBeProperAddress') +
         '\n\n' +
         `Expected value to be a proper address\n` +
         `Received:\n` +
-        `  ${this.utils.printReceived(received)}`;
+        `  ${printReceived(received)}`;
 
   return { pass, message };
 }

@@ -40,6 +40,7 @@
     "ethers": "^5.0.12"
   },
   "devDependencies": {
+    "@crestproject/artifactory": "^0.0.56",
     "eslint-plugin-prettier": "3.1.4",
     "husky": "^4.3.0",
     "prettier": "^2.1.1",

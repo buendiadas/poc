@@ -8,8 +8,8 @@ import {
 
 describe('code generator', () => {
   it('generates code for solidity artifacts', () => {
-    const contract = require('./contracts/ERC20.json');
-    const source = path.resolve(__dirname, 'contracts/ERC20.json');
+    const contract = require('./__fixtures__/artifact.json');
+    const source = require.resolve('./__fixtures__/artifact.json');
     const destination = path.resolve(__dirname, 'ERC20.ts');
 
     let relative = path.relative(path.dirname(destination), source);
@@ -25,7 +25,7 @@ describe('code generator', () => {
   });
 
   it('generates code for ethers signatures', () => {
-    const contract = require('./contracts/ERC20.json');
+    const contract = require('./__fixtures__/artifact.json');
     const abi = new utils.Interface(contract.abi);
     const output = generateContractForSignatures('ERC20', abi);
     const formatted = formatOutput(output);

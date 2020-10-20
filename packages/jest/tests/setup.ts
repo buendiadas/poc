@@ -1,1 +1,1 @@
-import '../src/extend';
+import '../src';

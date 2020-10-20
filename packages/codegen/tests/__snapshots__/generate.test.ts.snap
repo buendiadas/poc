@@ -73,7 +73,7 @@ import {
   AddressLike,
   Contract,
 } from '@crestproject/ethers';
-import ERC20Artifact from './contracts/ERC20.json';
+import ERC20Artifact from './__fixtures__/artifact.json';
 
 export type ERC20Args = [name: string, symbol: string];
 

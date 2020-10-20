@@ -13,6 +13,8 @@ export type EthereumMatchers<R> = {
   toBeReverted(): R;
   toBeRevertedWith(message: string): R;
   toBeReceipt(): R;
+  toCostLessThan(expected: BigNumberish): R;
+  toMatchGasSnapshot(expected?: BigNumberish): R;
   toHaveEmitted(event: string | utils.EventFragment): R;
   toHaveEmittedWith(
     event: string | utils.EventFragment,

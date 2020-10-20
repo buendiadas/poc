@@ -1,6 +1,6 @@
 import { network } from '@nomiclabs/buidler';
 import { BuidlerProvider } from '@crestproject/buidler';
-import { ERC20 } from './contracts/ERC20';
+import { ERC20 } from '@crestproject/artifactory';
 
 async function snapshot(provider: BuidlerProvider) {
   const [deployer, someone] = await provider.listAccounts();

@@ -1,6 +1,6 @@
 import { network } from '@nomiclabs/buidler';
+import { ERC20 } from '@crestproject/artifactory';
 import { BuidlerProvider } from '../src/provider';
-import { ERC20 } from './contracts/ERC20';
 
 const provider = new BuidlerProvider(network.provider);
 

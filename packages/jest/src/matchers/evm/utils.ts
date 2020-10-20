@@ -1,7 +1,7 @@
 import { utils } from 'ethers';
 import { Contract, ContractFunction } from '@crestproject/ethers';
 import { EthereumTestnetProvider, History } from '@crestproject/evm';
-import { forceFail } from '../utils';
+import { forceFail } from '../../utils';
 
 export type MatcherCallback<
   TReturn extends jest.CustomMatcherResult | Promise<jest.CustomMatcherResult>
@@ -17,8 +17,8 @@ export function ensureParameters<
     | jest.CustomMatcherResult
     | Promise<jest.CustomMatcherResult> = jest.CustomMatcherResult
 >(
-  context: jest.MatcherContext,
   subject: TSubject,
+  invert: boolean,
   callback: MatcherCallback<TReturn>
 ): TReturn {
   const fn = ContractFunction.isContractFunction(subject)
@@ -37,18 +37,19 @@ export function ensureParameters<
   if (!contract) {
     const error =
       'Missing contract instance for contract call history assertion';
-    return forceFail(context, subject, error) as TReturn;
+    return forceFail(subject, error, invert) as TReturn;
   }
 
   const history = (contract?.provider as EthereumTestnetProvider)?.history;
   if (!history) {
     const error =
       'Invalid or unsupported provider for contract call history assertion';
-    return forceFail(context, subject, error) as TReturn;
+    return forceFail(subject, error, invert) as TReturn;
   }
 
   const fragment = ContractFunction.isContractFunction(fn)
     ? fn.fragment
     : undefined;
+
   return callback(history, contract, fragment);
 }

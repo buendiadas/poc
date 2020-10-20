@@ -4,6 +4,10 @@ dist/
 artifacts/
 cache/
 
+# Ignore codegen directories but not the package
+codegen/
+!/packages/codegen/
+
 # Ignore log files
 *.log
 

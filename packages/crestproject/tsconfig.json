@@ -1,6 +1,6 @@
 {
-  "include": ["src", "types"],
-  "exclude": ["src/cli.ts", "src/commands", "src/workers"],
+  "include": ["src"],
+  "exclude": ["src/cli", "src/commands", "src/workers"],
   "compilerOptions": {
     "module": "esnext",
     "lib": ["dom", "esnext"],

@@ -1,53 +1,18 @@
-import { BigNumber, BigNumberish, constants, utils } from 'ethers';
-import { Call, Send } from '../src/types';
-import { contract } from '../src/construction';
+import { constants, utils } from 'ethers';
+import { ERC20 } from '@crestproject/artifactory';
 import { randomAddress } from '../src/utils/randomAddress';
-import { Contract } from '../src/contract';
 import { provider } from './provider';
-import { ERC20 } from './contracts/ERC20';
 
-describe('contract tagged template literals', () => {
-  // prettier-ignore
-  interface Token extends Contract<Token> {
-    'allowance': Call<(owner: string, spender: string) => BigNumber, Token>;
-    'allowance(address,address)': Call<(owner: string, spender: string) => BigNumber, Token>;
-    'allowance(address,uint)': Call<(owner: string, how: BigNumberish) => BigNumber, Token>;
-    'approve': Send<(spender: string, amount: BigNumberish) => boolean, Token>;
-    'approve(address,uint)': Send<(spender: string, amount: BigNumberish) => boolean, Token>;
-    'balanceOf': Call<(account: string) => BigNumber, Token>;
-    'balanceOf(address)': Call<(account: string) => BigNumber, Token>;
-    'decimals': Call<() => BigNumber, Token>;
-    'decimals()': Call<() => BigNumber, Token>;
-    'name': Call<() => string, Token>;
-    'name()': Call<() => string, Token>;
-    'symbol': Call<() => string, Token>;
-    'symbol()': Call<() => string, Token>;
-    'transfer': Send<(to: string, amount: BigNumberish) => void, Token>;
-    'transfer(address,uint256)': Send<(to: string, amount: BigNumberish) => void, Token>;
-  }
-
-  // prettier-ignore
-  const Token = contract.fromSignatures<Token>`
-    function allowance(address owner, address spender) view returns (uint256)
-    function allowance(address owner, uint how) view returns (uint256)
-    function approve(address spender, uint256 amount) returns (bool)
-    function balanceOf(address account) view returns (uint256)
-    function decimals() view returns (uint8)
-    function name() view returns (string)
-    function symbol() view returns (string)
-    function transfer(address recipient, uint256 amount) returns (bool)
-  `;
-
+describe('mocking', () => {
   it('properly deploys the mock contract', async () => {
     const signer = provider.getSigner(0);
-    const mock = await Token.mock(signer);
-    expect(mock).toBeInstanceOf(Contract);
+    const mock = await ERC20.mock(signer);
     expect(mock.address).toMatch(/^0x[0-9-a-fA-F]{40}$/);
   });
 
   it('can mock contract return values', async () => {
     const signer = provider.getSigner(0);
-    const token = await Token.mock(signer);
+    const token = await ERC20.mock(signer);
 
     await token.balanceOf.returns(123);
     const result = await token.balanceOf(constants.AddressZero);
@@ -57,7 +22,7 @@ describe('contract tagged template literals', () => {
 
   it('can mock contract return values with arguments', async () => {
     const signer = provider.getSigner(0);
-    const token = await Token.mock(signer);
+    const token = await ERC20.mock(signer);
     const specificAddress = randomAddress();
 
     await token.balanceOf.returns(123);
@@ -72,7 +37,7 @@ describe('contract tagged template literals', () => {
 
   it('can mock reverts', async () => {
     const signer = provider.getSigner(0);
-    const mock = await Token.mock(signer);
+    const mock = await ERC20.mock(signer);
 
     await mock.balanceOf
       .given(constants.AddressZero)
@@ -85,7 +50,7 @@ describe('contract tagged template literals', () => {
 
   it('reverts with function signature on missing mock', async () => {
     const signer = provider.getSigner(0);
-    const mock = await Token.mock(signer);
+    const mock = await ERC20.mock(signer);
 
     await expect(mock.balanceOf(constants.AddressZero)).rejects.toThrowError(
       'Mock not initialized: balanceOf(address)'
@@ -117,7 +82,7 @@ describe('contract tagged template literals', () => {
 
   it('can reset previously set mocks', async () => {
     const signer = provider.getSigner(0);
-    const token = await Token.mock(signer);
+    const token = await ERC20.mock(signer);
 
     let result;
 
@@ -134,7 +99,7 @@ describe('contract tagged template literals', () => {
 
   it('can reset previously set mocks with specific args', async () => {
     const signer = provider.getSigner(0);
-    const token = await Token.mock(signer);
+    const token = await ERC20.mock(signer);
 
     let result;
 

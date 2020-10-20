@@ -1,7 +1,7 @@
 import { utils } from 'ethers';
 import { network } from '@nomiclabs/buidler';
 import { BuidlerProvider } from '@crestproject/buidler';
-import { ERC20 } from './contracts/ERC20';
+import { ERC20 } from '@crestproject/artifactory';
 
 const provider = new BuidlerProvider(network.provider);
 

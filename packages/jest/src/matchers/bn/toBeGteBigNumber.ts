@@ -1,4 +1,5 @@
-import { BigNumber, BigNumberish } from 'ethers';
+import { BigNumberish } from 'ethers';
+import { matcherHint, printExpected, printReceived } from 'jest-matcher-utils';
 import { printBigNumber, ensureBigNumbers } from './utils';
 
 export function toBeGteBigNumber(
@@ -6,23 +7,24 @@ export function toBeGteBigNumber(
   received: BigNumberish,
   expected: BigNumberish
 ) {
-  return ensureBigNumbers(this, received, expected, (received, expected) => {
-    const receivedBn = BigNumber.from(received);
-    const expectedBn = BigNumber.from(expected);
-    const receivedStr = this.utils.printReceived(printBigNumber(receivedBn));
-    const expectedStr = this.utils.printExpected(printBigNumber(expectedBn));
+  return ensureBigNumbers(received, expected, this.isNot, function (
+    received,
+    expected
+  ) {
+    const receivedStr = printReceived(printBigNumber(received));
+    const expectedStr = printExpected(printBigNumber(expected));
 
-    const pass = receivedBn.gte(expectedBn);
+    const pass = received.gte(expected);
     const message = pass
       ? () =>
-          this.utils.matcherHint('.not.toBeGteBigNumber') +
+          matcherHint('.not.toBeGteBigNumber') +
           '\n\n' +
           `Expected value to not be greater than or equal:\n` +
           `  ${expectedStr}\n` +
           `Received:\n` +
           `  ${receivedStr}`
       : () =>
-          this.utils.matcherHint('.toBeGteBigNumber') +
+          matcherHint('.toBeGteBigNumber') +
           '\n\n' +
           `Expected value to be greater than or equal:\n` +
           `  ${expectedStr}\n` +

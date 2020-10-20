@@ -1,31 +1,21 @@
-import { ContractReceipt } from 'ethers';
-
-function isReceipt(value: any): value is ContractReceipt {
-  if (typeof value === 'object') {
-    return (
-      value.hasOwnProperty('transactionHash') &&
-      value.hasOwnProperty('transactionIndex')
-    );
-  }
-
-  return false;
-}
+import { printReceived, matcherHint } from 'jest-matcher-utils';
+import { isTransactionReceipt } from '../../utils';
 
 export function toBeReceipt(this: jest.MatcherContext, received: any) {
-  const pass = isReceipt(received);
+  const pass = isTransactionReceipt(received);
   const message = pass
     ? () =>
-        this.utils.matcherHint('.not.toBeReceipt') +
+        matcherHint('.not.toBeReceipt') +
         '\n\n' +
         `Expected value not to be a transaction receipt\n` +
         `Received:\n` +
-        `  ${this.utils.printReceived(received)}`
+        `  ${printReceived(received)}`
     : () =>
-        this.utils.matcherHint('.toBeReceipt') +
+        matcherHint('.toBeReceipt') +
         '\n\n' +
         `Expected value to be a transaction receipt\n` +
         `Received:\n` +
-        `  ${this.utils.printReceived(received)}`;
+        `  ${printReceived(received)}`;
 
   return { pass, message };
 }

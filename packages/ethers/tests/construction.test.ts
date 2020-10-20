@@ -5,40 +5,40 @@ import { Contract } from '../src/contract';
 import { SendFunction, CallFunction } from '../src/function';
 import { randomAddress } from '../src/utils/randomAddress';
 import { provider } from './provider';
-import { ERC20 } from './contracts/ERC20';
+import { ERC20 } from '@crestproject/artifactory';
 
-describe('contract tagged template literals', () => {
-  // prettier-ignore
-  interface Token extends Contract<Token> {
-    'allowance': Call<(owner: string, spender: string) => BigNumber>;
-    'allowance(address,address)': Call<(owner: string, spender: string) => BigNumber>;
-    'allowance(address,uint)': Call<(owner: string, how: BigNumberish) => BigNumber>;
-    'approve': Send<(spender: string, amount: BigNumberish) => boolean>;
-    'approve(address,uint)': Send<(spender: string, amount: BigNumberish) => boolean>;
-    'balanceOf': Call<(account: string) => BigNumber>;
-    'balanceOf(address)': Call<(account: string) => BigNumber>;
-    'decimals': Call<() => BigNumber>;
-    'decimals()': Call<() => BigNumber>;
-    'name': Call<() => string>;
-    'name()': Call<() => string>;
-    'symbol': Call<() => string>;
-    'symbol()': Call<() => string>;
-    'transfer': Send<(to: string, amount: BigNumberish) => void>;
-    'transfer(address,uint256)': Send<(to: string, amount: BigNumberish) => void>;
-  }
+// prettier-ignore
+interface Token extends Contract<Token> {
+  'allowance': Call<(owner: string, spender: string) => BigNumber>;
+  'allowance(address,address)': Call<(owner: string, spender: string) => BigNumber>;
+  'allowance(address,uint)': Call<(owner: string, how: BigNumberish) => BigNumber>;
+  'approve': Send<(spender: string, amount: BigNumberish) => boolean>;
+  'approve(address,uint)': Send<(spender: string, amount: BigNumberish) => boolean>;
+  'balanceOf': Call<(account: string) => BigNumber>;
+  'balanceOf(address)': Call<(account: string) => BigNumber>;
+  'decimals': Call<() => BigNumber>;
+  'decimals()': Call<() => BigNumber>;
+  'name': Call<() => string>;
+  'name()': Call<() => string>;
+  'symbol': Call<() => string>;
+  'symbol()': Call<() => string>;
+  'transfer': Send<(to: string, amount: BigNumberish) => void>;
+  'transfer(address,uint256)': Send<(to: string, amount: BigNumberish) => void>;
+}
 
-  // prettier-ignore
-  const Token = contract.fromSignatures<Token>`
-    function allowance(address owner, address spender) view returns (uint256)
-    function allowance(address owner, uint how) view returns (uint256)
-    function approve(address spender, uint256 amount) returns (bool)
-    function balanceOf(address account) view returns (uint256)
-    function decimals() view returns (uint8)
-    function name() view returns (string)
-    function symbol() view returns (string)
-    function transfer(address recipient, uint256 amount) returns (bool)
-  `;
+// prettier-ignore
+const Token = contract.fromSignatures<Token>`
+  function allowance(address owner, address spender) view returns (uint256)
+  function allowance(address owner, uint how) view returns (uint256)
+  function approve(address spender, uint256 amount) returns (bool)
+  function balanceOf(address account) view returns (uint256)
+  function decimals() view returns (uint8)
+  function name() view returns (string)
+  function symbol() view returns (string)
+  function transfer(address recipient, uint256 amount) returns (bool)
+`;
 
+describe('construction', () => {
   const address = constants.AddressZero;
   const token = new Token(address, provider.getSigner(0));
 

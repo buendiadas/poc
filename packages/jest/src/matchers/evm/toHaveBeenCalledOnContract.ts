@@ -1,4 +1,5 @@
 import { Contract, ContractFunction } from '@crestproject/ethers';
+import { printReceived, printExpected, matcherHint } from 'jest-matcher-utils';
 import { ensureParameters } from './utils';
 
 export function toHaveBeenCalledOnContract(
@@ -13,7 +14,13 @@ export function toHaveBeenCalledOnContract(
   this: jest.MatcherContext,
   subject: Contract | ContractFunction
 ): jest.CustomMatcherResult {
-  return ensureParameters(this, subject, (history, contract, fragment) => {
+  const invert = this.isNot;
+
+  return ensureParameters(subject, invert, function (
+    history,
+    contract,
+    fragment
+  ) {
     const signature = fragment ? contract.abi.getSighash(fragment) : '0x';
     const method = fragment?.format();
     const expected = `${method ? `function "${method}"` : 'contract'}`;
@@ -23,21 +30,19 @@ export function toHaveBeenCalledOnContract(
 
     const message = pass
       ? () =>
-          this.utils.matcherHint('.not.toHaveBeenCalledOnContract') +
+          matcherHint('.not.toHaveBeenCalledOnContract') +
           '\n\n' +
           `Expected:\n` +
-          `  ${this.utils.printExpected(
-            `${expected} not to have been called`
-          )}\n` +
+          `  ${printExpected(`${expected} not to have been called`)}\n` +
           `Actual:\n` +
-          `  ${this.utils.printReceived(`${expected} has been called`)}`
+          `  ${printReceived(`${expected} has been called`)}`
       : () =>
-          this.utils.matcherHint('.toHaveBeenCalledOnContract') +
+          matcherHint('.toHaveBeenCalledOnContract') +
           '\n\n' +
           `Expected:\n` +
-          `  ${this.utils.printExpected(`${expected} to have been called`)}\n` +
+          `  ${printExpected(`${expected} to have been called`)}\n` +
           `Actual:\n` +
-          `  ${this.utils.printReceived(`${expected} has not been called`)}`;
+          `  ${printReceived(`${expected} has not been called`)}`;
 
     return { pass, message };
   });

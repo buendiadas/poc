@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberish } from 'ethers';
-import { forceFail } from '../utils';
+import { forceFail } from '../../utils';
 
 export function printBigNumber(value: BigNumberish) {
   const bn = BigNumber.from(value);
@@ -12,9 +12,9 @@ export type MatcherCallback = (
 ) => jest.CustomMatcherResult;
 
 export function ensureBigNumbers(
-  context: jest.MatcherContext,
   received: any,
   expected: any,
+  invert: boolean,
   callback: MatcherCallback
 ) {
   let receivedBn: BigNumber;
@@ -23,13 +23,13 @@ export function ensureBigNumbers(
   try {
     receivedBn = BigNumber.from(received);
   } catch {
-    return forceFail(context, received, 'The received value is not numberish');
+    return forceFail(received, 'The received value is not numberish', invert);
   }
 
   try {
     expectedBn = BigNumber.from(expected);
   } catch {
-    return forceFail(context, expected, 'The expected value is not numberish');
+    return forceFail(expected, 'The expected value is not numberish', invert);
   }
 
   return callback(receivedBn, expectedBn);

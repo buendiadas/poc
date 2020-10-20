@@ -1,5 +1,6 @@
 import { utils } from 'ethers';
 import { ContractReceipt, extractEvent } from '@crestproject/ethers';
+import { printReceived, printExpected, matcherHint } from 'jest-matcher-utils';
 
 export function toHaveEmitted(
   this: jest.MatcherContext,
@@ -16,23 +17,19 @@ export function toHaveEmitted(
   const pass = !!matches?.length;
   const message = pass
     ? () =>
-        this.utils.matcherHint('.not.toHaveEmitted') +
+        matcherHint('.not.toHaveEmitted') +
         '\n\n' +
         `Expected event not to have been emitted\n` +
-        `  ${this.utils.printExpected(signature)}\n` +
+        `  ${printExpected(signature)}\n` +
         `Actual:\n` +
-        `  ${this.utils.printReceived(
-          `Event was emitted ${matches?.length ?? 0} times`
-        )}`
+        `  ${printReceived(`Event was emitted ${matches?.length ?? 0} times`)}`
     : () =>
-        this.utils.matcherHint('.toHaveEmitted') +
+        matcherHint('.toHaveEmitted') +
         '\n\n' +
         `Expected event to have been emitted\n` +
-        `  ${this.utils.printExpected(signature)}\n` +
+        `  ${printExpected(signature)}\n` +
         `Actual:\n` +
-        `  ${this.utils.printReceived(
-          `Event was emitted ${matches?.length ?? 0} times`
-        )}`;
+        `  ${printReceived(`Event was emitted ${matches?.length ?? 0} times`)}`;
 
   return { pass, message };
 }

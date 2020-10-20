@@ -1,4 +1,5 @@
 import { BigNumberish } from 'ethers';
+import { printReceived, printExpected, matcherHint } from 'jest-matcher-utils';
 import { ensureBigNumbers, printBigNumber } from './utils';
 
 export function toEqBigNumber(
@@ -6,21 +7,24 @@ export function toEqBigNumber(
   received: BigNumberish,
   expected: BigNumberish
 ) {
-  return ensureBigNumbers(this, received, expected, (received, expected) => {
-    const receivedStr = this.utils.printReceived(printBigNumber(received));
-    const expectedStr = this.utils.printExpected(printBigNumber(expected));
+  return ensureBigNumbers(received, expected, this.isNot, function (
+    received,
+    expected
+  ) {
+    const receivedStr = printReceived(printBigNumber(received));
+    const expectedStr = printExpected(printBigNumber(expected));
 
     const pass = received.eq(expected);
     const message = pass
       ? () =>
-          this.utils.matcherHint('.not.toEqBigNumber') +
+          matcherHint('.not.toEqBigNumber') +
           '\n\n' +
           `Expected:\n` +
           `  ${expectedStr}\n` +
           `Received:\n` +
           `  ${receivedStr}`
       : () =>
-          this.utils.matcherHint('.toEqBigNumber') +
+          matcherHint('.toEqBigNumber') +
           '\n\n' +
           `Expected:\n` +
           `  ${expectedStr}\n` +
