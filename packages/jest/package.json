@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/jest",
-  "version": "0.0.56",
+  "version": "0.0.57",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -35,14 +35,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@crestproject/ethers": "^0.0.56",
-    "@crestproject/evm": "^0.0.56",
+    "@crestproject/ethers": "^0.0.57",
+    "@crestproject/evm": "^0.0.57",
     "ethers": "^5.0.12",
     "ts-jest": "^26.1.3"
   },
   "devDependencies": {
-    "@crestproject/artifactory": "^0.0.56",
-    "@crestproject/buidler": "^0.0.56",
+    "@crestproject/artifactory": "^0.0.57",
+    "@crestproject/buidler": "^0.0.57",
     "@types/fs-extra": "^9.0.1",
     "eslint-plugin-prettier": "3.1.4",
     "husky": "^4.3.0",
