@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/crestproject",
-  "version": "0.0.58",
+  "version": "0.0.59",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -39,10 +39,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@crestproject/codegen": "^0.0.58",
-    "@crestproject/ethers": "^0.0.58",
-    "@crestproject/evm": "^0.0.58",
-    "@crestproject/jest": "^0.0.58",
+    "@crestproject/codegen": "^0.0.59",
+    "@crestproject/ethers": "^0.0.59",
+    "@crestproject/evm": "^0.0.59",
+    "@crestproject/jest": "^0.0.59",
     "glob": "^7.1.6",
     "jest-worker": "^26.5.0",
     "throat": "^5.0.0",
