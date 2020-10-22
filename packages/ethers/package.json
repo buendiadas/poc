@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/ethers",
-  "version": "0.0.59",
+  "version": "0.0.60",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -34,7 +34,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@crestproject/artifactory": "^0.0.59",
+    "@crestproject/artifactory": "^0.0.60",
     "eslint-plugin-prettier": "3.1.4",
     "ethers": "^5.0.18",
     "husky": "^4.3.0",
