@@ -24,7 +24,6 @@ export async function generate(
   );
 
   const imports = '@crestproject/ethers';
-  console.log(contract);
   const name = path.basename(source).split('.').shift()!;
   const abi = new utils.Interface(contract.abi);
 
