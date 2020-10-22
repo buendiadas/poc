@@ -24,6 +24,5 @@ function generate(file) {
   fs.outputFileSync(destination, formatted);
 }
 
-generate('./src/artifacts/ERC20.json');
-generate('./src/artifacts/BasicToken.json');
-generate('./src/artifacts/AmIRichAlready.json');
+generate('./src/artifacts/contracts/AmIRichAlready.sol/BasicToken.json');
+generate('./src/artifacts/contracts/AmIRichAlready.sol/AmIRichAlready.json');

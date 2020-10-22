@@ -24,11 +24,8 @@ module.exports = {
     },
     {
       ...defaults,
-      displayName: 'buidler',
-      preset: '@crestproject/buidler',
-      testEnvironmentOptions: {
-        buidlerConfigs: [require.resolve('./buidler.config')],
-      },
+      displayName: 'hardhat',
+      preset: '@crestproject/hardhat',
     },
   ],
 };

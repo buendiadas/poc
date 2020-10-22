@@ -1,8 +1,8 @@
 import { providers } from 'ethers';
-import { network } from '@nomiclabs/buidler';
-import { EthereumProvider } from '@nomiclabs/buidler/types';
+import { network } from 'hardhat';
+import { EthereumProvider } from 'hardhat/types';
 
-export class BuidlerProvider extends providers.JsonRpcProvider {
+export class HardhatProvider extends providers.JsonRpcProvider {
   constructor(public readonly provider: EthereumProvider) {
     super();
   }
@@ -12,4 +12,4 @@ export class BuidlerProvider extends providers.JsonRpcProvider {
   }
 }
 
-export const provider = new BuidlerProvider(network.provider);
+export const provider = new HardhatProvider(network.provider);

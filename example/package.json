@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "prepare": "yarn build",
-    "compile": "buidler compile",
-    "codegen": "crestproject codegen artifacts/**/*.json tests/contracts",
+    "compile": "hardhat compile",
+    "codegen": "crestproject codegen \"artifacts/contracts/**/!(*.dbg).json\" tests/contracts",
     "build": "yarn compile && yarn codegen",
     "test": "jest",
     "lint": "tsdx lint src tests --ignore-pattern tests/contracts/**/*.ts",
@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@crestproject/buidler": "^0.0.58",
+    "@crestproject/hardhat": "^0.0.58",
     "@crestproject/crestproject": "^0.0.58",
     "@crestproject/ganache": "^0.0.58",
     "@openzeppelin/contracts": "^3.2.0",

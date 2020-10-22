@@ -1,18 +1,19 @@
-import { network } from '@nomiclabs/buidler';
-import { ERC20 } from '@crestproject/artifactory';
-import { BuidlerProvider } from '../src/provider';
+import { utils } from 'ethers';
+import { network } from 'hardhat';
+import { BasicToken } from '@crestproject/artifactory';
+import { HardhatProvider } from '../src/provider';
 
-const provider = new BuidlerProvider(network.provider);
+const provider = new HardhatProvider(network.provider);
 
-function snapshot(provider: BuidlerProvider) {
+function snapshot(provider: HardhatProvider) {
   const deployer = provider.getSigner(0);
-  return ERC20.deploy(deployer, 'Test Token', 'TEST');
+  return BasicToken.deploy(deployer, utils.parseEther('100'));
 }
 
-describe('buidler evm history tracking', () => {
+describe('hardhat evm history tracking', () => {
   it('records history of contract calls', async () => {
     const deployer = provider.getSigner(0);
-    const token = await ERC20.deploy(deployer, 'Test Token', 'TEST');
+    const token = await BasicToken.deploy(deployer, utils.parseEther('100'));
 
     await expect(token.decimals()).resolves.toBe(18);
     expect(provider.history.calls(token).length).toBe(1);

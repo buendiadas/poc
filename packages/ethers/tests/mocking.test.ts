@@ -1,18 +1,18 @@
 import { constants, utils } from 'ethers';
-import { ERC20 } from '@crestproject/artifactory';
+import { BasicToken } from '@crestproject/artifactory';
 import { randomAddress } from '../src/utils/randomAddress';
 import { provider } from './provider';
 
 describe('mocking', () => {
   it('properly deploys the mock contract', async () => {
     const signer = provider.getSigner(0);
-    const mock = await ERC20.mock(signer);
+    const mock = await BasicToken.mock(signer);
     expect(mock.address).toMatch(/^0x[0-9-a-fA-F]{40}$/);
   });
 
   it('can mock contract return values', async () => {
     const signer = provider.getSigner(0);
-    const token = await ERC20.mock(signer);
+    const token = await BasicToken.mock(signer);
 
     await token.balanceOf.returns(123);
     const result = await token.balanceOf(constants.AddressZero);
@@ -22,7 +22,7 @@ describe('mocking', () => {
 
   it('can mock contract return values with arguments', async () => {
     const signer = provider.getSigner(0);
-    const token = await ERC20.mock(signer);
+    const token = await BasicToken.mock(signer);
     const specificAddress = randomAddress();
 
     await token.balanceOf.returns(123);
@@ -37,7 +37,7 @@ describe('mocking', () => {
 
   it('can mock reverts', async () => {
     const signer = provider.getSigner(0);
-    const mock = await ERC20.mock(signer);
+    const mock = await BasicToken.mock(signer);
 
     await mock.balanceOf
       .given(constants.AddressZero)
@@ -50,7 +50,7 @@ describe('mocking', () => {
 
   it('reverts with function signature on missing mock', async () => {
     const signer = provider.getSigner(0);
-    const mock = await ERC20.mock(signer);
+    const mock = await BasicToken.mock(signer);
 
     await expect(mock.balanceOf(constants.AddressZero)).rejects.toThrowError(
       'Mock not initialized: balanceOf(address)'
@@ -59,16 +59,16 @@ describe('mocking', () => {
 
   it('can forward calls', async () => {
     const signer = provider.getSigner(0);
-    const token = await ERC20.deploy(signer, 'Test Token', 'TEST');
-    const mock = await ERC20.mock(signer);
+    const token = await BasicToken.deploy(signer, utils.parseEther('100'));
+    const mock = await BasicToken.mock(signer);
 
-    await expect(mock.forward(token.name)).resolves.toBe('Test Token');
+    await expect(mock.forward(token.name)).resolves.toBe('Basic');
   });
 
   it('can forward sends', async () => {
     const signer = provider.getSigner(0);
-    const token = await ERC20.deploy(signer, 'Test Token', 'TEST');
-    const mock = await ERC20.mock(signer);
+    const token = await BasicToken.deploy(signer, utils.parseEther('100'));
+    const mock = await BasicToken.mock(signer);
 
     const spender = randomAddress();
     const amount = utils.parseEther('1');
@@ -82,7 +82,7 @@ describe('mocking', () => {
 
   it('can reset previously set mocks', async () => {
     const signer = provider.getSigner(0);
-    const token = await ERC20.mock(signer);
+    const token = await BasicToken.mock(signer);
 
     let result;
 
@@ -99,7 +99,7 @@ describe('mocking', () => {
 
   it('can reset previously set mocks with specific args', async () => {
     const signer = provider.getSigner(0);
-    const token = await ERC20.mock(signer);
+    const token = await BasicToken.mock(signer);
 
     let result;
 

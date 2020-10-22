@@ -1,9 +1,9 @@
-import { network } from '@nomiclabs/buidler';
-import { BuidlerProvider } from '@crestproject/buidler';
+import { network } from 'hardhat';
+import { HardhatProvider } from '@crestproject/hardhat';
 import { BasicToken } from '@crestproject/artifactory';
 import { utils } from 'ethers';
 
-async function snapshot(provider: BuidlerProvider) {
+async function snapshot(provider: HardhatProvider) {
   const [deployer, someone] = await provider.listAccounts();
   const signer = provider.getSigner(deployer);
   const token = await BasicToken.deploy(signer, utils.parseEther('100'));
@@ -16,7 +16,7 @@ async function snapshot(provider: BuidlerProvider) {
 }
 
 describe('functions', () => {
-  const provider = new BuidlerProvider(network.provider);
+  const provider = new HardhatProvider(network.provider);
 
   it('toMatchGasSnapshot', async () => {
     const { token, someone } = await provider.snapshot(snapshot);

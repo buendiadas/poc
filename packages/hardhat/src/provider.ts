@@ -3,7 +3,7 @@ import { EthereumTestnetProvider } from '@crestproject/evm';
 import { BigNumber, BigNumberish, providers, utils } from 'ethers';
 import { addListener } from './vm';
 
-export class BuidlerProvider extends EthereumTestnetProvider {
+export class HardhatProvider extends EthereumTestnetProvider {
   public readonly gas: BigNumber;
 
   constructor(

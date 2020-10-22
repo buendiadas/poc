@@ -1,24 +1,19 @@
 import { utils } from 'ethers';
-import { network } from '@nomiclabs/buidler';
-import { BuidlerProvider } from '@crestproject/buidler';
-import { ERC20 } from '@crestproject/artifactory';
+import { network } from 'hardhat';
+import { HardhatProvider } from '@crestproject/hardhat';
+import { BasicToken } from '@crestproject/artifactory';
 
-const provider = new BuidlerProvider(network.provider);
+const provider = new HardhatProvider(network.provider);
 
-async function snapshot(provider: BuidlerProvider) {
+async function snapshot(provider: HardhatProvider) {
   const [deployer, someone] = await provider.listAccounts();
   const signer = provider.getSigner(deployer);
-
-  const name = 'Test Token';
-  const symbol = 'TEST';
-  const token = await ERC20.deploy(signer, name, symbol);
+  const token = await BasicToken.deploy(signer, utils.parseEther('100'));
 
   return {
     deployer,
     someone,
     token,
-    name,
-    symbol,
   };
 }
 

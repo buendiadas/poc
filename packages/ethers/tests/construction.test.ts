@@ -1,11 +1,11 @@
-import { BigNumber, BigNumberish, constants } from 'ethers';
+import { BigNumber, BigNumberish, constants, utils } from 'ethers';
 import { contract } from '../src/construction';
 import { Call, Send } from '../src/types';
 import { Contract } from '../src/contract';
 import { SendFunction, CallFunction } from '../src/function';
 import { randomAddress } from '../src/utils/randomAddress';
 import { provider } from './provider';
-import { ERC20 } from '@crestproject/artifactory';
+import { BasicToken } from '@crestproject/artifactory';
 
 // prettier-ignore
 interface Token extends Contract<Token> {
@@ -98,7 +98,7 @@ describe('construction', () => {
 
   it('can access receipt of deployment', async () => {
     const signer = provider.getSigner(0);
-    const token = ERC20.deploy(signer, 'My Token', 'MTOK');
+    const token = BasicToken.deploy(signer, utils.parseEther('100'));
 
     await expect(
       token.then((contract) => contract.deployment)

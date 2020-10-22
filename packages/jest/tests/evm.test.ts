@@ -1,33 +1,30 @@
-import { network } from '@nomiclabs/buidler';
-import { BuidlerProvider } from '@crestproject/buidler';
-import { ERC20 } from '@crestproject/artifactory';
+import { network } from 'hardhat';
+import { HardhatProvider } from '@crestproject/hardhat';
+import { BasicToken } from '@crestproject/artifactory';
+import { utils } from 'ethers';
 
-async function snapshot(provider: BuidlerProvider) {
+async function snapshot(provider: HardhatProvider) {
   const [deployer, someone] = await provider.listAccounts();
   const signer = provider.getSigner(deployer);
 
-  const name = 'Test Token';
-  const symbol = 'TEST';
-  const token = await ERC20.deploy(signer, name, symbol);
-  const mock = await ERC20.mock(signer);
+  const token = await BasicToken.deploy(signer, utils.parseEther('100'));
+  const mock = await BasicToken.mock(signer);
 
   return {
     deployer,
     someone,
     token,
     mock,
-    name,
-    symbol,
   };
 }
 
 describe('evm', () => {
-  const provider = new BuidlerProvider(network.provider);
+  const provider = new HardhatProvider(network.provider);
 
   it('toHaveBeenCalledOnContract', async () => {
-    const { token, name } = await provider.snapshot(snapshot);
+    const { token } = await provider.snapshot(snapshot);
 
-    await expect(token.name()).resolves.toBe(name);
+    await expect(token.name()).resolves.toBe('Basic');
     expect(token.name).toHaveBeenCalledOnContract();
   });
 

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import type { EthereumProvider } from './imports';
 import type { EventEmitter } from 'events';
 
@@ -6,18 +8,22 @@ export function addListener(
   event: string,
   handler: (...args: any) => void
 ) {
-  const internal = provider as any;
-  const init = internal._init.bind(internal);
+  let inner: any = provider._provider;
+  while (inner._wrapped) {
+    inner = (inner as any)._wrapped;
+  }
+
+  const init = inner._init.bind(inner);
 
   let subscribed = false;
   let removed = false;
 
-  internal._init = async () => {
+  inner._init = async () => {
     await init();
 
     if (!subscribed && !removed) {
       subscribed = true;
-      const vm = internal._node._vm as EventEmitter;
+      const vm = inner._node._vm as EventEmitter;
       vm.on(event, handler);
     }
   };
