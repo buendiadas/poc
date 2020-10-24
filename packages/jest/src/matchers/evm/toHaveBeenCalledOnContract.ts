@@ -23,26 +23,22 @@ export function toHaveBeenCalledOnContract(
   ) {
     const signature = fragment ? contract.abi.getSighash(fragment) : '0x';
     const method = fragment?.format();
-    const expected = `${method ? `function "${method}"` : 'contract'}`;
+    const expected = `${method ? method : 'contract'}`;
     const pass = history
       .calls(contract)
       .some((call) => call.startsWith(signature));
 
     const message = pass
       ? () =>
-          matcherHint('.not.toHaveBeenCalledOnContract') +
+          matcherHint('.not.toHaveBeenCalledOnContract', expected) +
           '\n\n' +
-          `Expected:\n` +
-          `  ${printExpected(`${expected} not to have been called`)}\n` +
-          `Actual:\n` +
-          `  ${printReceived(`${expected} has been called`)}`
+          `Expected: ${printExpected('not to have been called')}\n` +
+          `Actual: ${printReceived('has been called')}`
       : () =>
-          matcherHint('.toHaveBeenCalledOnContract') +
+          matcherHint('.toHaveBeenCalledOnContract', expected) +
           '\n\n' +
-          `Expected:\n` +
-          `  ${printExpected(`${expected} to have been called`)}\n` +
-          `Actual:\n` +
-          `  ${printReceived(`${expected} has not been called`)}`;
+          `Expected: ${printExpected('to have been called')}\n` +
+          `Actual: ${printReceived('has not been called')}`;
 
     return { pass, message };
   });
