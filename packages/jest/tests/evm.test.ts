@@ -2,7 +2,6 @@ import { network } from 'hardhat';
 import { HardhatProvider } from '@crestproject/hardhat';
 import { BasicToken } from '@crestproject/artifactory';
 import { utils } from 'ethers';
-import { randomAddress } from '@crestproject/ethers';
 
 async function snapshot(provider: HardhatProvider) {
   const [deployer, someone] = await provider.listAccounts();
@@ -34,22 +33,6 @@ describe('evm', () => {
 
     await expect(token.balanceOf(someone)).resolves.toBeTruthy();
     await expect(token.balanceOf).toHaveBeenCalledOnContractWith(someone);
-  });
-
-  fit('toHaveBeenCalledOnContractWith shows last used arguments on mismatch', async () => {
-    const { token } = await provider.snapshot(snapshot);
-
-    const usedSpender = randomAddress();
-    const usedOwner = randomAddress();
-
-    const expectedSpender = randomAddress();
-    const expectedOwner = randomAddress();
-
-    await token.allowance(usedOwner, usedSpender);
-    await expect(token.allowance).toHaveBeenCalledOnContractWith(
-      expectedOwner,
-      expectedSpender
-    );
   });
 
   it('toHaveBeenCalledOnContract works with mocks', async () => {

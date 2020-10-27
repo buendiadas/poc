@@ -1,8 +1,6 @@
 export {
   BaseContractFactory,
   ContractFactory,
-  ContractFactoryWithBytecode,
-  GenericContractFactory,
   SolidityCompilerOutput,
   contract,
 } from './construction';

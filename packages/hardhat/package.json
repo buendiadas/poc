@@ -40,22 +40,16 @@
   "devDependencies": {
     "@crestproject/artifactory": "^0.0.61",
     "eslint-plugin-prettier": "3.1.4",
-    "ethers": "^5.0.18",
-    "hardhat": "^2.0.0",
-    "husky": "^4.3.0",
+    "ethers": "^5.0.19",
+    "hardhat": "^2.0.2",
     "prettier": "^2.1.2",
     "tsdx": "^0.14.1",
     "tslib": "^2.0.3",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.5"
   },
   "peerDependencies": {
     "ethers": "^5.0.18",
     "hardhat": "^2.0.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint"
-    }
   },
   "prettier": {
     "printWidth": 80,

@@ -19,13 +19,6 @@ export const builder = (yargs: yargs.Argv) =>
       describe: 'The output directory.',
       demandOption: true,
       type: 'string',
-    })
-    .positional('format', {
-      describe: 'The output format.',
-      choices: ['artifact', 'signatures'],
-      default: 'artifact',
-      demandOption: true,
-      type: 'string',
     });
 
 type Args = ReturnType<typeof builder>['argv'];

@@ -1,10 +1,7 @@
 import path from 'path';
 import { utils } from 'ethers';
 import { formatOutput } from '../src/utils';
-import {
-  generateContractForSolidityArtifact,
-  generateContractForSignatures,
-} from '../src/generate';
+import { generateContract } from '../src/generate';
 
 describe('code generator', () => {
   it('generates code for solidity artifacts', () => {
@@ -18,16 +15,7 @@ describe('code generator', () => {
     }
 
     const abi = new utils.Interface(contract.abi);
-    const output = generateContractForSolidityArtifact('ERC20', relative, abi);
-    const formatted = formatOutput(output);
-
-    expect(formatted).toMatchSnapshot();
-  });
-
-  it('generates code for ethers signatures', () => {
-    const contract = require('./__fixtures__/artifact.json');
-    const abi = new utils.Interface(contract.abi);
-    const output = generateContractForSignatures('ERC20', abi);
+    const output = generateContract('ERC20', relative, abi);
     const formatted = formatOutput(output);
 
     expect(formatted).toMatchSnapshot();

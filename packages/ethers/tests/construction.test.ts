@@ -9,25 +9,25 @@ import { BasicToken } from '@crestproject/artifactory';
 
 // prettier-ignore
 interface Token extends Contract<Token> {
-  'allowance': Call<(owner: string, spender: string) => BigNumber>;
-  'allowance(address,address)': Call<(owner: string, spender: string) => BigNumber>;
-  'allowance(address,uint)': Call<(owner: string, how: BigNumberish) => BigNumber>;
-  'approve': Send<(spender: string, amount: BigNumberish) => boolean>;
-  'approve(address,uint)': Send<(spender: string, amount: BigNumberish) => boolean>;
-  'balanceOf': Call<(account: string) => BigNumber>;
-  'balanceOf(address)': Call<(account: string) => BigNumber>;
-  'decimals': Call<() => BigNumber>;
-  'decimals()': Call<() => BigNumber>;
-  'name': Call<() => string>;
-  'name()': Call<() => string>;
-  'symbol': Call<() => string>;
-  'symbol()': Call<() => string>;
-  'transfer': Send<(to: string, amount: BigNumberish) => void>;
-  'transfer(address,uint256)': Send<(to: string, amount: BigNumberish) => void>;
+  'allowance': Call<(owner: string, spender: string) => BigNumber, Token>;
+  'allowance(address,address)': Call<(owner: string, spender: string) => BigNumber, Token>;
+  'allowance(address,uint)': Call<(owner: string, how: BigNumberish) => BigNumber, Token>;
+  'approve': Send<(spender: string, amount: BigNumberish) => boolean, Token>;
+  'approve(address,uint)': Send<(spender: string, amount: BigNumberish) => boolean, Token>;
+  'balanceOf': Call<(account: string) => BigNumber, Token>;
+  'balanceOf(address)': Call<(account: string) => BigNumber, Token>;
+  'decimals': Call<() => BigNumber, Token>;
+  'decimals()': Call<() => BigNumber, Token>;
+  'name': Call<() => string, Token>;
+  'name()': Call<() => string, Token>;
+  'symbol': Call<() => string, Token>;
+  'symbol()': Call<() => string, Token>;
+  'transfer': Send<(to: string, amount: BigNumberish) => void, Token>;
+  'transfer(address,uint256)': Send<(to: string, amount: BigNumberish) => void, Token>;
 }
 
 // prettier-ignore
-const Token = contract.fromSignatures<Token>`
+const Token = contract<Token>()`
   function allowance(address owner, address spender) view returns (uint256)
   function allowance(address owner, uint how) view returns (uint256)
   function approve(address spender, uint256 amount) returns (bool)
@@ -74,7 +74,7 @@ describe('construction', () => {
   });
 
   it('does not allow attaching a function instance to an imcompatible contract', () => {
-    const IncompatibleContract = contract.fromSignatures`
+    const IncompatibleContract = contract()`
       function other(address) view returns (string)
     `;
 
@@ -86,7 +86,7 @@ describe('construction', () => {
   });
 
   it('does allow attaching a function instance to a compatible contract', () => {
-    const CompatibleContract = contract.fromSignatures`
+    const CompatibleContract = contract()`
       function allowance(address owner, address spender) view returns (uint256)
     `;
 
@@ -101,7 +101,7 @@ describe('construction', () => {
     const token = BasicToken.deploy(signer, utils.parseEther('100'));
 
     await expect(
-      token.then((contract) => contract.deployment)
+      token.then((contract: BasicToken) => contract.deployment)
     ).resolves.toMatchObject({
       contractAddress: expect.stringMatching(/^0x/),
     });

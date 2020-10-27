@@ -6,13 +6,12 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "prepare": "yarn build",
-    "build": "hardhat compile && node codegen && tsdx build --target node --format cjs"
+    "build": "CI=true hardhat compile && node codegen && tsdx build --target node --format cjs"
   },
   "devDependencies": {
     "@crestproject/codegen": "^0.0.61",
     "eslint-plugin-prettier": "3.1.4",
-    "hardhat": "^2.0.0",
-    "husky": "^4.3.0",
+    "hardhat": "^2.0.2",
     "prettier": "^2.1.2",
     "tsdx": "^0.14.1",
     "tslib": "^2.0.3",
@@ -20,12 +19,7 @@
   },
   "resolutions": {
     "@typescript-eslint/parser": "^4.1.0",
-    "typescript": "^4.0.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint"
-    }
+    "typescript": "^4.0.5"
   },
   "prettier": {
     "printWidth": 80,

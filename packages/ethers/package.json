@@ -28,7 +28,7 @@
     "prepare": "yarn build",
     "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test",
+    "test": "yarn jest",
     "lint": "tsdx lint src tests --ignore-pattern tests/contracts/**/*.ts",
     "format": "yarn lint --fix",
     "typecheck": "tsc --noEmit"
@@ -36,25 +36,23 @@
   "devDependencies": {
     "@crestproject/artifactory": "^0.0.61",
     "eslint-plugin-prettier": "3.1.4",
-    "ethers": "^5.0.18",
-    "husky": "^4.3.0",
+    "ethers": "^5.0.19",
     "prettier": "^2.1.2",
     "tsdx": "^0.14.1",
     "tslib": "^2.0.3",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.5"
   },
   "peerDeependencies": {
     "ethers": "^5.0.18"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint"
-    }
   },
   "prettier": {
     "printWidth": 80,
     "semi": true,
     "singleQuote": true,
     "trailingComma": "es5"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   }
 }

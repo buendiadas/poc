@@ -158,37 +158,11 @@ export function generateConstructorArgs(fragment: ConstructorFragment) {
   return input ? `[${input}]` : '';
 }
 
-export function generateContractForSolidityArtifact(
+export function generateContract(
   name: string,
-  source: string,
+  bytecode: string,
   abi: utils.Interface,
-  crestproject: string = '@crestproject/ethers'
-) {
-  const functions = generateFunctions(name, Object.values(abi.functions));
-  const constructor = generateConstructorArgs(abi.deploy);
-  const generic = `${name}${constructor ? `, ${name}Args` : ''}`;
-
-  // prettier-ignore
-  return `/* eslint-disable */
-// @ts-nocheck
-import { BytesLike, BigNumber, BigNumberish } from 'ethers';
-import { contract, Call, Send, AddressLike, Contract } from '${crestproject}';
-import ${name}Artifact from '${source}';
-
-${constructor ? `export type ${name}Args = ${constructor};` : ''}
-
-// prettier-ignore
-export interface ${name} extends Contract<${name}> {
-  ${functions || '// No external functions'}
-}
-
-export const ${name} = contract.fromArtifact<${generic}>(${name}Artifact);`;
-}
-
-export function generateContractForSignatures(
-  name: string,
-  abi: utils.Interface,
-  crestproject: string = '@crestproject/ethers'
+  crestproject: string = '@crestproject/crestproject'
 ) {
   const functions = generateFunctions(name, Object.values(abi.functions));
   const constructor = generateConstructorArgs(abi.deploy);
@@ -208,7 +182,13 @@ export interface ${name} extends Contract<${name}> {
   ${functions || '// No external functions'}
 }
 
-export const ${name} = contract.fromSignatures<${generic}>\`
+let ${name}Bytecode: string | undefined = undefined;
+if (typeof process === 'object') {
+  ${name}Bytecode = '${bytecode}';
+}
+
+// prettier-ignore
+export const ${name} = contract<${generic}>(${name}Bytecode)\`
   ${Array.isArray(formatted) ? formatted.join('\n  ') : formatted}
 \`;`;
 }
