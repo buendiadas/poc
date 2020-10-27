@@ -183,7 +183,7 @@ export interface ${name} extends Contract<${name}> {
 }
 
 let ${name}Bytecode: string | undefined = undefined;
-${bytecode ? `if (typeof process === 'object') {
+${bytecode ? `if (typeof window === 'undefined') {
   ${name}Bytecode = '${bytecode}';
 }` : ''}
 
