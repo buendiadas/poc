@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/hardhat",
-  "version": "0.0.63",
+  "version": "0.0.64",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -34,11 +34,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@crestproject/ethers": "^0.0.63",
-    "@crestproject/evm": "^0.0.63"
+    "@crestproject/ethers": "^0.0.64",
+    "@crestproject/evm": "^0.0.64"
   },
   "devDependencies": {
-    "@crestproject/artifactory": "^0.0.63",
+    "@crestproject/artifactory": "^0.0.64",
     "eslint-plugin-prettier": "3.1.4",
     "ethers": "^5.0.19",
     "hardhat": "^2.0.2",
