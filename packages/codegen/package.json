@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/codegen",
-  "version": "0.0.61",
+  "version": "0.0.62",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
