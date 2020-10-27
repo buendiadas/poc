@@ -160,7 +160,7 @@ export function generateConstructorArgs(fragment: ConstructorFragment) {
 
 export function generateContract(
   name: string,
-  bytecode: string,
+  bytecode: string | undefined,
   abi: utils.Interface,
   crestproject: string = '@crestproject/crestproject'
 ) {
@@ -183,9 +183,9 @@ export interface ${name} extends Contract<${name}> {
 }
 
 let ${name}Bytecode: string | undefined = undefined;
-if (typeof process === 'object') {
+${bytecode ? `if (typeof process === 'object') {
   ${name}Bytecode = '${bytecode}';
-}
+}` : ''}
 
 // prettier-ignore
 export const ${name} = contract<${generic}>(${name}Bytecode)\`

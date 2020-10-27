@@ -18,13 +18,7 @@ export async function generate(source: string, destination: string) {
   const imports = '@crestproject/crestproject';
   const name = path.basename(source).split('.').shift()!;
   const abi = new utils.Interface(contract.abi);
-
-  let relative = path.relative(destination, source);
-  if (!relative.startsWith('.')) {
-    relative = `./${relative}`;
-  }
-
-  const content = generateContract(name, relative, abi, imports);
+  const content = generateContract(name, contract.bytecode, abi, imports);
   const formatted = formatOutput(content);
   const output = path.join(destination, `${name}.ts`);
   await new Promise((resolve, reject) => {
