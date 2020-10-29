@@ -3,6 +3,7 @@ import { JsonFragment } from '@ethersproject/abi';
 import { FunctionOptions } from './function';
 import { Contract, deploy } from './contract';
 import { mock, MockContract } from './mock';
+import { AddressLike } from './types';
 import { ensureInterface } from './utils/ensureInterface';
 
 export interface SolidityCompilerOutput {
@@ -13,7 +14,7 @@ export interface SolidityCompilerOutput {
 export interface BaseContractFactory<TContract extends Contract = Contract> {
   abi: utils.Interface;
   mock(signer: Signer): Promise<MockContract<TContract>>;
-  new (address: string, provider: Signer | providers.Provider): TContract;
+  new (address: AddressLike, provider: Signer | providers.Provider): TContract;
 }
 
 export interface ContractFactory<
@@ -69,12 +70,12 @@ export function contract<
         return mock(contract);
       }
 
-      constructor(address: string, provider: Signer | providers.Provider) {
+      constructor(address: AddressLike, provider: Signer | providers.Provider) {
         super(SpecializedContract.abi, address, provider);
       }
 
       public clone(
-        address: string,
+        address: AddressLike,
         provider: Signer | providers.Provider
       ): TContract {
         return new SpecializedContract(address, provider) as TContract;
