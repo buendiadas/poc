@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/artifactory",
-  "version": "0.0.64",
+  "version": "0.0.65",
   "private": true,
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -9,7 +9,7 @@
     "build": "CI=true hardhat compile && node codegen && tsdx build --target node --format cjs"
   },
   "devDependencies": {
-    "@crestproject/codegen": "^0.0.64",
+    "@crestproject/codegen": "^0.0.65",
     "eslint-plugin-prettier": "3.1.4",
     "hardhat": "^2.0.2",
     "prettier": "^2.1.2",

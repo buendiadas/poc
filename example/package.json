@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/example",
-  "version": "0.0.64",
+  "version": "0.0.65",
   "private": true,
   "scripts": {
     "prepare": "yarn build",
@@ -13,9 +13,9 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@crestproject/crestproject": "^0.0.64",
-    "@crestproject/ganache": "^0.0.64",
-    "@crestproject/hardhat": "^0.0.64",
+    "@crestproject/crestproject": "^0.0.65",
+    "@crestproject/ganache": "^0.0.65",
+    "@crestproject/hardhat": "^0.0.65",
     "@openzeppelin/contracts": "^3.2.0",
     "eslint-plugin-prettier": "3.1.4",
     "hardhat": "^2.0.2",
