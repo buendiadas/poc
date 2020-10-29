@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/ganache",
-  "version": "0.0.67",
+  "version": "0.0.68",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -33,11 +33,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@crestproject/ethers": "^0.0.67",
-    "@crestproject/evm": "^0.0.67"
+    "@crestproject/ethers": "^0.0.68",
+    "@crestproject/evm": "^0.0.68"
   },
   "devDependencies": {
-    "@crestproject/artifactory": "^0.0.67",
+    "@crestproject/artifactory": "^0.0.68",
     "eslint-plugin-prettier": "3.1.4",
     "ethers": "^5.0.19",
     "ganache-core": "^2.13.1",
