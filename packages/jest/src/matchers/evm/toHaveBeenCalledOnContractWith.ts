@@ -33,7 +33,9 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
     const pass = calls.some((call) => call.startsWith(signature));
 
     const expectedFunction = fragment.format();
-    const expectedArgs = fragment.inputs.map((_, index) => `${args[index]}`);
+    const expectedArgs = fragment.inputs.map(
+      (_, index) => `${resolved[index]}`
+    );
 
     const message = pass
       ? () =>
