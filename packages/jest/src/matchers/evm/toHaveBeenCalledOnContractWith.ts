@@ -3,7 +3,7 @@ import { printReceived, printExpected, matcherHint } from 'jest-matcher-utils';
 import {
   Contract,
   ContractFunction,
-  resolveArguments,
+  resolveArgumentsAsync,
 } from '@crestproject/ethers';
 import { ensureParameters } from './utils';
 import { forceFail } from '../../utils';
@@ -26,7 +26,7 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
       return forceFail(subject, error, invert);
     }
 
-    const resolved = await resolveArguments(fragment.inputs, args);
+    const resolved = await resolveArgumentsAsync(fragment.inputs, args);
     const signature = contract.abi.encodeFunctionData(fragment, resolved);
 
     const calls = history.calls(contract);

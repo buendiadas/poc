@@ -27,8 +27,11 @@ export {
 } from './types';
 export { MockContract, RefinableStub, Stub, mock } from './mock';
 export { randomAddress } from './utils/randomAddress';
-export { resolveAddress } from './utils/resolveAddress';
-export { resolveArguments } from './utils/resolveArguments';
+export { resolveAddress, resolveAddressAsync } from './utils/resolveAddress';
+export {
+  resolveArguments,
+  resolveArgumentsAsync,
+} from './utils/resolveArguments';
 export { ensureEvent } from './utils/ensureEvent';
 export { ensureInterface } from './utils/ensureInterface';
 export { extractEvent } from './utils/extractEvent';
