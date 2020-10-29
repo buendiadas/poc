@@ -18,7 +18,7 @@ export {
 } from './function';
 export {
   AddressLike,
-  AddressLikeSync,
+  AddressLikeAsync,
   AnyFunction,
   FunctionDefinition,
   ProxiedFunction,
@@ -27,7 +27,7 @@ export {
 } from './types';
 export { MockContract, RefinableStub, Stub, mock } from './mock';
 export { randomAddress } from './utils/randomAddress';
-export { resolveAddress, resolveAddressSync } from './utils/resolveAddress';
+export { resolveAddress } from './utils/resolveAddress';
 export { resolveArguments } from './utils/resolveArguments';
 export { ensureEvent } from './utils/ensureEvent';
 export { ensureInterface } from './utils/ensureInterface';

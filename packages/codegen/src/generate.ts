@@ -82,7 +82,7 @@ export function getType(param: utils.ParamType, flexible?: boolean): string {
   }
 
   if (param.type === 'address') {
-    return flexible ? 'AddressLike' : 'string';
+    return flexible ? 'AddressLikeAsync' : 'string';
   }
 
   if (param.type === 'string') {
@@ -173,7 +173,7 @@ export function generateContract(
   return `/* eslint-disable */
 // @ts-nocheck
 import { BytesLike, BigNumber, BigNumberish } from 'ethers';
-import { contract, Call, Send, AddressLike, Contract } from '${crestproject}';
+import { contract, Call, Send, AddressLikeAsync, Contract } from '${crestproject}';
 
 ${constructor ? `export type ${name}Args = ${constructor};` : ''}
 

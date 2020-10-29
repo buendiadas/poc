@@ -15,9 +15,9 @@ import {
   utils,
 } from 'ethers';
 import { Contract } from './contract';
-import { AddressLike } from './types';
-import { resolveAddress } from './utils/resolveAddress';
-import { resolveArguments } from './utils/resolveArguments';
+import { AddressLikeAsync } from './types';
+import { resolveAddressAsync } from './utils/resolveAddress';
+import { resolveArgumentsAsync } from './utils/resolveArguments';
 
 export interface ContractReceipt<
   TFunction extends
@@ -71,7 +71,7 @@ export interface FunctionOptions<TArgs extends any[] = []> {
   gas?: BigNumberish;
   price?: BigNumberish;
   block?: providers.BlockTag;
-  from?: AddressLike;
+  from?: AddressLikeAsync;
   bytecode?: BytesLike;
 }
 
@@ -217,7 +217,7 @@ export class ContractFunction<
     return this.refine({ gas: limit, price });
   }
 
-  public from(from?: AddressLike) {
+  public from(from?: AddressLikeAsync) {
     return this.refine({ from });
   }
 
@@ -290,7 +290,7 @@ export class CallFunction<
       this.populated = new Promise(async (resolve, reject) => {
         try {
           const inputs = this.fragment.inputs;
-          const args = await resolveArguments(inputs, this.options.args);
+          const args = await resolveArgumentsAsync(inputs, this.options.args);
           const data = this.contract.abi.encodeFunctionData(
             this.fragment,
             args
@@ -306,7 +306,7 @@ export class CallFunction<
             to: this.contract.address,
             data,
             ...(from && {
-              from: await resolveAddress(from),
+              from: await resolveAddressAsync(from),
             }),
             ...(this.options.nonce && {
               nonce: BigNumber.from(this.options.nonce).toNumber(),
@@ -450,7 +450,7 @@ export class ConstructorFunction<
           }
 
           const inputs = this.fragment.inputs;
-          const args = await resolveArguments(inputs, this.options.args);
+          const args = await resolveArgumentsAsync(inputs, this.options.args);
 
           // Set the data to the bytecode + the encoded constructor arguments
           const data = utils.hexlify(
@@ -469,7 +469,7 @@ export class ConstructorFunction<
           resolve({
             data,
             ...(from && {
-              from: await resolveAddress(from),
+              from: await resolveAddressAsync(from),
             }),
             ...(this.options.nonce && {
               nonce: BigNumber.from(this.options.nonce).toNumber(),

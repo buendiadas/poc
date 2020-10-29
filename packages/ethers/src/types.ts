@@ -1,4 +1,4 @@
-import { Signer } from 'ethers';
+import { Signer, Wallet } from 'ethers';
 import { Contract } from './contract';
 import {
   CallFunction,
@@ -7,8 +7,8 @@ import {
   SendFunction,
 } from './function';
 
-export type AddressLike = Contract | Signer | string;
-export type AddressLikeSync = Contract | string;
+export type AddressLike = Contract | Wallet | string;
+export type AddressLikeAsync = Contract | Signer | string;
 
 export type Call<
   TSignature extends AnyFunction = AnyFunction,

@@ -8,7 +8,9 @@ import {
   resolveFunctionOptions,
   SendFunction,
 } from './function';
+import { AddressLike } from './types';
 import { ensureInterface, PossibleInterface } from './utils/ensureInterface';
+import { resolveAddress } from './utils/resolveAddress';
 
 export function deploy<
   TContract extends Contract = Contract,
@@ -35,6 +37,7 @@ export function deploy<
 
 // TODO: Add types and proxies for event handling.
 export class Contract<TContract extends Contract = any> {
+  public readonly address: string;
   public readonly abi: Interface;
   public deployment?: ContractReceipt<ConstructorFunction<any, TContract>>;
 
@@ -56,9 +59,10 @@ export class Contract<TContract extends Contract = any> {
 
   constructor(
     abi: Interface | PossibleInterface,
-    public readonly address: string,
+    address: AddressLike,
     provider: providers.Provider | Signer
   ) {
+    this.address = resolveAddress(address);
     this.abi = ensureInterface(abi);
     if (Signer.isSigner(provider)) {
       this._signer = provider;
@@ -125,13 +129,13 @@ export class Contract<TContract extends Contract = any> {
   }
 
   public clone(
-    address: string,
+    address: AddressLike,
     provider: Signer | providers.Provider
   ): TContract {
     return new Contract(this.abi, address, provider) as any;
   }
 
-  public attach(address: string) {
+  public attach(address: AddressLike) {
     const provider = this.signer ?? this.provider;
     return this.clone(address, provider);
   }

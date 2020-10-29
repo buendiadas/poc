@@ -61,9 +61,6 @@
     "trailingComma": "es5"
   },
   "jest": {
-    "preset": "ts-jest",
-    "setupFilesAfterEnv": [
-      "<rootDir>/tests/setup.ts"
-    ]
+    "preset": "@crestproject/jest"
   }
 }

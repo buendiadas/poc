@@ -13,7 +13,7 @@ export interface SolidityCompilerOutput {
 export interface BaseContractFactory<TContract extends Contract = Contract> {
   abi: utils.Interface;
   mock(signer: Signer): Promise<MockContract<TContract>>;
-  new (address?: string, provider?: Signer | providers.Provider): TContract;
+  new (address: string, provider: Signer | providers.Provider): TContract;
 }
 
 export interface ContractFactory<

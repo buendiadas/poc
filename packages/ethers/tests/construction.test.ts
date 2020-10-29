@@ -78,7 +78,7 @@ describe('construction', () => {
       function other(address) view returns (string)
     `;
 
-    const incompatible = new IncompatibleContract(undefined, provider);
+    const incompatible = new IncompatibleContract(randomAddress(), provider);
     const allowance = token.allowance;
     expect(() => allowance.attach(incompatible as any)).toThrow(
       'Failed to attach function to incompatible contract'
@@ -90,7 +90,7 @@ describe('construction', () => {
       function allowance(address owner, address spender) view returns (uint256)
     `;
 
-    const compatible = new CompatibleContract(undefined, provider);
+    const compatible = new CompatibleContract(randomAddress(), provider);
     const allowance = token.allowance;
     expect(() => allowance.attach(compatible as any)).not.toThrow();
     expect(allowance.attach(compatible as any)).toBeInstanceOf(CallFunction);

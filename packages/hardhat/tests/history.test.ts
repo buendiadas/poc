@@ -11,7 +11,7 @@ function snapshot(provider: HardhatProvider) {
 }
 
 describe('hardhat evm history tracking', () => {
-  it('records history of contract calls', async () => {
+  fit('records history of contract calls', async () => {
     const deployer = provider.getSigner(0);
     const token = await BasicToken.deploy(deployer, utils.parseEther('100'));
 

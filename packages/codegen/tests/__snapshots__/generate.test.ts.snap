@@ -8,7 +8,7 @@ import {
   contract,
   Call,
   Send,
-  AddressLike,
+  AddressLikeAsync,
   Contract,
 } from '@crestproject/crestproject';
 
@@ -17,34 +17,34 @@ export type ERC20Args = [name: string, symbol: string];
 // prettier-ignore
 export interface ERC20 extends Contract<ERC20> {
   // Shortcuts (using function name of first overload)
-  allowance: Call<(owner: AddressLike, spender: AddressLike) => BigNumber, ERC20>
-  approve: Send<(spender: AddressLike, amount: BigNumberish) => boolean, ERC20>
-  balanceOf: Call<(account: AddressLike) => BigNumber, ERC20>
+  allowance: Call<(owner: AddressLikeAsync, spender: AddressLikeAsync) => BigNumber, ERC20>
+  approve: Send<(spender: AddressLikeAsync, amount: BigNumberish) => boolean, ERC20>
+  balanceOf: Call<(account: AddressLikeAsync) => BigNumber, ERC20>
   decimals: Call<() => BigNumber, ERC20>
-  decreaseAllowance: Send<(spender: AddressLike, subtractedValue: BigNumberish) => boolean, ERC20>
-  increaseAllowance: Send<(spender: AddressLike, addedValue: BigNumberish) => boolean, ERC20>
+  decreaseAllowance: Send<(spender: AddressLikeAsync, subtractedValue: BigNumberish) => boolean, ERC20>
+  increaseAllowance: Send<(spender: AddressLikeAsync, addedValue: BigNumberish) => boolean, ERC20>
   name: Call<() => string, ERC20>
   symbol: Call<() => string, ERC20>
   totalSupply: Call<() => BigNumber, ERC20>
-  transfer: Send<(recipient: AddressLike, amount: BigNumberish) => boolean, ERC20>
-  transferFrom: Send<(sender: AddressLike, recipient: AddressLike, amount: BigNumberish) => boolean, ERC20>
+  transfer: Send<(recipient: AddressLikeAsync, amount: BigNumberish) => boolean, ERC20>
+  transferFrom: Send<(sender: AddressLikeAsync, recipient: AddressLikeAsync, amount: BigNumberish) => boolean, ERC20>
 
   // Explicit accessors (using full function signature)
-  'allowance(address,address)': Call<(owner: AddressLike, spender: AddressLike) => BigNumber, ERC20>
-  'approve(address,uint256)': Send<(spender: AddressLike, amount: BigNumberish) => boolean, ERC20>
-  'balanceOf(address)': Call<(account: AddressLike) => BigNumber, ERC20>
+  'allowance(address,address)': Call<(owner: AddressLikeAsync, spender: AddressLikeAsync) => BigNumber, ERC20>
+  'approve(address,uint256)': Send<(spender: AddressLikeAsync, amount: BigNumberish) => boolean, ERC20>
+  'balanceOf(address)': Call<(account: AddressLikeAsync) => BigNumber, ERC20>
   'decimals()': Call<() => BigNumber, ERC20>
-  'decreaseAllowance(address,uint256)': Send<(spender: AddressLike, subtractedValue: BigNumberish) => boolean, ERC20>
-  'increaseAllowance(address,uint256)': Send<(spender: AddressLike, addedValue: BigNumberish) => boolean, ERC20>
+  'decreaseAllowance(address,uint256)': Send<(spender: AddressLikeAsync, subtractedValue: BigNumberish) => boolean, ERC20>
+  'increaseAllowance(address,uint256)': Send<(spender: AddressLikeAsync, addedValue: BigNumberish) => boolean, ERC20>
   'name()': Call<() => string, ERC20>
   'symbol()': Call<() => string, ERC20>
   'totalSupply()': Call<() => BigNumber, ERC20>
-  'transfer(address,uint256)': Send<(recipient: AddressLike, amount: BigNumberish) => boolean, ERC20>
-  'transferFrom(address,address,uint256)': Send<(sender: AddressLike, recipient: AddressLike, amount: BigNumberish) => boolean, ERC20>
+  'transfer(address,uint256)': Send<(recipient: AddressLikeAsync, amount: BigNumberish) => boolean, ERC20>
+  'transferFrom(address,address,uint256)': Send<(sender: AddressLikeAsync, recipient: AddressLikeAsync, amount: BigNumberish) => boolean, ERC20>
 }
 
 let ERC20Bytecode: string | undefined = undefined;
-if (typeof process === 'object') {
+if (typeof window === 'undefined') {
   ERC20Bytecode = './__fixtures__/artifact.json';
 }
 
