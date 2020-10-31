@@ -9,21 +9,21 @@ export class HardhatProvider extends EthereumTestnetProvider {
 
   constructor(public readonly net: Network) {
     super();
-
-    if (this.net.config.gas !== 'auto') {
-      this.gas = BigNumber.from(this.net.config.gas).mul(
+    console.log(net.config);
+    if (net.config.gas !== 'auto') {
+      this.gas = BigNumber.from(net.config.gas).mul(
         this.net.config.gasMultiplier,
       );
     }
 
-    if (this.net.config.gasPrice !== 'auto') {
-      this.gasPrice = BigNumber.from(this.net.config.gasPrice);
+    if (net.config.gasPrice !== 'auto') {
+      this.gasPrice = BigNumber.from(net.config.gasPrice);
     }
 
     // Re-route call history recording to whatever is the currently
     // active history object. Required for making history and snapshoting
     // work nicely together.
-    addListener(this.net.provider, 'beforeMessage', (message) => {
+    addListener(net.provider, 'beforeMessage', (message) => {
       this.history.record(message);
     });
   }

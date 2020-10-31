@@ -2,5 +2,8 @@ const inherited = require('@crestproject/jest/jest-preset');
 
 module.exports = {
   ...inherited,
-  testEnvironment: require.resolve('@crestproject/hardhat/jest'),
+  setupFilesAfterEnv: [
+    ...inherited.setupFilesAfterEnv,
+    require.resolve('./jest-setup'),
+  ],
 };

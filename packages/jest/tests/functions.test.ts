@@ -1,4 +1,3 @@
-import { network } from 'hardhat';
 import { HardhatProvider } from '@crestproject/hardhat';
 import { BasicToken } from '@crestproject/artifactory';
 import { utils } from 'ethers';
@@ -17,8 +16,6 @@ async function snapshot(provider: HardhatProvider) {
 }
 
 describe('functions', () => {
-  const provider = new HardhatProvider(network.provider);
-
   it('toMatchGasSnapshot', async () => {
     const { token, someone } = await provider.snapshot(snapshot);
 

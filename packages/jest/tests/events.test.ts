@@ -1,9 +1,6 @@
 import { utils } from 'ethers';
-import { network } from 'hardhat';
 import { HardhatProvider } from '@crestproject/hardhat';
 import { BasicToken } from '@crestproject/artifactory';
-
-const provider = new HardhatProvider(network.provider);
 
 async function snapshot(provider: HardhatProvider) {
   const someone = await provider.getSignerWithAddress(0);
