@@ -1,5 +1,14 @@
 # @crestproject/jest
 
+## 0.0.74
+
+### Patch Changes
+
+- e6ea5b5: adding sameAddress util
+- Updated dependencies [e6ea5b5]
+  - @crestproject/ethers@0.0.74
+  - @crestproject/evm@0.0.74
+
 ## 0.0.73
 
 ### Patch Changes

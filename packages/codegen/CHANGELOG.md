@@ -1,5 +1,11 @@
 # @crestproject/codegen
 
+## 0.0.74
+
+### Patch Changes
+
+- e6ea5b5: adding sameAddress util
+
 ## 0.0.73
 
 ### Patch Changes
