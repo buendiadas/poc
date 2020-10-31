@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 0.0.75
+
+### Patch Changes
+
+- 6782e70: inherit gas & gas price config
+- Updated dependencies [6782e70]
+  - @crestproject/crestproject@0.0.75
+
 ## 0.0.74
 
 ### Patch Changes

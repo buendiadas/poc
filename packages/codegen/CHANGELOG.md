@@ -1,5 +1,11 @@
 # @crestproject/codegen
 
+## 0.0.75
+
+### Patch Changes
+
+- 6782e70: inherit gas & gas price config
+
 ## 0.0.74
 
 ### Patch Changes
