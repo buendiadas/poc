@@ -1,5 +1,16 @@
 # @crestproject/crestproject
 
+## 0.0.76
+
+### Patch Changes
+
+- b1ddffe: fix static gas price
+- Updated dependencies [b1ddffe]
+  - @crestproject/codegen@0.0.76
+  - @crestproject/ethers@0.0.76
+  - @crestproject/evm@0.0.76
+  - @crestproject/jest@0.0.76
+
 ## 0.0.75
 
 ### Patch Changes
