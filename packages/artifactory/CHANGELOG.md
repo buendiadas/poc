@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 0.0.82
+
+### Patch Changes
+
+- c3b171e: fix exports
+- Updated dependencies [c3b171e]
+  - @crestproject/crestproject@0.0.82
+
 ## 0.0.81
 
 ### Patch Changes

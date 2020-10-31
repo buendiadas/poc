@@ -1,5 +1,11 @@
 # @crestproject/ethers
 
+## 0.0.82
+
+### Patch Changes
+
+- c3b171e: fix exports
+
 ## 0.0.81
 
 ### Patch Changes

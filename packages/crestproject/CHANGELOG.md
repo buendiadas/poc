@@ -1,5 +1,16 @@
 # @crestproject/crestproject
 
+## 0.0.82
+
+### Patch Changes
+
+- c3b171e: fix exports
+- Updated dependencies [c3b171e]
+  - @crestproject/codegen@0.0.82
+  - @crestproject/ethers@0.0.82
+  - @crestproject/evm@0.0.82
+  - @crestproject/jest@0.0.82
+
 ## 0.0.81
 
 ### Patch Changes
