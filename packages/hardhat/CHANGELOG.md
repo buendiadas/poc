@@ -1,5 +1,14 @@
 # @crestproject/hardhat
 
+## 0.0.73
+
+### Patch Changes
+
+- b19f1b2: updating build
+- Updated dependencies [b19f1b2]
+  - @crestproject/ethers@0.0.73
+  - @crestproject/evm@0.0.73
+
 ## 0.0.72
 
 ### Patch Changes

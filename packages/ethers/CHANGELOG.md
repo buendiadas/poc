@@ -1,5 +1,11 @@
 # @crestproject/ethers
 
+## 0.0.73
+
+### Patch Changes
+
+- b19f1b2: updating build
+
 ## 0.0.72
 
 ### Patch Changes
