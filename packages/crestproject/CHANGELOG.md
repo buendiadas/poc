@@ -1,5 +1,16 @@
 # @crestproject/crestproject
 
+## 0.0.81
+
+### Patch Changes
+
+- b897fd7: add types
+- Updated dependencies [b897fd7]
+  - @crestproject/codegen@0.0.81
+  - @crestproject/ethers@0.0.81
+  - @crestproject/evm@0.0.81
+  - @crestproject/jest@0.0.81
+
 ## 0.0.80
 
 ### Patch Changes

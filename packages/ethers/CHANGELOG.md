@@ -1,5 +1,11 @@
 # @crestproject/ethers
 
+## 0.0.81
+
+### Patch Changes
+
+- b897fd7: add types
+
 ## 0.0.80
 
 ### Patch Changes
