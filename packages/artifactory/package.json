@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/artifactory",
-  "version": "0.0.78",
+  "version": "0.0.79",
   "private": true,
   "main": "dist/artifactory.cjs.js",
   "scripts": {
@@ -12,11 +12,11 @@
     "@babel/runtime": "^7.12.1"
   },
   "peerDependencies": {
-    "@crestproject/crestproject": "^0.0.78"
+    "@crestproject/crestproject": "^0.0.79"
   },
   "devDependencies": {
-    "@crestproject/codegen": "^0.0.78",
-    "@crestproject/crestproject": "^0.0.78",
+    "@crestproject/codegen": "^0.0.79",
+    "@crestproject/crestproject": "^0.0.79",
     "@openzeppelin/contracts": "^3.2.0",
     "hardhat": "^2.0.2"
   }

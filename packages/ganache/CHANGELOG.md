@@ -1,5 +1,14 @@
 # @crestproject/ganache
 
+## 0.0.79
+
+### Patch Changes
+
+- 5754d6f: fixing build
+- Updated dependencies [5754d6f]
+  - @crestproject/ethers@0.0.79
+  - @crestproject/evm@0.0.79
+
 ## 0.0.78
 
 ### Patch Changes
