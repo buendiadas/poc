@@ -30,8 +30,6 @@
     "@crestproject/evm": "^0.0.68"
   },
   "devDependencies": {
-    "@crestproject/artifactory": "^0.0.68",
-    "@crestproject/hardhat": "^0.0.68",
     "ethers": "^5.0.19",
     "ts-jest": "^26.4.3"
   },

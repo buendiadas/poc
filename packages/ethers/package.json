@@ -27,7 +27,6 @@
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
   "devDependencies": {
-    "@crestproject/artifactory": "^0.0.68",
     "ethers": "^5.0.19"
   },
   "peerDeependencies": {

@@ -26,7 +26,6 @@
     "@crestproject/ethers": "^0.0.68"
   },
   "devDependencies": {
-    "@crestproject/artifactory": "^0.0.68",
     "ethers": "^5.0.19"
   },
   "peerDependencies": {
