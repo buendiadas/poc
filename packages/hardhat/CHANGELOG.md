@@ -1,5 +1,14 @@
 # @crestproject/hardhat
 
+## 0.0.72
+
+### Patch Changes
+
+- 505f030: export signer
+- Updated dependencies [505f030]
+  - @crestproject/ethers@0.0.72
+  - @crestproject/evm@0.0.72
+
 ## 0.0.71
 
 ### Patch Changes

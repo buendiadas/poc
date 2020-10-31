@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/ganache",
-  "version": "0.0.71",
+  "version": "0.0.72",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -25,8 +25,8 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "@crestproject/ethers": "^0.0.71",
-    "@crestproject/evm": "^0.0.71",
+    "@crestproject/ethers": "^0.0.72",
+    "@crestproject/evm": "^0.0.72",
     "jest-environment-node": "^26.6.1"
   },
   "devDependencies": {
