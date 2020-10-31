@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 0.0.78
+
+### Patch Changes
+
+- f74d49d: adding missing file
+- Updated dependencies [f74d49d]
+  - @crestproject/crestproject@0.0.78
+
 ## 0.0.77
 
 ### Patch Changes

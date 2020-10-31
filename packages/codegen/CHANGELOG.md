@@ -1,5 +1,11 @@
 # @crestproject/codegen
 
+## 0.0.78
+
+### Patch Changes
+
+- f74d49d: adding missing file
+
 ## 0.0.77
 
 ### Patch Changes
