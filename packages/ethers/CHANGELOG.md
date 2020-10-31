@@ -1,5 +1,11 @@
 # @crestproject/ethers
 
+## 0.0.77
+
+### Patch Changes
+
+- 5c989a1: fix hardhat state reset
+
 ## 0.0.76
 
 ### Patch Changes

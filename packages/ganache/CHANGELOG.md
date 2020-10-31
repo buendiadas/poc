@@ -1,5 +1,14 @@
 # @crestproject/ganache
 
+## 0.0.77
+
+### Patch Changes
+
+- 5c989a1: fix hardhat state reset
+- Updated dependencies [5c989a1]
+  - @crestproject/ethers@0.0.77
+  - @crestproject/evm@0.0.77
+
 ## 0.0.76
 
 ### Patch Changes
