@@ -4,11 +4,11 @@
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/ganache.cjs.js",
+  "module": "dist/ganache.esm.js",
   "files": [
     "dist",
-    "src",
+    "jest",
     "jest-preset.js"
   ],
   "publishConfig": {
@@ -24,36 +24,23 @@
   "contributors": [
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
-  "scripts": {
-    "prepare": "yarn build",
-    "start": "tsdx watch",
-    "build": "tsdx build --target node --format cjs && tsc --project tsconfig.preset.json",
-    "lint": "tsdx lint src tests --ignore-pattern tests/contracts/**/*.ts",
-    "format": "yarn lint --fix",
-    "typecheck": "tsc --noEmit"
-  },
   "dependencies": {
     "@crestproject/ethers": "^0.0.68",
     "@crestproject/evm": "^0.0.68"
   },
   "devDependencies": {
     "@crestproject/artifactory": "^0.0.68",
-    "eslint-plugin-prettier": "3.1.4",
     "ethers": "^5.0.19",
-    "ganache-core": "^2.13.1",
-    "prettier": "^2.1.2",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.0.3",
-    "typescript": "^4.0.5"
+    "ganache-core": "^2.13.0"
   },
   "peerDependencies": {
     "ethers": "^5.0.18",
     "ganache-core": "^2.13.0"
   },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
+  "preconstruct": {
+    "entrypoints": [
+      ".",
+      "jest"
+    ]
   }
 }

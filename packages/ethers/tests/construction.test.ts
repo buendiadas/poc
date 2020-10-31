@@ -60,7 +60,7 @@ describe('construction', () => {
 
   it('shortcut syntax allows chaining methods', () => {
     expect(token.transfer.args(randomAddress(), 123)).toBeInstanceOf(
-      SendFunction
+      SendFunction,
     );
   });
 
@@ -81,7 +81,7 @@ describe('construction', () => {
     const incompatible = new IncompatibleContract(randomAddress(), provider);
     const allowance = token.allowance;
     expect(() => allowance.attach(incompatible as any)).toThrow(
-      'Failed to attach function to incompatible contract'
+      'Failed to attach function to incompatible contract',
     );
   });
 
@@ -101,7 +101,7 @@ describe('construction', () => {
     const token = BasicToken.deploy(signer, utils.parseEther('100'));
 
     await expect(
-      token.then((contract: BasicToken) => contract.deployment)
+      token.then((contract: BasicToken) => contract.deployment),
     ).resolves.toMatchObject({
       contractAddress: expect.stringMatching(/^0x/),
     });

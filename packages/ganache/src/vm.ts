@@ -3,7 +3,7 @@ import ganache from 'ganache-core';
 export function addListener(
   provider: ganache.Provider,
   event: string,
-  handler: (value: any) => void
+  handler: (value: any) => void,
 ) {
   const blockchain = (provider as any).engine.manager.state.blockchain;
 

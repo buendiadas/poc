@@ -9,7 +9,7 @@ export abstract class EthereumTestnetProvider extends providers.StaticJsonRpcPro
   public abstract send(method: string, params: any): Promise<any>;
 
   public async snapshot<TFixture>(
-    create: FixtureCreator<TFixture, this>
+    create: FixtureCreator<TFixture, this>,
   ): Promise<TFixture> {
     return this.snapshots.snapshot(create);
   }

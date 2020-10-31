@@ -37,7 +37,7 @@ export interface ContractTransaction<
 
 function propertyOf<TOr = any>(
   property: string,
-  candidates: object[] = []
+  candidates: object[] = [],
 ): TOr {
   const obj = candidates.find((obj) => obj.hasOwnProperty(property));
   return (obj as any)?.[property] ?? undefined;
@@ -49,7 +49,7 @@ function enhanceResponse<
     | ConstructorFunction<any> = SendFunction
 >(
   fn: TFunction,
-  response: EthersContractTransaction
+  response: EthersContractTransaction,
 ): ContractTransaction<TFunction> {
   const wait = response.wait.bind(response);
   const enhanced = (response as any) as ContractTransaction<TFunction>;
@@ -77,7 +77,7 @@ export interface FunctionOptions<TArgs extends any[] = []> {
 
 // TODO: Use param types to validate this instead.
 export function isFunctionOptions<TArgs extends any[] = []>(
-  value: any
+  value: any,
 ): value is FunctionOptions<TArgs> {
   if (typeof value === 'object' && !Array.isArray(value)) {
     if (BigNumber.isBigNumber(value)) {
@@ -133,7 +133,7 @@ export class ContractFunction<
   // @ts-ignore
   protected readonly __TYPE__?: string = 'FUNCTION';
   public static isContractFunction(
-    fn: any
+    fn: any,
   ): fn is ContractFunction<any, any, any> {
     return fn?.__TYPE__?.startsWith('FUNCTION');
   }
@@ -155,7 +155,7 @@ export class ContractFunction<
   >(
     contract: TContract,
     fragment: TFragment,
-    options: FunctionOptions<TArgs>
+    options: FunctionOptions<TArgs>,
   ): ContractFunction<TArgs, TFragment, TContract>;
 
   public static create<
@@ -186,7 +186,7 @@ export class ContractFunction<
   constructor(
     public readonly contract: TContract,
     public readonly fragment: TFragment,
-    public readonly options: FunctionOptions<TArgs> = {}
+    public readonly options: FunctionOptions<TArgs> = {},
   ) {}
 
   public get ref() {
@@ -266,7 +266,7 @@ export class CallFunction<
     const response = await this.contract.provider.call(tx);
     const result = this.contract.abi.decodeFunctionResult(
       this.fragment,
-      response
+      response,
     );
 
     if (this.fragment.outputs?.length === 1) {
@@ -293,7 +293,7 @@ export class CallFunction<
           const args = await resolveArgumentsAsync(inputs, this.options.args);
           const data = this.contract.abi.encodeFunctionData(
             this.fragment,
-            args
+            args,
           );
 
           const from = this.options.from
@@ -352,13 +352,13 @@ export class SendFunction<
   }
 
   public send(
-    wait?: true
+    wait?: true,
   ): Promise<ContractReceipt<SendFunction<TArgs, TReturn, TContract>>>;
   public send(
-    wait?: false
+    wait?: false,
   ): Promise<ContractTransaction<SendFunction<TArgs, TReturn, TContract>>>;
   public async send(
-    wait: boolean = true
+    wait: boolean = true,
   ): Promise<
     | ContractReceipt<SendFunction<TArgs, TReturn, TContract>>
     | ContractTransaction<SendFunction<TArgs, TReturn, TContract>>
@@ -388,7 +388,7 @@ export class ConstructorFunction<
   // @ts-ignore
   protected readonly __TYPE__?: string = 'FUNCTION:CONSTRUCTOR';
   public static isConstructorFunction(
-    fn: any
+    fn: any,
   ): fn is ConstructorFunction<any, any> {
     return fn?.__TYPE__ === 'FUNCTION:CONSTRUCTOR';
   }
@@ -414,13 +414,13 @@ export class ConstructorFunction<
   }
 
   public send(
-    wait?: true
+    wait?: true,
   ): Promise<ContractReceipt<ConstructorFunction<TArgs, TContract>>>;
   public send(
-    wait?: false
+    wait?: false,
   ): Promise<ContractTransaction<ConstructorFunction<TArgs, TContract>>>;
   public async send(
-    wait: boolean = true
+    wait: boolean = true,
   ): Promise<
     | ContractTransaction<ConstructorFunction<TArgs, TContract>>
     | ContractReceipt<ConstructorFunction<TArgs, TContract>>
@@ -457,7 +457,7 @@ export class ConstructorFunction<
             utils.concat([
               this.options.bytecode,
               this.contract.abi.encodeDeploy(args),
-            ])
+            ]),
           );
 
           const from = this.options.from

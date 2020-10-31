@@ -24,7 +24,7 @@ export interface ContractFactory<
   deploy(signer: Signer, ...args: TConstructorArgs): Promise<TContract>;
   deploy(
     signer: Signer,
-    options: FunctionOptions<TConstructorArgs>
+    options: FunctionOptions<TConstructorArgs>,
   ): Promise<TContract>;
 }
 
@@ -76,7 +76,7 @@ export function contract<
 
       public clone(
         address: AddressLike,
-        provider: Signer | providers.Provider
+        provider: Signer | providers.Provider,
       ): TContract {
         return new SpecializedContract(address, provider) as TContract;
       }

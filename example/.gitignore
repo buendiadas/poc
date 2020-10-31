@@ -1,6 +1,0 @@
-# Ignore build output and dependencies
-node_modules/
-build/
-
-# Generated typescript contracts
-tests/contracts/

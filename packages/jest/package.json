@@ -4,11 +4,10 @@
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/jest.cjs.js",
+  "module": "dist/jest.esm.js",
   "files": [
     "dist",
-    "src",
     "jest-preset.js",
     "jest-setup.js"
   ],
@@ -25,15 +24,6 @@
   "contributors": [
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
-  "scripts": {
-    "prepare": "yarn build",
-    "start": "tsdx watch",
-    "build": "tsdx build --target node --format cjs",
-    "test": "tsdx test",
-    "lint": "tsdx lint --ignore-pattern tests/contracts/**/*.ts",
-    "format": "yarn lint --fix",
-    "typecheck": "tsc --noEmit"
-  },
   "dependencies": {
     "@crestproject/ethers": "^0.0.68",
     "@crestproject/evm": "^0.0.68"
@@ -41,26 +31,11 @@
   "devDependencies": {
     "@crestproject/artifactory": "^0.0.68",
     "@crestproject/hardhat": "^0.0.68",
-    "@types/fs-extra": "^9.0.2",
-    "eslint-plugin-prettier": "3.1.4",
     "ethers": "^5.0.19",
-    "prettier": "^2.1.2",
-    "ts-jest": "^26.4.3",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.0.3",
-    "typescript": "^4.0.5"
+    "ts-jest": "^26.4.3"
   },
   "peerDependencies": {
-    "ethers": "^5.0.18",
-    "ts-jest": "^26.4.1"
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "jest": {
-    "preset": "@crestproject/jest"
+    "ethers": "^5.0.19",
+    "ts-jest": "^26.4.3"
   }
 }

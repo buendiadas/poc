@@ -4,11 +4,10 @@
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/evm.cjs.js",
+  "module": "dist/evm.esm.js",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
@@ -23,34 +22,14 @@
   "contributors": [
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
-  "scripts": {
-    "prepare": "yarn build",
-    "start": "tsdx watch",
-    "build": "tsdx build --target node --format cjs",
-    "test": "tsdx test",
-    "lint": "tsdx lint src tests",
-    "format": "yarn lint --fix",
-    "typecheck": "tsc --noEmit"
-  },
   "dependencies": {
     "@crestproject/ethers": "^0.0.68"
   },
   "devDependencies": {
     "@crestproject/artifactory": "^0.0.68",
-    "eslint-plugin-prettier": "3.1.4",
-    "ethers": "^5.0.19",
-    "prettier": "^2.1.2",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.0.3",
-    "typescript": "^4.0.5"
+    "ethers": "^5.0.19"
   },
   "peerDependencies": {
-    "ethers": "^5.0.18"
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
+    "ethers": "^5.0.19"
   }
 }

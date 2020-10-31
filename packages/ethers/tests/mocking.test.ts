@@ -44,7 +44,7 @@ describe('mocking', () => {
       .reverts('YOU SHALL NOT PASS!');
 
     await expect(mock.balanceOf(constants.AddressZero)).rejects.toThrowError(
-      'Mock revert: YOU SHALL NOT PASS!'
+      'Mock revert: YOU SHALL NOT PASS!',
     );
   });
 
@@ -53,7 +53,7 @@ describe('mocking', () => {
     const mock = await BasicToken.mock(signer);
 
     await expect(mock.balanceOf(constants.AddressZero)).rejects.toThrowError(
-      'Mock not initialized: balanceOf(address)'
+      'Mock not initialized: balanceOf(address)',
     );
   });
 
@@ -73,7 +73,7 @@ describe('mocking', () => {
     const spender = randomAddress();
     const amount = utils.parseEther('1');
     await expect(
-      mock.forward(token.approve, spender, amount)
+      mock.forward(token.approve, spender, amount),
     ).resolves.toMatchObject({
       transactionHash: expect.anything(),
       transactionIndex: expect.anything(),
@@ -93,7 +93,7 @@ describe('mocking', () => {
     await token.balanceOf.reset();
     result = token.balanceOf(constants.AddressZero);
     await expect(result).rejects.toThrowError(
-      'Mock not initialized: balanceOf(address)'
+      'Mock not initialized: balanceOf(address)',
     );
   });
 
@@ -118,7 +118,7 @@ describe('mocking', () => {
     await token.balanceOf.reset();
     result = token.balanceOf(constants.AddressZero);
     await expect(result).rejects.toThrowError(
-      'Mock not initialized: balanceOf(address)'
+      'Mock not initialized: balanceOf(address)',
     );
   });
 });

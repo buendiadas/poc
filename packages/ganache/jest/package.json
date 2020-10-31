@@ -1,0 +1,7 @@
+{
+  "main": "dist/ganache.cjs.js",
+  "module": "dist/ganache.esm.js",
+  "preconstruct": {
+    "source": "../src/jest"
+  }
+}

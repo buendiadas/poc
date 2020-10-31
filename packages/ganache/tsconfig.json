@@ -1,22 +1,3 @@
 {
-  "include": ["src"],
-  "exclude": ["src/preset"],
-  "compilerOptions": {
-    "module": "esnext",
-    "target": "es6",
-    "lib": ["dom", "esnext"],
-    "importHelpers": true,
-    "declaration": true,
-    "sourceMap": true,
-    "rootDir": "./src",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "node",
-    "jsx": "react",
-    "esModuleInterop": true
-  }
+  "extends": "../../tsconfig.json"
 }

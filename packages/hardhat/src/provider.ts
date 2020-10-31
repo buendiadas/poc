@@ -8,7 +8,7 @@ export class HardhatProvider extends EthereumTestnetProvider {
 
   constructor(
     public readonly provider: EthereumProvider,
-    gas: BigNumberish = 9500000
+    gas: BigNumberish = 9500000,
   ) {
     super();
 
@@ -28,7 +28,7 @@ export class HardhatProvider extends EthereumTestnetProvider {
   }
 
   public async estimateGas(
-    transaction: utils.Deferrable<providers.TransactionRequest>
+    transaction: utils.Deferrable<providers.TransactionRequest>,
   ): Promise<BigNumber> {
     if (this.gas && !this.gas.isZero()) {
       return this.gas;

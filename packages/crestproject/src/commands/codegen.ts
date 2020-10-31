@@ -43,7 +43,7 @@ export const handler = async (args: Args) => {
     });
   }
 
-  const workerPath = require.resolve('../workers/codegen');
+  const workerPath = require.resolve('@crestproject/crestproject/codegen');
   const workerCount = Math.max(os.cpus().length - 1, 1);
   const worker = new Worker(workerPath, {
     exposedMethods: ['generate'],
@@ -54,7 +54,7 @@ export const handler = async (args: Args) => {
   const mutex = throat(workerCount);
   const run = (match: string, destination: string) => {
     return mutex(async () =>
-      (worker as any).generate(match, destination, format)
+      (worker as any).generate(match, destination, format),
     );
   };
 

@@ -1,16 +1,25 @@
-# Ignore build output and dependencies
-node_modules/
-dist/
-artifacts/
-cache/
-
-# Ignore codegen directories but not the package
-codegen/
-!/packages/codegen/
-
-# Ignore log files
+# ignore log output
 *.log
 
-# Ignore all dotfiles except those listed
+# ignore all dotfiles except the whitelisted ones
 .*
+!.env.example
+!.changeset
+!.github
 !.gitignore
+!.gitattributes
+!.prettierignore
+!.prettierrc
+!.babelrc
+!.solhint.json
+
+# ignore installed dependencies
+node_modules/
+
+# ignore build output
+artifacts/
+cache/
+dist/
+
+# ignore generated code
+src/codegen/

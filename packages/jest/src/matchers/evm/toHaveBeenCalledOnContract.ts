@@ -4,22 +4,22 @@ import { ensureParameters } from './utils';
 
 export function toHaveBeenCalledOnContract(
   this: jest.MatcherContext,
-  fn: ContractFunction
+  fn: ContractFunction,
 ): jest.CustomMatcherResult;
 export function toHaveBeenCalledOnContract(
   this: jest.MatcherContext,
-  contract: Contract
+  contract: Contract,
 ): jest.CustomMatcherResult;
 export function toHaveBeenCalledOnContract(
   this: jest.MatcherContext,
-  subject: Contract | ContractFunction
+  subject: Contract | ContractFunction,
 ): jest.CustomMatcherResult {
   const invert = this.isNot;
 
   return ensureParameters(subject, invert, function (
     history,
     contract,
-    fragment
+    fragment,
   ) {
     const signature = fragment ? contract.abi.getSighash(fragment) : '0x';
     const method = fragment?.format();

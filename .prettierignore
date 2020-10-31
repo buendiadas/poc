@@ -1,0 +1,7 @@
+# ignore build output
+artifacts/
+cache/
+dist/
+
+# ignore generated code
+src/codegen/

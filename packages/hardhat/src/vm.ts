@@ -6,7 +6,7 @@ import type { EventEmitter } from 'events';
 export function addListener(
   provider: EthereumProvider,
   event: string,
-  handler: (...args: any) => void
+  handler: (...args: any) => void,
 ) {
   let inner: any = provider._provider;
   while (inner._wrapped) {

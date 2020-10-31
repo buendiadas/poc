@@ -5,11 +5,11 @@ import { ensureBigNumbers, printBigNumber } from './utils';
 export function toBeGtBigNumber(
   this: jest.MatcherContext,
   received: BigNumberish,
-  expected: BigNumberish
+  expected: BigNumberish,
 ) {
   return ensureBigNumbers(received, expected, this.isNot, function (
     received,
-    expected
+    expected,
   ) {
     const receivedStr = printReceived(printBigNumber(received));
     const expectedStr = printExpected(printBigNumber(expected));

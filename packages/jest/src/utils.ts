@@ -9,7 +9,7 @@ export function forceFail(value: any, error: string, invert: boolean) {
 }
 
 export function isTransactionReceipt(
-  value: any
+  value: any,
 ): value is providers.TransactionReceipt {
   try {
     expect(value).toMatchObject({

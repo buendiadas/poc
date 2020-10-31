@@ -1,13 +1,13 @@
 import NodeEnvironment from 'jest-environment-node';
 import { config, artifacts } from 'hardhat';
-import { HardhatProvider } from '../provider';
+import { HardhatProvider } from '@crestproject/hardhat';
 import {
   hardhatNetworkName,
   createProvider as createProviderInternal,
   HardhatNetworkConfig,
   EthereumProvider,
   HardhatConfig,
-} from '../imports';
+} from './imports';
 
 function createProvider(config: HardhatConfig) {
   const pathConfig = config.paths;
@@ -21,7 +21,7 @@ function createProvider(config: HardhatConfig) {
     networkName,
     networkConfig,
     pathConfig,
-    artifacts
+    artifacts,
   );
 
   return provider;

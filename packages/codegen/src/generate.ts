@@ -110,7 +110,7 @@ export function getType(param: utils.ParamType, flexible?: boolean): string {
 
 export function generateFunction(
   contract: string,
-  fragment: utils.FunctionFragment
+  fragment: utils.FunctionFragment,
 ) {
   const type = fragment.constant ? 'Call' : 'Send';
   const input = getInput(fragment);
@@ -120,7 +120,7 @@ export function generateFunction(
 
 export function generateFunctions(
   contract: string,
-  fragments: utils.FunctionFragment[]
+  fragments: utils.FunctionFragment[],
 ) {
   if (!fragments.length) {
     return '';
@@ -130,7 +130,7 @@ export function generateFunctions(
     ([short, full], fragment, index, array) => {
       const type = generateFunction(contract, fragment);
       const found = array.findIndex(
-        (current) => fragment.name === current.name
+        (current) => fragment.name === current.name,
       );
 
       // Only create a shortcut for the first function overload.
@@ -143,7 +143,7 @@ export function generateFunctions(
 
       return [short, full] as [string[], string[]];
     },
-    [[], []] as [string[], string[]]
+    [[], []] as [string[], string[]],
   );
 
   return `// Shortcuts (using function name of first overload)
@@ -162,7 +162,7 @@ export function generateContract(
   name: string,
   bytecode: string | undefined,
   abi: utils.Interface,
-  crestproject: string = '@crestproject/crestproject'
+  crestproject: string = '@crestproject/crestproject',
 ) {
   const functions = generateFunctions(name, Object.values(abi.functions));
   const constructor = generateConstructorArgs(abi.deploy);

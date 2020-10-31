@@ -25,7 +25,7 @@ export function deploy<
   const fn = new ConstructorFunction<TArgs, TContract>(
     contract,
     constructor,
-    options
+    options,
   );
 
   const hex = utils.hexlify(bytecode ?? '', {
@@ -60,7 +60,7 @@ export class Contract<TContract extends Contract = any> {
   constructor(
     abi: Interface | PossibleInterface,
     address: AddressLike,
-    provider: providers.Provider | Signer
+    provider: providers.Provider | Signer,
   ) {
     this.address = resolveAddress(address);
     this.abi = ensureInterface(abi);
@@ -130,7 +130,7 @@ export class Contract<TContract extends Contract = any> {
 
   public clone(
     address: AddressLike,
-    provider: Signer | providers.Provider
+    provider: Signer | providers.Provider,
   ): TContract {
     return new Contract(this.abi, address, provider) as any;
   }

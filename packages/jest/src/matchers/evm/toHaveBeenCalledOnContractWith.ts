@@ -18,7 +18,7 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
   return ensureParameters(subject, invert, async function (
     history,
     contract,
-    fragment
+    fragment,
   ) {
     if (!utils.FunctionFragment.isFunctionFragment(fragment)) {
       const error =
@@ -34,7 +34,7 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
 
     const expectedFunction = fragment.format();
     const expectedArgs = fragment.inputs.map(
-      (_, index) => `${resolved[index]}`
+      (_, index) => `${resolved[index]}`,
     );
 
     const message = pass
@@ -42,7 +42,7 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
           matcherHint(
             '.not.toHaveBeenCalledOnContractWith',
             `${expectedFunction}`,
-            `\n  ${expectedArgs.join(',\n  ')}\n`
+            `\n  ${expectedArgs.join(',\n  ')}\n`,
           ) +
           '\n\n' +
           `Expected: ${printExpected('to not have been called')}\n` +
@@ -51,12 +51,12 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
           matcherHint(
             '.toHaveBeenCalledOnContractWith',
             `${expectedFunction}`,
-            `\n  ${expectedArgs.join(',\n  ')}\n`
+            `\n  ${expectedArgs.join(',\n  ')}\n`,
           ) +
           '\n\n' +
           `Expected: ${printExpected('to have been called')}\n` +
           `Actual: ${printReceived(
-            'has not been called with these arguments'
+            'has not been called with these arguments',
           )}${printHelper(contract, fragment, calls)}`;
 
     return { pass, message };
@@ -66,7 +66,7 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
 function printHelper(
   contract: Contract,
   fragment: utils.FunctionFragment,
-  calls: string[]
+  calls: string[],
 ) {
   const signature = contract.abi.getSighash(fragment);
   const latest = calls.reverse().find((call) => call.startsWith(signature));
@@ -79,6 +79,6 @@ function printHelper(
   const printed = fragment.inputs.map((_, index) => `${args[index]}`);
 
   return `\n\nLast called with:\n\n${fragment.name}(\n  ${printed.join(
-    ',\n  '
+    ',\n  ',
   )} \n)`;
 }

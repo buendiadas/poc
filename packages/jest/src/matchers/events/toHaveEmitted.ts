@@ -5,7 +5,7 @@ import { printReceived, printExpected, matcherHint } from 'jest-matcher-utils';
 export function toHaveEmitted(
   this: jest.MatcherContext,
   receipt: ContractReceipt,
-  event: string | utils.EventFragment
+  event: string | utils.EventFragment,
 ): jest.CustomMatcherResult {
   const abi = receipt.function.contract.abi;
   const fragment = utils.EventFragment.isEventFragment(event)

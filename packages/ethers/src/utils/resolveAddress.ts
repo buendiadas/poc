@@ -19,7 +19,7 @@ export function resolveAddress(value: AddressLike): string {
 }
 
 export async function resolveAddressAsync(
-  value: AddressLikeAsync
+  value: AddressLikeAsync,
 ): Promise<string> {
   if (typeof value === 'string') {
     return utils.getAddress(value);

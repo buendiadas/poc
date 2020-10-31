@@ -3,7 +3,7 @@ import { resolveAddress, resolveAddressAsync } from './resolveAddress';
 
 export function resolveArguments(
   params: utils.ParamType | utils.ParamType[],
-  value: any
+  value: any,
 ): any {
   if (Array.isArray(params)) {
     return params.map((type, index) => {
@@ -35,14 +35,14 @@ export function resolveArguments(
 
 export function resolveArgumentsAsync(
   params: utils.ParamType | utils.ParamType[],
-  value: any
+  value: any,
 ): Promise<any> {
   if (Array.isArray(params)) {
     return Promise.all(
       params.map((type, index) => {
         const inner = Array.isArray(value) ? value[index] : value[type.name];
         return resolveArgumentsAsync(type, inner);
-      })
+      }),
     );
   }
 
@@ -62,7 +62,7 @@ export function resolveArgumentsAsync(
     return Promise.all(
       value.map((inner) => {
         return resolveArgumentsAsync(params.arrayChildren, inner);
-      })
+      }),
     );
   }
 

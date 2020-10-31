@@ -1,0 +1,7 @@
+{
+  "main": "dist/crestproject.cjs.js",
+  "module": "dist/crestproject.esm.js",
+  "preconstruct": {
+    "source": "../src/cli"
+  }
+}

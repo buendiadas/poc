@@ -12,7 +12,7 @@ export async function generate(source: string, destination: string) {
       fs.readFile(source, 'utf8', (error, data) => {
         error ? reject(error) : resolve(JSON.parse(data));
       });
-    }
+    },
   );
 
   const imports = '@crestproject/crestproject';

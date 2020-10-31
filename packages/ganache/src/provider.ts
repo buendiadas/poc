@@ -9,7 +9,7 @@ export class GanacheProvider extends EthereumTestnetProvider {
 
   constructor(
     public readonly provider: ganache.Provider,
-    gas: BigNumberish = 9500000
+    gas: BigNumberish = 9500000,
   ) {
     super();
 
@@ -30,7 +30,7 @@ export class GanacheProvider extends EthereumTestnetProvider {
   }
 
   public async estimateGas(
-    transaction: utils.Deferrable<providers.TransactionRequest>
+    transaction: utils.Deferrable<providers.TransactionRequest>,
   ): Promise<BigNumber> {
     if (this.gas && !this.gas.isZero()) {
       return this.gas;

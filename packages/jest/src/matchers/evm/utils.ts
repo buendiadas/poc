@@ -8,7 +8,7 @@ export type MatcherCallback<
 > = (
   history: History,
   contract: Contract,
-  fragment?: utils.FunctionFragment
+  fragment?: utils.FunctionFragment,
 ) => TReturn;
 
 export function ensureParameters<
@@ -19,7 +19,7 @@ export function ensureParameters<
 >(
   subject: TSubject,
   invert: boolean,
-  callback: MatcherCallback<TReturn>
+  callback: MatcherCallback<TReturn>,
 ): TReturn {
   const fn = ContractFunction.isContractFunction(subject)
     ? subject

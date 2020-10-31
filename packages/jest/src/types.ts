@@ -18,7 +18,7 @@ export type EthereumMatchers<R> = {
   toHaveEmitted(event: string | utils.EventFragment): R;
   toHaveEmittedWith(
     event: string | utils.EventFragment,
-    matcher: (matches: utils.LogDescription[]) => void
+    matcher: (matches: utils.LogDescription[]) => void,
   ): R;
   toHaveBeenCalledOnContract(): R;
   toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(

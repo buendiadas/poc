@@ -18,13 +18,8 @@ contract Doppelganger {
     mapping(bytes32 => MockCall) mockConfig;
     mapping(bytes4 => MockSignature) mockSignatures;
 
-    constructor(bytes4[] memory _sighashes, string[] memory _signatures)
-        public
-    {
-        require(
-            _sighashes.length == _signatures.length,
-            "Signatures length mismatch"
-        );
+    constructor(bytes4[] memory _sighashes, string[] memory _signatures) public {
+        require(_sighashes.length == _signatures.length, "Signatures length mismatch");
 
         for (uint256 i = 0; i < _sighashes.length; i++) {
             mockSignatures[_sighashes[i]] = MockSignature({
@@ -57,10 +52,7 @@ contract Doppelganger {
         delete mockConfig[keccak256(_data)];
     }
 
-    function __doppelganger__mockReverts(
-        bytes calldata _data,
-        string calldata _reason
-    ) external {
+    function __doppelganger__mockReverts(bytes calldata _data, string calldata _reason) external {
         mockConfig[keccak256(_data)] = MockCall({
             initialized: true,
             reverts: true,
@@ -69,10 +61,7 @@ contract Doppelganger {
         });
     }
 
-    function __doppelganger__mockReturns(
-        bytes calldata _data,
-        bytes calldata _value
-    ) external {
+    function __doppelganger__mockReturns(bytes calldata _data, bytes calldata _value) external {
         mockConfig[keccak256(_data)] = MockCall({
             initialized: true,
             reverts: false,
@@ -101,23 +90,13 @@ contract Doppelganger {
         MockSignature memory mockSignature = mockSignatures[msg.sig];
         if (mockSignature.initialized == true) {
             // Mock method not initialized but signature is registered
-            revert(
-                string(
-                    abi.encodePacked(
-                        "Mock not initialized: ",
-                        mockSignature.signature
-                    )
-                )
-            );
+            revert(string(abi.encodePacked("Mock not initialized: ", mockSignature.signature)));
         }
 
         revert("Mock not initialized");
     }
 
-    function __doppelganger__internal__mockReturn(bytes memory ret)
-        private
-        pure
-    {
+    function __doppelganger__internal__mockReturn(bytes memory ret) private pure {
         assembly {
             return(add(ret, 0x20), mload(ret))
         }

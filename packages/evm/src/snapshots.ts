@@ -23,7 +23,7 @@ export class Snapshots<
   constructor(private readonly provider: TProvider) {}
 
   public async snapshot<TFixture>(
-    create: FixtureCreator<TFixture, TProvider>
+    create: FixtureCreator<TFixture, TProvider>,
   ): Promise<TFixture> {
     const revert = this.snapshots.get(create);
 
@@ -41,7 +41,7 @@ export class Snapshots<
   }
 
   private async record<TFixture>(
-    create: FixtureCreator<TFixture, TProvider>
+    create: FixtureCreator<TFixture, TProvider>,
   ): Promise<Snapshot<TFixture>> {
     const data = await create(this.provider);
     const id = await this.provider.send('evm_snapshot', []);
@@ -51,7 +51,7 @@ export class Snapshots<
 
   private async revert<TFixture>(
     snapshot: Snapshot<TFixture>,
-    create: FixtureCreator<TFixture, TProvider>
+    create: FixtureCreator<TFixture, TProvider>,
   ): Promise<Snapshot<TFixture>> {
     // NOTE: If reverting fails, re-create the snapshot but notify the user.
     //

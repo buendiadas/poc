@@ -6,7 +6,7 @@ export function toHaveEmittedWith(
   this: jest.MatcherContext,
   receipt: ContractReceipt,
   event: string | utils.EventFragment,
-  matcher: (matches: utils.LogDescription[]) => void
+  matcher: (matches: utils.LogDescription[]) => void,
 ): jest.CustomMatcherResult {
   const abi = receipt.function.contract.abi;
   const fragment = utils.EventFragment.isEventFragment(event)
