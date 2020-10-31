@@ -1,14 +1,12 @@
 {
   "name": "@crestproject/codegen",
-  "version": "0.0.69",
+  "version": "0.0.70",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
   "main": "dist/codegen.cjs.js",
   "module": "dist/codegen.esm.js",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "publishConfig": {
     "access": "public"
   },

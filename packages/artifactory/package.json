@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/artifactory",
-  "version": "0.0.69",
+  "version": "0.0.70",
   "private": true,
   "main": "dist/artifactory.cjs.js",
   "module": "dist/artifactory.esm.js",
@@ -10,10 +10,10 @@
     "codegen": "crestproject codegen \"artifacts/contracts/**/!(*.dbg).json\" src/codegen"
   },
   "peerDependencies": {
-    "@crestproject/crestproject": "^0.0.69"
+    "@crestproject/crestproject": "^0.0.70"
   },
   "devDependencies": {
-    "@crestproject/codegen": "^0.0.69",
+    "@crestproject/codegen": "^0.0.70",
     "@openzeppelin/contracts": "^3.2.0",
     "hardhat": "^2.0.2"
   }
