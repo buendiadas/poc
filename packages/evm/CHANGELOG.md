@@ -1,5 +1,13 @@
 # @crestproject/evm
 
+## 0.0.71
+
+### Patch Changes
+
+- a738ec7: fixing babel setup
+- Updated dependencies [a738ec7]
+  - @crestproject/ethers@0.0.71
+
 ## 0.0.70
 
 ### Patch Changes

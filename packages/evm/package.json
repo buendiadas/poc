@@ -1,13 +1,11 @@
 {
   "name": "@crestproject/evm",
-  "version": "0.0.70",
+  "version": "0.0.71",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
   "main": "dist/evm.cjs.js",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "publishConfig": {
     "access": "public"
   },
@@ -23,7 +21,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "@crestproject/ethers": "^0.0.70"
+    "@crestproject/ethers": "^0.0.71"
   },
   "devDependencies": {
     "ethers": "^5.0.19"
