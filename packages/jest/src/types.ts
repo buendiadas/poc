@@ -8,6 +8,14 @@ export type EthereumMatchers<R> = {
   toBeProperHex(length: number): R;
   toMatchAddress(expected: AddressLike): R;
   toMatchParams(types: utils.ParamType | utils.ParamType[], expected: any): R;
+  toMatchFunctionInput(
+    fragment: string | utils.FunctionFragment,
+    expected: any,
+  ): R;
+  toMatchFunctionOutput(
+    fragment: string | utils.FunctionFragment,
+    expected: any,
+  ): R;
   toBeGtBigNumber(expected: BigNumberish): R;
   toBeLtBigNumber(expected: BigNumberish): R;
   toBeGteBigNumber(expected: BigNumberish): R;
