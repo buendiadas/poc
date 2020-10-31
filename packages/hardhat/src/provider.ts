@@ -9,7 +9,7 @@ export class HardhatProvider extends EthereumTestnetProvider {
 
   constructor(public readonly net: Network) {
     super();
-    console.log(net.config);
+
     if (net.config.gas !== 'auto') {
       this.gas = BigNumber.from(net.config.gas).mul(
         this.net.config.gasMultiplier,
