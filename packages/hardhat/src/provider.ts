@@ -17,7 +17,7 @@ export class HardhatProvider extends EthereumTestnetProvider {
     }
 
     if (this.net.config.gasPrice !== 'auto') {
-      this.gas = BigNumber.from(this.net.config.gasPrice);
+      this.gasPrice = BigNumber.from(this.net.config.gasPrice);
     }
 
     // Re-route call history recording to whatever is the currently
