@@ -1,5 +1,11 @@
 # @crestproject/ethers
 
+## 0.0.80
+
+### Patch Changes
+
+- 3d8be0c: remove console.log
+
 ## 0.0.79
 
 ### Patch Changes

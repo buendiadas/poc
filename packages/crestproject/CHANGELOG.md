@@ -1,5 +1,16 @@
 # @crestproject/crestproject
 
+## 0.0.80
+
+### Patch Changes
+
+- 3d8be0c: remove console.log
+- Updated dependencies [3d8be0c]
+  - @crestproject/codegen@0.0.80
+  - @crestproject/ethers@0.0.80
+  - @crestproject/evm@0.0.80
+  - @crestproject/jest@0.0.80
+
 ## 0.0.79
 
 ### Patch Changes

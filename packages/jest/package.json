@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/jest",
-  "version": "0.0.79",
+  "version": "0.0.80",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -26,8 +26,8 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "@crestproject/ethers": "^0.0.79",
-    "@crestproject/evm": "^0.0.79",
+    "@crestproject/ethers": "^0.0.80",
+    "@crestproject/evm": "^0.0.80",
     "jest-diff": "^26.6.1",
     "jest-matcher-utils": "^26.6.1",
     "jest-snapshot": "^26.6.1"

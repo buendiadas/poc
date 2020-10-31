@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 0.0.80
+
+### Patch Changes
+
+- 3d8be0c: remove console.log
+- Updated dependencies [3d8be0c]
+  - @crestproject/crestproject@0.0.80
+
 ## 0.0.79
 
 ### Patch Changes
