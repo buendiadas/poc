@@ -1,6 +1,6 @@
 import NodeEnvironment from 'jest-environment-node';
 import ganache from 'ganache-core';
-import { GanacheProvider } from '@crestproject/ganache';
+import { GanacheProvider } from './provider';
 
 export default class CrestProjectHardhatEnvironment extends NodeEnvironment {
   public ganache?: ganache.Provider;

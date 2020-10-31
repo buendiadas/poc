@@ -26,7 +26,8 @@
   ],
   "dependencies": {
     "@crestproject/ethers": "^0.0.69",
-    "@crestproject/evm": "^0.0.69"
+    "@crestproject/evm": "^0.0.69",
+    "jest-environment-node": "^26.6.1"
   },
   "devDependencies": {
     "ethers": "^5.0.19",

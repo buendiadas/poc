@@ -11,21 +11,18 @@ export interface SolidityCompilerOutput {
   bytecode?: string;
 }
 
-export interface BaseContractFactory<TContract extends Contract = Contract> {
-  abi: utils.Interface;
-  mock(signer: Signer): Promise<MockContract<TContract>>;
-  new (address: AddressLike, provider: Signer | providers.Provider): TContract;
-}
-
 export interface ContractFactory<
   TContract extends Contract = Contract,
   TConstructorArgs extends any[] = []
-> extends BaseContractFactory<TContract> {
+> {
+  abi: utils.Interface;
+  mock(signer: Signer): Promise<MockContract<TContract>>;
   deploy(signer: Signer, ...args: TConstructorArgs): Promise<TContract>;
   deploy(
     signer: Signer,
     options: FunctionOptions<TConstructorArgs>,
   ): Promise<TContract>;
+  new (address: AddressLike, provider: Signer | providers.Provider): TContract;
 }
 
 // Expose a default contract factory for convenience.

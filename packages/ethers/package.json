@@ -10,7 +10,9 @@
     "./dist/ethers.cjs.js": "./dist/ethers.browser.cjs.js",
     "./dist/ethers.esm.js": "./dist/ethers.browser.esm.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -25,9 +27,11 @@
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
   "devDependencies": {
+    "@ethersproject/abi": "^5.0.7",
     "ethers": "^5.0.19"
   },
-  "peerDeependencies": {
+  "peerDependencies": {
+    "@ethersproject/abi": "^5.0.7",
     "ethers": "^5.0.19"
   }
 }

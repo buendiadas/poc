@@ -1,6 +1,6 @@
 import NodeEnvironment from 'jest-environment-node';
 import { network } from 'hardhat';
-import { HardhatProvider } from '@crestproject/hardhat';
+import { HardhatProvider } from './provider';
 
 export default class CrestProjectHardhatEnvironment extends NodeEnvironment {
   async setup() {
