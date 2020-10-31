@@ -1,6 +1,6 @@
 import { Signer, utils, Wallet } from 'ethers';
 import { Contract } from '../contract';
-import { AddressLike, AddressLikeAsync } from '../types';
+import { AddressLike } from '../types';
 
 export function resolveAddress(value: AddressLike): string {
   if (typeof value === 'string') {
@@ -15,22 +15,8 @@ export function resolveAddress(value: AddressLike): string {
     return resolveAddress((value as Wallet).address);
   }
 
-  throw new Error('Failed to resolve address');
-}
-
-export async function resolveAddressAsync(
-  value: AddressLikeAsync,
-): Promise<string> {
-  if (typeof value === 'string') {
-    return utils.getAddress(value);
-  }
-
-  if (Contract.isContract(value)) {
-    return resolveAddressAsync(value.address);
-  }
-
-  if (Signer.isSigner(value)) {
-    return resolveAddressAsync(await value.getAddress());
+  if (typeof value === 'object' && typeof value.address === 'string') {
+    return utils.getAddress(value.address);
   }
 
   throw new Error('Failed to resolve address');

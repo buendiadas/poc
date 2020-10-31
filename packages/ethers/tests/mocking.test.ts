@@ -1,17 +1,16 @@
 import { constants, utils } from 'ethers';
 import { BasicToken } from '@crestproject/artifactory';
-import { randomAddress } from '../src/utils/randomAddress';
-import { provider } from './provider';
+import { randomAddress } from '@crestproject/ethers';
 
 describe('mocking', () => {
   it('properly deploys the mock contract', async () => {
-    const signer = provider.getSigner(0);
+    const signer = await provider.getSignerWithAddress(0);
     const mock = await BasicToken.mock(signer);
     expect(mock.address).toMatch(/^0x[0-9-a-fA-F]{40}$/);
   });
 
   it('can mock contract return values', async () => {
-    const signer = provider.getSigner(0);
+    const signer = await provider.getSignerWithAddress(0);
     const token = await BasicToken.mock(signer);
 
     await token.balanceOf.returns(123);
@@ -21,7 +20,7 @@ describe('mocking', () => {
   });
 
   it('can mock contract return values with arguments', async () => {
-    const signer = provider.getSigner(0);
+    const signer = await provider.getSignerWithAddress(0);
     const token = await BasicToken.mock(signer);
     const specificAddress = randomAddress();
 
@@ -36,7 +35,7 @@ describe('mocking', () => {
   });
 
   it('can mock reverts', async () => {
-    const signer = provider.getSigner(0);
+    const signer = await provider.getSignerWithAddress(0);
     const mock = await BasicToken.mock(signer);
 
     await mock.balanceOf
@@ -49,7 +48,7 @@ describe('mocking', () => {
   });
 
   it('reverts with function signature on missing mock', async () => {
-    const signer = provider.getSigner(0);
+    const signer = await provider.getSignerWithAddress(0);
     const mock = await BasicToken.mock(signer);
 
     await expect(mock.balanceOf(constants.AddressZero)).rejects.toThrowError(
@@ -58,7 +57,7 @@ describe('mocking', () => {
   });
 
   it('can forward calls', async () => {
-    const signer = provider.getSigner(0);
+    const signer = await provider.getSignerWithAddress(0);
     const token = await BasicToken.deploy(signer, utils.parseEther('100'));
     const mock = await BasicToken.mock(signer);
 
@@ -66,7 +65,7 @@ describe('mocking', () => {
   });
 
   it('can forward sends', async () => {
-    const signer = provider.getSigner(0);
+    const signer = await provider.getSignerWithAddress(0);
     const token = await BasicToken.deploy(signer, utils.parseEther('100'));
     const mock = await BasicToken.mock(signer);
 
@@ -81,7 +80,7 @@ describe('mocking', () => {
   });
 
   it('can reset previously set mocks', async () => {
-    const signer = provider.getSigner(0);
+    const signer = await provider.getSignerWithAddress(0);
     const token = await BasicToken.mock(signer);
 
     let result;
@@ -98,7 +97,7 @@ describe('mocking', () => {
   });
 
   it('can reset previously set mocks with specific args', async () => {
-    const signer = provider.getSigner(0);
+    const signer = await provider.getSignerWithAddress(0);
     const token = await BasicToken.mock(signer);
 
     let result;

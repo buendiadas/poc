@@ -1,18 +1,15 @@
 import { utils } from 'ethers';
-import { network } from 'hardhat';
 import { BasicToken } from '@crestproject/artifactory';
-import { HardhatProvider } from '../src/provider';
+import { EthereumTestnetProvider } from '@crestproject/crestproject';
 
-const provider = new HardhatProvider(network.provider);
-
-function snapshot(provider: HardhatProvider) {
-  const deployer = provider.getSigner(0);
+async function snapshot(provider: EthereumTestnetProvider) {
+  const deployer = await provider.getSignerWithAddress(0);
   return BasicToken.deploy(deployer, utils.parseEther('100'));
 }
 
 describe('hardhat evm history tracking', () => {
   it('records history of contract calls', async () => {
-    const deployer = provider.getSigner(0);
+    const deployer = await provider.getSignerWithAddress(0);
     const token = await BasicToken.deploy(deployer, utils.parseEther('100'));
 
     await expect(token.decimals()).resolves.toBe(18);

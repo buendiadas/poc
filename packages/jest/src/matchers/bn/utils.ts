@@ -23,13 +23,13 @@ export function ensureBigNumbers(
   try {
     receivedBn = BigNumber.from(received);
   } catch {
-    return forceFail(received, 'The received value is not numberish', invert);
+    return forceFail('The received value is not numberish', invert);
   }
 
   try {
     expectedBn = BigNumber.from(expected);
   } catch {
-    return forceFail(expected, 'The expected value is not numberish', invert);
+    return forceFail('The expected value is not numberish', invert);
   }
 
   return callback(receivedBn, expectedBn);

@@ -1,5 +1,6 @@
 import { providers } from 'ethers';
 import { History } from './history';
+import { SignerWithAddress } from './signer';
 import { FixtureCreator, Snapshots } from './snapshots';
 
 export abstract class EthereumTestnetProvider extends providers.StaticJsonRpcProvider {
@@ -12,5 +13,9 @@ export abstract class EthereumTestnetProvider extends providers.StaticJsonRpcPro
     create: FixtureCreator<TFixture, this>,
   ): Promise<TFixture> {
     return this.snapshots.snapshot(create);
+  }
+
+  public async getSignerWithAddress(addressOrIndex: string | number) {
+    return SignerWithAddress.create(await this.getSigner(addressOrIndex));
   }
 }

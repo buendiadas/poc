@@ -9,7 +9,7 @@ import {
   ConstructorFunction,
 } from './function';
 import { ProxiedFunction } from './types';
-import { resolveArgumentsAsync } from './utils/resolveArguments';
+import { resolveArguments } from './utils/resolveArguments';
 
 function stub<TContract extends Contract = Contract>(
   doppelganger: Doppelganger,
@@ -23,7 +23,7 @@ function stub<TContract extends Contract = Contract>(
     given: (...input: any) => stub(doppelganger, contract, func, input),
     reset: async () => {
       const args = params
-        ? await resolveArgumentsAsync(func.inputs ?? [], params)
+        ? resolveArguments(func.inputs ?? [], params)
         : undefined;
 
       const data = args
@@ -34,7 +34,7 @@ function stub<TContract extends Contract = Contract>(
     },
     reverts: async (reason: string) => {
       const args = params
-        ? await resolveArgumentsAsync(func.inputs ?? [], params)
+        ? resolveArguments(func.inputs ?? [], params)
         : undefined;
 
       const data = args
@@ -53,7 +53,7 @@ function stub<TContract extends Contract = Contract>(
       }
 
       const args = params
-        ? await resolveArgumentsAsync(func.inputs ?? [], params)
+        ? resolveArguments(func.inputs ?? [], params)
         : undefined;
 
       const data = args
@@ -61,7 +61,7 @@ function stub<TContract extends Contract = Contract>(
         : contract.abi.getSighash(func);
 
       const resolved = output?.length
-        ? await resolveArgumentsAsync(func.outputs ?? [], output)
+        ? resolveArguments(func.outputs ?? [], output)
         : undefined;
 
       const encoded = encoder.encode(func.outputs ?? [], resolved);
@@ -115,7 +115,7 @@ export async function mock<TContract extends Contract = Contract>(
     const callee = fn.contract;
 
     const args = params
-      ? await resolveArgumentsAsync(fragment.inputs, params)
+      ? resolveArguments(fragment.inputs, params)
       : undefined;
 
     const data = args

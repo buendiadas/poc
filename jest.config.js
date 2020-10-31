@@ -25,15 +25,15 @@ module.exports = {
     },
     {
       ...common('@crestproject/jest'),
-      preset: '@crestproject/jest',
-    },
-    {
-      ...common('@crestproject/ethers'),
-      preset: '@crestproject/jest',
+      preset: '@crestproject/hardhat',
     },
     {
       ...common('@crestproject/evm'),
-      preset: '@crestproject/jest',
+      preset: '@crestproject/hardhat',
+    },
+    {
+      ...common('@crestproject/ethers'),
+      preset: '@crestproject/hardhat',
     },
     {
       ...common('@crestproject/hardhat'),

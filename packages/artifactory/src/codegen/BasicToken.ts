@@ -5,7 +5,7 @@ import {
   contract,
   Call,
   Send,
-  AddressLikeAsync,
+  AddressLike,
   Contract,
 } from '@crestproject/crestproject';
 
@@ -14,30 +14,30 @@ export type BasicTokenArgs = [initialBalance: BigNumberish];
 // prettier-ignore
 export interface BasicToken extends Contract<BasicToken> {
   // Shortcuts (using function name of first overload)
-  allowance: Call<(owner: AddressLikeAsync, spender: AddressLikeAsync) => BigNumber, BasicToken>
-  approve: Send<(spender: AddressLikeAsync, amount: BigNumberish) => boolean, BasicToken>
-  balanceOf: Call<(account: AddressLikeAsync) => BigNumber, BasicToken>
+  allowance: Call<(owner: AddressLike, spender: AddressLike) => BigNumber, BasicToken>
+  approve: Send<(spender: AddressLike, amount: BigNumberish) => boolean, BasicToken>
+  balanceOf: Call<(account: AddressLike) => BigNumber, BasicToken>
   decimals: Call<() => BigNumber, BasicToken>
-  decreaseAllowance: Send<(spender: AddressLikeAsync, subtractedValue: BigNumberish) => boolean, BasicToken>
-  increaseAllowance: Send<(spender: AddressLikeAsync, addedValue: BigNumberish) => boolean, BasicToken>
+  decreaseAllowance: Send<(spender: AddressLike, subtractedValue: BigNumberish) => boolean, BasicToken>
+  increaseAllowance: Send<(spender: AddressLike, addedValue: BigNumberish) => boolean, BasicToken>
   name: Call<() => string, BasicToken>
   symbol: Call<() => string, BasicToken>
   totalSupply: Call<() => BigNumber, BasicToken>
-  transfer: Send<(recipient: AddressLikeAsync, amount: BigNumberish) => boolean, BasicToken>
-  transferFrom: Send<(sender: AddressLikeAsync, recipient: AddressLikeAsync, amount: BigNumberish) => boolean, BasicToken>
+  transfer: Send<(recipient: AddressLike, amount: BigNumberish) => boolean, BasicToken>
+  transferFrom: Send<(sender: AddressLike, recipient: AddressLike, amount: BigNumberish) => boolean, BasicToken>
 
   // Explicit accessors (using full function signature)
-  'allowance(address,address)': Call<(owner: AddressLikeAsync, spender: AddressLikeAsync) => BigNumber, BasicToken>
-  'approve(address,uint256)': Send<(spender: AddressLikeAsync, amount: BigNumberish) => boolean, BasicToken>
-  'balanceOf(address)': Call<(account: AddressLikeAsync) => BigNumber, BasicToken>
+  'allowance(address,address)': Call<(owner: AddressLike, spender: AddressLike) => BigNumber, BasicToken>
+  'approve(address,uint256)': Send<(spender: AddressLike, amount: BigNumberish) => boolean, BasicToken>
+  'balanceOf(address)': Call<(account: AddressLike) => BigNumber, BasicToken>
   'decimals()': Call<() => BigNumber, BasicToken>
-  'decreaseAllowance(address,uint256)': Send<(spender: AddressLikeAsync, subtractedValue: BigNumberish) => boolean, BasicToken>
-  'increaseAllowance(address,uint256)': Send<(spender: AddressLikeAsync, addedValue: BigNumberish) => boolean, BasicToken>
+  'decreaseAllowance(address,uint256)': Send<(spender: AddressLike, subtractedValue: BigNumberish) => boolean, BasicToken>
+  'increaseAllowance(address,uint256)': Send<(spender: AddressLike, addedValue: BigNumberish) => boolean, BasicToken>
   'name()': Call<() => string, BasicToken>
   'symbol()': Call<() => string, BasicToken>
   'totalSupply()': Call<() => BigNumber, BasicToken>
-  'transfer(address,uint256)': Send<(recipient: AddressLikeAsync, amount: BigNumberish) => boolean, BasicToken>
-  'transferFrom(address,address,uint256)': Send<(sender: AddressLikeAsync, recipient: AddressLikeAsync, amount: BigNumberish) => boolean, BasicToken>
+  'transfer(address,uint256)': Send<(recipient: AddressLike, amount: BigNumberish) => boolean, BasicToken>
+  'transferFrom(address,address,uint256)': Send<(sender: AddressLike, recipient: AddressLike, amount: BigNumberish) => boolean, BasicToken>
 }
 
 let BasicTokenBytecode: string | undefined = undefined;

@@ -1,6 +1,5 @@
 // @ts-nocheck
-
-import type { EthereumProvider } from './imports';
+import type { EthereumProvider } from 'hardhat/types';
 import type { EventEmitter } from 'events';
 
 export function addListener(

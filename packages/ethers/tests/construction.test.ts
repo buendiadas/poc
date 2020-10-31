@@ -1,11 +1,14 @@
 import { BigNumber, BigNumberish, constants, utils } from 'ethers';
-import { contract } from '../src/construction';
-import { Call, Send } from '../src/types';
-import { Contract } from '../src/contract';
-import { SendFunction, CallFunction } from '../src/function';
-import { randomAddress } from '../src/utils/randomAddress';
-import { provider } from './provider';
 import { BasicToken } from '@crestproject/artifactory';
+import {
+  randomAddress,
+  contract,
+  Contract,
+  Call,
+  Send,
+  SendFunction,
+  CallFunction,
+} from '@crestproject/ethers';
 
 // prettier-ignore
 interface Token extends Contract<Token> {
@@ -39,32 +42,39 @@ const Token = contract<Token>()`
 `;
 
 describe('construction', () => {
-  const address = constants.AddressZero;
-  const token = new Token(address, provider.getSigner(0));
-
   it('factory creates a contract instance', async () => {
+    const signer = await provider.getSignerWithAddress(0);
+    const token = new Token(constants.AddressZero, signer);
     expect(token).toBeInstanceOf(Token);
   });
 
   it('shortcut directly invokes call for transactions', async () => {
+    const signer = await provider.getSignerWithAddress(0);
+    const token = new Token(constants.AddressZero, signer);
     const call = token.allowance(randomAddress(), randomAddress());
     expect(call).toBeInstanceOf(Promise);
     await expect(call).rejects.toThrowError();
   });
 
   it('shortcut directly invokes send for transactions', async () => {
+    const signer = await provider.getSignerWithAddress(0);
+    const token = new Token(constants.AddressZero, signer);
     const call = token.transfer(randomAddress(), 123);
     expect(call).toBeInstanceOf(Promise);
     await expect(call).resolves.toMatchObject({});
   });
 
-  it('shortcut syntax allows chaining methods', () => {
+  it('shortcut syntax allows chaining methods', async () => {
+    const signer = await provider.getSignerWithAddress(0);
+    const token = new Token(constants.AddressZero, signer);
     expect(token.transfer.args(randomAddress(), 123)).toBeInstanceOf(
       SendFunction,
     );
   });
 
-  it('shortcut syntax returns the first function fragment', () => {
+  it('shortcut syntax returns the first function fragment', async () => {
+    const signer = await provider.getSignerWithAddress(0);
+    const token = new Token(constants.AddressZero, signer);
     const actual = token.allowance.fragment.format();
     const expected = token['allowance(address,address)'].fragment.format();
     expect(actual).toEqual(expected);
@@ -73,7 +83,9 @@ describe('construction', () => {
     expect(actual).not.toEqual(not);
   });
 
-  it('does not allow attaching a function instance to an imcompatible contract', () => {
+  it('does not allow attaching a function instance to an imcompatible contract', async () => {
+    const signer = await provider.getSignerWithAddress(0);
+    const token = new Token(constants.AddressZero, signer);
     const IncompatibleContract = contract()`
       function other(address) view returns (string)
     `;
@@ -85,7 +97,9 @@ describe('construction', () => {
     );
   });
 
-  it('does allow attaching a function instance to a compatible contract', () => {
+  it('does allow attaching a function instance to a compatible contract', async () => {
+    const signer = await provider.getSignerWithAddress(0);
+    const token = new Token(constants.AddressZero, signer);
     const CompatibleContract = contract()`
       function allowance(address owner, address spender) view returns (uint256)
     `;
@@ -97,7 +111,7 @@ describe('construction', () => {
   });
 
   it('can access receipt of deployment', async () => {
-    const signer = provider.getSigner(0);
+    const signer = await provider.getSignerWithAddress(0);
     const token = BasicToken.deploy(signer, utils.parseEther('100'));
 
     await expect(

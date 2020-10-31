@@ -8,6 +8,7 @@
   "module": "dist/jest.esm.js",
   "files": [
     "dist",
+    "types",
     "jest-preset.js",
     "jest-setup.js"
   ],
@@ -37,5 +38,11 @@
   "peerDependencies": {
     "ethers": "^5.0.19",
     "ts-jest": "^26.4.3"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      ".",
+      "types"
+    ]
   }
 }

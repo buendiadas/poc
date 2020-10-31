@@ -1,12 +1,11 @@
-import { network } from 'hardhat';
-import { HardhatProvider } from '@crestproject/hardhat';
 import { BasicToken } from '@crestproject/artifactory';
+import { EthereumTestnetProvider } from '@crestproject/evm';
 import { utils } from 'ethers';
 
-async function snapshot(provider: HardhatProvider) {
-  const [deployer, someone] = await provider.listAccounts();
-  const signer = provider.getSigner(deployer);
-
+async function snapshot(provider: EthereumTestnetProvider) {
+  const deployer = await provider.getSignerWithAddress(0);
+  const someone = await provider.getSignerWithAddress(1);
+  const signer = await provider.getSignerWithAddress(2);
   const token = await BasicToken.deploy(signer, utils.parseEther('100'));
   const mock = await BasicToken.mock(signer);
 
@@ -19,8 +18,6 @@ async function snapshot(provider: HardhatProvider) {
 }
 
 describe('evm', () => {
-  const provider = new HardhatProvider(network.provider);
-
   it('toHaveBeenCalledOnContract', async () => {
     const { token } = await provider.snapshot(snapshot);
 

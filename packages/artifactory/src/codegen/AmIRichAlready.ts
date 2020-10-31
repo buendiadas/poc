@@ -5,11 +5,11 @@ import {
   contract,
   Call,
   Send,
-  AddressLikeAsync,
+  AddressLike,
   Contract,
 } from '@crestproject/crestproject';
 
-export type AmIRichAlreadyArgs = [_tokenContract: AddressLikeAsync];
+export type AmIRichAlreadyArgs = [_tokenContract: AddressLike];
 
 // prettier-ignore
 export interface AmIRichAlready extends Contract<AmIRichAlready> {

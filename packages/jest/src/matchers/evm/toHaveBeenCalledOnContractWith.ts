@@ -3,7 +3,7 @@ import { printReceived, printExpected, matcherHint } from 'jest-matcher-utils';
 import {
   Contract,
   ContractFunction,
-  resolveArgumentsAsync,
+  resolveArguments,
 } from '@crestproject/ethers';
 import { ensureParameters } from './utils';
 import { forceFail } from '../../utils';
@@ -23,10 +23,10 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
     if (!utils.FunctionFragment.isFunctionFragment(fragment)) {
       const error =
         'Missing or invalid function fragment for call history assertion';
-      return forceFail(subject, error, invert);
+      return forceFail(error, invert);
     }
 
-    const resolved = await resolveArgumentsAsync(fragment.inputs, args);
+    const resolved = resolveArguments(fragment.inputs, args);
     const signature = contract.abi.encodeFunctionData(fragment, resolved);
 
     const calls = history.calls(contract);

@@ -1,10 +1,8 @@
 import { providers } from 'ethers';
-import { printReceived } from 'jest-matcher-utils';
 
-export function forceFail(value: any, error: string, invert: boolean) {
+export function forceFail(error: string | (() => string), invert: boolean) {
   const pass = invert ? true : false;
-  const message = () => `${error}:\n\n  ${printReceived(value)}`;
-
+  const message = typeof error === 'function' ? error : () => error;
   return { pass, message };
 }
 
