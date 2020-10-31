@@ -299,7 +299,7 @@ export class CallFunction<
           const from = this.options.from
             ? this.options.from
             : typeof this.options.from === 'undefined' && this.contract.signer
-            ? this.contract.signer
+            ? await this.contract.signer.getAddress()
             : undefined;
 
           resolve({
@@ -463,7 +463,7 @@ export class ConstructorFunction<
           const from = this.options.from
             ? this.options.from
             : typeof this.options.from === 'undefined' && this.contract.signer
-            ? this.contract.signer
+            ? await this.contract.signer.getAddress()
             : undefined;
 
           resolve({

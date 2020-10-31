@@ -4,6 +4,7 @@ export * from './function';
 export * from './types';
 export * from './mock';
 export * from './utils/randomAddress';
+export * from './utils/sameAddress';
 export * from './utils/resolveAddress';
 export * from './utils/resolveArguments';
 export * from './utils/ensureEvent';

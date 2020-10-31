@@ -9,7 +9,9 @@ export default class CrestProjectHardhatEnvironment extends NodeEnvironment {
   async setup() {
     await super.setup();
 
-    const config: ganache.IProviderOptions = this.global.ganacheProviderOptions;
+    const config: ganache.IProviderOptions = this.global
+      .ganacheProviderOptions as any;
+
     this.ganache = ganache.provider(config);
     this.provider = new GanacheProvider(this.ganache);
 
@@ -18,11 +20,13 @@ export default class CrestProjectHardhatEnvironment extends NodeEnvironment {
 
   async teardown() {
     if (this.ganache) {
-      const timeout = this.global.ganacheCloseTimeout ?? 3000;
+      const timeout = `${this.global.ganacheCloseTimeout ?? 3000}`;
 
       await Promise.all([
         new Promise((resolve) => this.ganache!.close(() => resolve())),
-        new Promise((resolve) => setTimeout(() => resolve(), timeout)),
+        new Promise((resolve) =>
+          setTimeout(() => resolve(), parseInt(timeout, 10)),
+        ),
       ]);
     }
 

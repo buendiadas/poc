@@ -25,15 +25,17 @@ export function toHaveEmittedWith(
     return forceFail(`Failed to resolve event fragment: ${e}`, invert);
   }
 
+  const types = resolvedFragment.inputs;
+
   try {
-    expectedMatchers = resolveParamMatchers(resolvedFragment.inputs, expected);
+    expectedMatchers = resolveParamMatchers(types, expected);
   } catch (e) {
     return forceFail(`Failed to resolve expected matchers: ${e}`, invert);
   }
 
   const events = extractEvent(receipt, resolvedFragment);
   const args = events.map((event) => {
-    return resolveArguments(resolvedFragment.inputs, event.args);
+    return resolveArguments(types, event.args);
   });
 
   const matcher = expect.arrayContaining([expectedMatchers]);

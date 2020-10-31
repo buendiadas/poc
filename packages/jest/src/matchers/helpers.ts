@@ -90,6 +90,8 @@ export function resolveFragment(
   throw new Error(`Failed to resolve function or event fragment ${fragment}`);
 }
 
+const asymmetricMatcher = Symbol.for('jest.asymmetricMatcher');
+
 export function resolveParamMatchers(
   params: utils.ParamType | utils.ParamType[],
   value: any,
@@ -98,7 +100,7 @@ export function resolveParamMatchers(
     return expect.anything();
   }
 
-  if (typeof value?.assymetricMatch === 'function') {
+  if (value?.$$typeof === asymmetricMatcher) {
     return value;
   }
 
@@ -128,7 +130,7 @@ export function resolveParamMatchers(
   }
 
   if (params.type.match(/^u?int/)) {
-    return BigNumber.from(value).toString();
+    return `${BigNumber.from(value)}`;
   }
 
   return value;
