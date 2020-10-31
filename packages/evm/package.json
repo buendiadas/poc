@@ -1,14 +1,12 @@
 {
   "name": "@crestproject/evm",
-  "version": "0.0.68",
+  "version": "0.0.69",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
   "main": "dist/evm.cjs.js",
   "module": "dist/evm.esm.js",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "publishConfig": {
     "access": "public"
   },
@@ -23,7 +21,7 @@
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
   "dependencies": {
-    "@crestproject/ethers": "^0.0.68"
+    "@crestproject/ethers": "^0.0.69"
   },
   "devDependencies": {
     "ethers": "^5.0.19"

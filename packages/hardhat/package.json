@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/hardhat",
-  "version": "0.0.68",
+  "version": "0.0.69",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -25,8 +25,8 @@
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
   "dependencies": {
-    "@crestproject/ethers": "^0.0.68",
-    "@crestproject/evm": "^0.0.68"
+    "@crestproject/ethers": "^0.0.69",
+    "@crestproject/evm": "^0.0.69"
   },
   "devDependencies": {
     "ethers": "^5.0.19",

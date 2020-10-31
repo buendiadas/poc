@@ -10,7 +10,7 @@
     "codegen": "crestproject codegen \"artifacts/contracts/**/!(*.dbg).json\" src/codegen"
   },
   "devDependencies": {
-    "@crestproject/codegen": "^0.0.68",
+    "@crestproject/codegen": "^0.0.69",
     "@openzeppelin/contracts": "^3.2.0",
     "hardhat": "^2.0.2"
   }
