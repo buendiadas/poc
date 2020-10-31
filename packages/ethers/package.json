@@ -6,11 +6,9 @@
   "homepage": "https://github.com/crestproject",
   "main": "dist/ethers.cjs.js",
   "module": "dist/ethers.esm.js",
-  "browser": {
-    "./dist/ethers.cjs.js": "./dist/ethers.browser.cjs.js",
-    "./dist/ethers.esm.js": "./dist/ethers.browser.esm.js"
-  },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -24,6 +22,9 @@
   "contributors": [
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
+  "dependencies": {
+    "@babel/runtime": "^7.12.1"
+  },
   "devDependencies": {
     "@ethersproject/abi": "^5.0.7",
     "ethers": "^5.0.19"

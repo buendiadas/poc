@@ -31,6 +31,7 @@
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
   "dependencies": {
+    "@babel/runtime": "^7.12.1",
     "@crestproject/codegen": "^0.0.70",
     "@crestproject/ethers": "^0.0.70",
     "@crestproject/evm": "^0.0.70",

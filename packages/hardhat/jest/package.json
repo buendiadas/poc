@@ -1,6 +1,5 @@
 {
   "main": "dist/hardhat.cjs.js",
-  "module": "dist/hardhat.esm.js",
   "preconstruct": {
     "source": "../src/jest"
   }

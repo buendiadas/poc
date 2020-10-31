@@ -1,11 +1,9 @@
-import path from 'path';
 import yargs from 'yargs';
-
-const extensions = [path.extname(__filename).slice(1)];
+import * as codegen from './commands/codegen';
 
 yargs
   .env('CRESTPROJECT')
   .pkgConf('crestproject')
-  .commandDir('commands', { extensions })
+  .command(codegen)
   .demandCommand(1, '')
   .help().argv;

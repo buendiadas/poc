@@ -1,6 +1,5 @@
 {
   "main": "dist/jest.cjs.js",
-  "module": "dist/jest.esm.js",
   "preconstruct": {
     "source": "../src/types"
   }
