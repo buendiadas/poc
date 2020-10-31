@@ -6,7 +6,7 @@ export default class CrestProjectHardhatEnvironment extends NodeEnvironment {
   async setup() {
     await super.setup();
 
-    this.global.provider = new HardhatProvider(network.provider);
+    this.global.provider = new HardhatProvider(network);
   }
 
   async teardown() {
