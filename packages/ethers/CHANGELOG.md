@@ -1,5 +1,11 @@
 # @crestproject/ethers
 
+## 0.1.1
+
+### Patch Changes
+
+- 34824b8: adding build output
+
 ## 0.1.0
 
 ### Minor Changes

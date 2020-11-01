@@ -1,5 +1,13 @@
 # @crestproject/jest
 
+## 0.1.1
+
+### Patch Changes
+
+- 34824b8: adding build output
+- Updated dependencies [34824b8]
+  - @crestproject/ethers@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes

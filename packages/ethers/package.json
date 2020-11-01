@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/ethers",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
