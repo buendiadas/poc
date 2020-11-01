@@ -1,7 +1,7 @@
 module.exports = {
   networks: {
     hardhat: {
-      loggingEnabled: true,
+      // loggingEnabled: true,
       gas: 9500000,
       accounts: {
         mnemonic: 'test test test test test test test test test test test junk',

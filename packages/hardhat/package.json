@@ -1,14 +1,14 @@
 {
   "name": "@crestproject/hardhat",
-  "version": "0.0.82",
+  "version": "0.0.75",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
   "main": "dist/hardhat.cjs.js",
   "files": [
     "dist",
-    "jest-preset.js",
-    "jest-setup.js"
+    "jest",
+    "jest-preset.js"
   ],
   "publishConfig": {
     "access": "public"
@@ -27,6 +27,7 @@
     "@babel/runtime": "^7.12.1",
     "@crestproject/ethers": "^0.0.82",
     "@crestproject/evm": "^0.0.82",
+    "deepmerge": "^4.2.2",
     "jest-environment-node": "^26.6.1"
   },
   "devDependencies": {
@@ -36,5 +37,11 @@
   "peerDependencies": {
     "ethers": "^5.0.18",
     "hardhat": "^2.0.0"
+  },
+  "preconstruct": {
+    "entrypoints": [
+      ".",
+      "jest"
+    ]
   }
 }
