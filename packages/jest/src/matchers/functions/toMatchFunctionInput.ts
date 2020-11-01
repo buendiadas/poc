@@ -25,19 +25,15 @@ export function toMatchFunctionInput(
   const types = resolvedFragment.inputs;
 
   try {
-    const receivedArray =
-      Array.isArray(types) && !Array.isArray(received) ? [received] : received;
-
-    receivedParams = resolveArguments(types, receivedArray);
+    const params = types.length === 1 ? types[0] : types;
+    receivedParams = resolveArguments(params, received);
   } catch (e) {
     return forceFail('Failed to resolve received arguments', invert);
   }
 
   try {
-    const expectedArray =
-      Array.isArray(types) && !Array.isArray(expected) ? [expected] : expected;
-
-    expectedMatchers = resolveParamMatchers(types, expectedArray);
+    const params = types.length === 1 ? types[0] : types;
+    expectedMatchers = resolveParamMatchers(params, expected);
   } catch (e) {
     return forceFail('Failed to resolve expected matchers', invert);
   }

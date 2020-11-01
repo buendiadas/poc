@@ -31,11 +31,11 @@
   },
   "devDependencies": {
     "ethers": "^5.0.19",
-    "ganache-core": "^2.13.0"
+    "ganache-core": "^2.13.1"
   },
   "peerDependencies": {
     "ethers": "^5.0.18",
-    "ganache-core": "^2.13.0"
+    "ganache-core": "^2.13.1"
   },
   "preconstruct": {
     "entrypoints": [

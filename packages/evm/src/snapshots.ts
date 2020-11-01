@@ -1,5 +1,4 @@
 import { EthereumTestnetProvider } from './provider';
-import { History } from './history';
 
 export type FixtureCreator<
   TFixture,
@@ -8,7 +7,6 @@ export type FixtureCreator<
 
 export interface Snapshot<TFixture> {
   data: TFixture;
-  history: History;
   id: string;
 }
 
@@ -26,16 +24,12 @@ export class Snapshots<
     create: FixtureCreator<TFixture, TProvider>,
   ): Promise<TFixture> {
     const revert = this.snapshots.get(create);
-
     const snapshot = revert
       ? await this.revert<TFixture>(revert, create)
       : await this.record<TFixture>(create);
 
     this.snapshots.set(create, snapshot);
-
-    if (revert) {
-      this.provider.history.override(snapshot.history);
-    }
+    this.provider.history.clear();
 
     return snapshot.data;
   }
@@ -45,8 +39,7 @@ export class Snapshots<
   ): Promise<Snapshot<TFixture>> {
     const data = await create(this.provider);
     const id = await this.provider.send('evm_snapshot', []);
-    const history = this.provider.history.clone();
-    return { id, data, history };
+    return { id, data };
   }
 
   private async revert<TFixture>(
@@ -80,5 +73,9 @@ We are going to restore the snapshot state by re-running the provided function. 
 
     const id = await this.provider.send('evm_snapshot', []);
     return { ...snapshot, id };
+  }
+
+  public toJSON() {
+    return {};
   }
 }

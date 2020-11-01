@@ -37,6 +37,20 @@ export function resolveFragment(
     | string,
   fragment?: string | utils.EventFragment | utils.FunctionFragment,
 ): utils.EventFragment | utils.FunctionFragment {
+  if (
+    utils.EventFragment.isEventFragment(subject) ||
+    utils.FunctionFragment.isFunctionFragment(subject)
+  ) {
+    return subject;
+  }
+
+  if (
+    utils.EventFragment.isEventFragment(fragment) ||
+    utils.FunctionFragment.isFunctionFragment(fragment)
+  ) {
+    return fragment;
+  }
+
   if (fragment == null && typeof subject === 'string' && subject.indexOf('(')) {
     const fragment = utils.Fragment.fromString(subject);
 
@@ -46,13 +60,6 @@ export function resolveFragment(
     ) {
       return fragment;
     }
-  }
-
-  if (
-    utils.EventFragment.isEventFragment(fragment) ||
-    utils.FunctionFragment.isFunctionFragment(fragment)
-  ) {
-    return fragment;
   }
 
   if (Contract.isContract(subject)) {

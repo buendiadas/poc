@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/hardhat",
-  "version": "0.0.75",
+  "version": "0.0.82",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",

@@ -20,19 +20,13 @@ export function toMatchParams(
     : types.format();
 
   try {
-    const receivedArray =
-      Array.isArray(types) && !Array.isArray(received) ? [received] : received;
-
-    receivedParams = resolveArguments(types, receivedArray);
+    receivedParams = resolveArguments(types, received);
   } catch (e) {
     return forceFail(`Failed to resolve received arguments: ${e}`, invert);
   }
 
   try {
-    const expectedArray =
-      Array.isArray(types) && !Array.isArray(expected) ? [expected] : expected;
-
-    expectedMatchers = resolveParamMatchers(types, expectedArray);
+    expectedMatchers = resolveParamMatchers(types, expected);
   } catch (e) {
     return forceFail(`Failed to resolve received arguments: ${e}`, invert);
   }

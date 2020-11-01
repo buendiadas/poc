@@ -114,9 +114,7 @@ export async function mock<TContract extends Contract = Contract>(
     const fragment = fn.fragment as utils.FunctionFragment;
     const callee = fn.contract;
 
-    const args = params
-      ? resolveArguments(fragment.inputs, params)
-      : undefined;
+    const args = params ? resolveArguments(fragment.inputs, params) : undefined;
 
     const data = args
       ? fn.contract.abi.encodeFunctionData(fragment, args)

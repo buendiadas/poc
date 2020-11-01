@@ -16,6 +16,7 @@ export type EthereumMatchers<R> = {
     fragment: string | utils.FunctionFragment,
     expected: any,
   ): R;
+  toMatchEventArgs(expected: any): R;
   toBeGtBigNumber(expected: BigNumberish): R;
   toBeLtBigNumber(expected: BigNumberish): R;
   toBeGteBigNumber(expected: BigNumberish): R;

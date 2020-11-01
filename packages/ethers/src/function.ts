@@ -264,6 +264,7 @@ export class CallFunction<
     }
 
     const response = await this.contract.provider.call(tx);
+    // console.log(typeof this.contract.abi.decodeFunctionResult);
     const result = this.contract.abi.decodeFunctionResult(
       this.fragment,
       response,
