@@ -1,7 +1,26 @@
 import type { HardhatRuntimeEnvironment } from 'hardhat/types';
-import { EthereumTestnetProvider } from '@crestproject/evm';
-import { addListener } from './helpers';
 import { BigNumber, providers, utils } from 'ethers';
+import { addListener } from './helpers';
+import { History } from './history';
+import { SignerWithAddress } from './signer';
+import { FixtureCreator, Snapshots } from './snapshots';
+
+export abstract class EthereumTestnetProvider extends providers.StaticJsonRpcProvider {
+  public readonly snapshots = new Snapshots(this);
+  public readonly history = new History();
+
+  public abstract send(method: string, params: any): Promise<any>;
+
+  public async snapshot<TFixture>(
+    create: FixtureCreator<TFixture, this>,
+  ): Promise<TFixture> {
+    return this.snapshots.snapshot(create);
+  }
+
+  public async getSignerWithAddress(addressOrIndex: string | number) {
+    return SignerWithAddress.create(await this.getSigner(addressOrIndex));
+  }
+}
 
 export class HardhatProvider extends EthereumTestnetProvider {
   public readonly gas: undefined | BigNumber;

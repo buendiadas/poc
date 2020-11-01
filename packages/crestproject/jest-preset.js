@@ -1,6 +1,5 @@
 const candidates = [
   '@crestproject/hardhat/jest-preset',
-  '@crestproject/ganache/jest-preset',
   '@crestproject/jest/jest-preset',
 ];
 

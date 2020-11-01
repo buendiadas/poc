@@ -12,10 +12,10 @@ export function toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
   this: jest.MatcherContext,
   subject: ContractFunction<TArgs>,
   ...args: TArgs
-): Promise<jest.CustomMatcherResult> {
+): jest.CustomMatcherResult {
   const invert = this.isNot;
 
-  return ensureParameters(subject, invert, async function (
+  return ensureParameters(subject, invert, function (
     history,
     contract,
     fragment,
