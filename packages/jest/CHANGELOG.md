@@ -1,5 +1,13 @@
 # @crestproject/jest
 
+## 0.1.4
+
+### Patch Changes
+
+- 727cb20: fixing codegen plugin
+- Updated dependencies [727cb20]
+  - @crestproject/ethers@0.1.4
+
 ## 0.1.3
 
 ### Patch Changes

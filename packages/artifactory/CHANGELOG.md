@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 1.0.4
+
+### Patch Changes
+
+- 727cb20: fixing codegen plugin
+- Updated dependencies [727cb20]
+  - @crestproject/crestproject@0.1.4
+
 ## 1.0.3
 
 ### Patch Changes
