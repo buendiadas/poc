@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 1.0.2
+
+### Patch Changes
+
+- cfe782d: add hardhat codegen plugin
+- Updated dependencies [cfe782d]
+  - @crestproject/crestproject@0.1.2
+
 ## 1.0.1
 
 ### Patch Changes

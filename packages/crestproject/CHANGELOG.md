@@ -1,5 +1,15 @@
 # @crestproject/crestproject
 
+## 0.1.2
+
+### Patch Changes
+
+- cfe782d: add hardhat codegen plugin
+- Updated dependencies [cfe782d]
+  - @crestproject/codegen@0.1.2
+  - @crestproject/ethers@0.1.2
+  - @crestproject/jest@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes
