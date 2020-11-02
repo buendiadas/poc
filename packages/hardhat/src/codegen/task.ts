@@ -106,10 +106,10 @@ task('compile', async (_, env, parent) => {
     )
   ).filter((item) => !!item.artifact.abi.length);
 
-  await Promise.all([
-    void (abi && generateAbiFiles(abi, artifacts)),
-    void (bytecode && generateBytecodeFiles(bytecode, artifacts)),
-    void (typescript && generateTypeScriptFiles(typescript, artifacts)),
+  await Promise.all<any>([
+    abi && generateAbiFiles(abi, artifacts),
+    bytecode && generateBytecodeFiles(bytecode, artifacts),
+    typescript && generateTypeScriptFiles(typescript, artifacts),
   ]);
 });
 
@@ -121,9 +121,9 @@ interface ArtifactDescriptor {
 
 async function generateAbiFiles(dir: string, artifacts: ArtifactDescriptor[]): Promise<void> {
   await Promise.all(
-    artifacts.map((artifact) => {
+    artifacts.map(async (artifact) => {
       const destination = path.resolve(dir, `${artifact.name}.json`);
-      return fs.writeJson(destination, artifact.artifact.abi, {
+      return await fs.writeJson(destination, artifact.artifact.abi, {
         spaces: 2,
       });
     }),
@@ -132,10 +132,10 @@ async function generateAbiFiles(dir: string, artifacts: ArtifactDescriptor[]): P
 
 async function generateBytecodeFiles(dir: string, artifacts: ArtifactDescriptor[]): Promise<void> {
   await Promise.all(
-    artifacts.map((artifact) => {
+    artifacts.map(async (artifact) => {
       const destination = path.resolve(dir, `${artifact.name}.bin.json`);
       const content = { bytecode: artifact.artifact.bytecode };
-      return fs.writeJson(destination, content, {
+      return await fs.writeJson(destination, content, {
         spaces: 2,
       });
     }),
@@ -144,13 +144,13 @@ async function generateBytecodeFiles(dir: string, artifacts: ArtifactDescriptor[
 
 async function generateTypeScriptFiles(dir: string, artifacts: ArtifactDescriptor[]): Promise<void> {
   await Promise.all(
-    artifacts.map((artifact) => {
+    artifacts.map(async (artifact) => {
       const imports = '@crestproject/crestproject';
       const abi = new utils.Interface(artifact.artifact.abi);
       const content = generateContract(artifact.name, artifact.artifact.bytecode, abi, imports);
       const formatted = formatOutput(content);
       const destination = path.join(dir, `${artifact.name}.ts`);
-      return fs.writeFile(destination, formatted);
+      return await fs.writeFile(destination, formatted);
     }),
   );
 }
