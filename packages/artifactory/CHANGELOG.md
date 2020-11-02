@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 1.0.5
+
+### Patch Changes
+
+- 56ae69c: fix file writing
+- Updated dependencies [56ae69c]
+  - @crestproject/crestproject@0.1.5
+
 ## 1.0.4
 
 ### Patch Changes

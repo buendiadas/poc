@@ -1,5 +1,11 @@
 # @crestproject/ethers
 
+## 0.1.5
+
+### Patch Changes
+
+- 56ae69c: fix file writing
+
 ## 0.1.4
 
 ### Patch Changes
