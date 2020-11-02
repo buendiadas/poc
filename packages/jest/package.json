@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/runtime": "^7.12.1",
     "@crestproject/ethers": "^0.1.5",
-    "@crestproject/evm": "^0.0.82",
+    "@crestproject/hardhat": "^0.1.5",
     "jest-diff": "^26.6.1",
     "jest-matcher-utils": "^26.6.1",
     "jest-snapshot": "^26.6.1"

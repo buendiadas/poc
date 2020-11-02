@@ -1,5 +1,5 @@
 import { BigNumberish, utils } from 'ethers';
-import { EthereumTestnetProvider } from '@crestproject/evm';
+import { EthereumTestnetProvider } from '@crestproject/hardhat';
 import { AddressLike } from '@crestproject/ethers';
 
 export type EthereumMatchers<R> = {

@@ -1,6 +1,5 @@
 import { utils } from 'ethers';
 import { Contract, ContractFunction } from '@crestproject/ethers';
-import { EthereumTestnetProvider, History } from '@crestproject/evm';
 import { forceFail } from '../../utils';
 
 export type MatcherCallback<TReturn extends jest.CustomMatcherResult | Promise<jest.CustomMatcherResult>> = (

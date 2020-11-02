@@ -1,7 +1,7 @@
 import { utils } from 'ethers';
 import { BasicToken } from '@crestproject/artifactory';
 import { randomAddress } from '@crestproject/ethers';
-import { EthereumTestnetProvider } from '@crestproject/evm';
+import { EthereumTestnetProvider } from '@crestproject/hardhat';
 
 async function snapshot(provider: EthereumTestnetProvider) {
   const someone = await provider.getSignerWithAddress(0);

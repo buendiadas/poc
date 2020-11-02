@@ -1073,21 +1073,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@crestproject/ethers@^0.0.82":
-  version "0.0.82"
-  resolved "https://registry.yarnpkg.com/@crestproject/ethers/-/ethers-0.0.82.tgz#d06059899e34d7b8bcab2f417811212d7c7e0ed8"
-  integrity sha512-wpDT/6fZFFIg2A1Ylln1jvej3vTVX5Ze0qyHxi8AFU0kkNKJTKhjnjfmjMn3s6pmdHF/FlAGhbuKTDFMWWd5OQ==
-  dependencies:
-    "@babel/runtime" "^7.12.1"
-
-"@crestproject/evm@^0.0.82":
-  version "0.0.82"
-  resolved "https://registry.yarnpkg.com/@crestproject/evm/-/evm-0.0.82.tgz#1f831755625762e71e37fff7c32db7b7fe1a7d2e"
-  integrity sha512-IxhMvPogMkixti3TDJ6i3IqwUw5rUIFjr45I2x/HOjlSHKBPrdbtaRiRiQ1AcdCG+8mnznhmpuYMNsJ8z81EAA==
-  dependencies:
-    "@babel/runtime" "^7.12.1"
-    "@crestproject/ethers" "^0.0.82"
-
 "@eslint/eslintrc@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.2.1.tgz#f72069c330461a06684d119384435e12a5d76e3c"

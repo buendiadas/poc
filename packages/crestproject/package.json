@@ -33,7 +33,6 @@
     "@babel/runtime": "^7.12.1",
     "@crestproject/codegen": "^0.1.5",
     "@crestproject/ethers": "^0.1.5",
-    "@crestproject/evm": "^0.0.82",
     "@crestproject/jest": "^0.1.5",
     "glob": "^7.1.6",
     "jest-worker": "^26.6.1",

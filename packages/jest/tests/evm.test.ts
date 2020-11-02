@@ -1,5 +1,5 @@
 import { BasicToken } from '@crestproject/artifactory';
-import { EthereumTestnetProvider } from '@crestproject/evm';
+import { EthereumTestnetProvider } from '@crestproject/hardhat';
 import { utils } from 'ethers';
 
 async function snapshot(provider: EthereumTestnetProvider) {
