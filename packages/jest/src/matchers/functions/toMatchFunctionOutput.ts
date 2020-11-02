@@ -23,10 +23,7 @@ export function toMatchFunctionOutput(
   }
 
   if (!resolvedFragment.outputs) {
-    return forceFail(
-      `The function fragment does not have any output signature: ${resolvedFragment.format()}`,
-      invert,
-    );
+    return forceFail(`The function fragment does not have any output signature: ${resolvedFragment.format()}`, invert);
   }
 
   const types = resolvedFragment.outputs;
@@ -48,11 +45,7 @@ export function toMatchFunctionOutput(
   const pass = this.equals(receivedParams, expectedMatchers);
   const message = pass
     ? () => matcherHint('.not.toMatchFunctionOutput')
-    : () =>
-        `${matcherHint('.toMatchFunctionOutput')}\n\n${diff(
-          receivedParams,
-          expectedMatchers,
-        )}`;
+    : () => `${matcherHint('.toMatchFunctionOutput')}\n\n${diff(receivedParams, expectedMatchers)}`;
 
   return { pass, message };
 }

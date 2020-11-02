@@ -108,20 +108,14 @@ export function getType(param: utils.ParamType, flexible?: boolean): string {
   return 'any';
 }
 
-export function generateFunction(
-  contract: string,
-  fragment: utils.FunctionFragment,
-) {
+export function generateFunction(contract: string, fragment: utils.FunctionFragment) {
   const type = fragment.constant ? 'Call' : 'Send';
   const input = getInput(fragment);
   const output = getOutput(fragment);
   return `${type}<(${input}) => ${output}, ${contract}>`;
 }
 
-export function generateFunctions(
-  contract: string,
-  fragments: utils.FunctionFragment[],
-) {
+export function generateFunctions(contract: string, fragments: utils.FunctionFragment[]) {
   if (!fragments.length) {
     return '';
   }
@@ -129,9 +123,7 @@ export function generateFunctions(
   const [short, full] = fragments.reduce(
     ([short, full], fragment, index, array) => {
       const type = generateFunction(contract, fragment);
-      const found = array.findIndex(
-        (current) => fragment.name === current.name,
-      );
+      const found = array.findIndex((current) => fragment.name === current.name);
 
       // Only create a shortcut for the first function overload.
       if (index === found) {

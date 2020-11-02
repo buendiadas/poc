@@ -12,21 +12,14 @@ import { AddressLike } from './types';
 import { ensureInterface, PossibleInterface } from './utils/ensureInterface';
 import { resolveAddress } from './utils/resolveAddress';
 
-export function deploy<
-  TContract extends Contract = Contract,
-  TArgs extends any[] = any
->(
+export function deploy<TContract extends Contract = Contract, TArgs extends any[] = any>(
   contract: TContract,
   bytecode: string,
   ...args: TArgs
 ): Promise<ContractReceipt<ConstructorFunction<TArgs, TContract>>> {
   const options = resolveFunctionOptions(...args);
   const constructor = contract.abi.deploy;
-  const fn = new ConstructorFunction<TArgs, TContract>(
-    contract,
-    constructor,
-    options,
-  );
+  const fn = new ConstructorFunction<TArgs, TContract>(contract, constructor, options);
 
   const hex = utils.hexlify(bytecode ?? '', {
     allowMissingPrefix: true,
@@ -57,11 +50,7 @@ export class Contract<TContract extends Contract = any> {
     return (this._provider ?? this.signer?.provider)!;
   }
 
-  constructor(
-    abi: Interface | PossibleInterface,
-    address: AddressLike,
-    provider: providers.Provider | Signer,
-  ) {
+  constructor(abi: Interface | PossibleInterface, address: AddressLike, provider: providers.Provider | Signer) {
     this.address = resolveAddress(address);
     this.abi = ensureInterface(abi);
     if (Signer.isSigner(provider)) {
@@ -128,10 +117,7 @@ export class Contract<TContract extends Contract = any> {
     });
   }
 
-  public clone(
-    address: AddressLike,
-    provider: Signer | providers.Provider,
-  ): TContract {
+  public clone(address: AddressLike, provider: Signer | providers.Provider): TContract {
     return new Contract(this.abi, address, provider) as any;
   }
 

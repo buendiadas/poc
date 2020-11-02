@@ -1,9 +1,4 @@
-import {
-  Fragment,
-  Interface,
-  JsonFragment,
-  EventFragment,
-} from '@ethersproject/abi';
+import { Fragment, Interface, JsonFragment, EventFragment } from '@ethersproject/abi';
 
 export type PossibleEvent = string | Fragment | JsonFragment;
 export function ensureEvent(event: string | PossibleEvent, abi?: Interface) {

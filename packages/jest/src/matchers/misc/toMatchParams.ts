@@ -15,9 +15,7 @@ export function toMatchParams(
   let receivedParams: any;
   let expectedMatchers: any;
 
-  const printed = Array.isArray(types)
-    ? types.map((type) => type.format()).join(', ')
-    : types.format();
+  const printed = Array.isArray(types) ? types.map((type) => type.format()).join(', ') : types.format();
 
   try {
     receivedParams = resolveArguments(types, received);
@@ -34,11 +32,7 @@ export function toMatchParams(
   const pass = this.equals(receivedParams, expectedMatchers);
   const message = pass
     ? () => matcherHint('.not.toMatchParams', printed)
-    : () =>
-        `${matcherHint('.toMatchParams', printed)}\n\n${diff(
-          receivedParams,
-          expectedMatchers,
-        )}`;
+    : () => `${matcherHint('.toMatchParams', printed)}\n\n${diff(receivedParams, expectedMatchers)}`;
 
   return { pass, message };
 }

@@ -124,10 +124,7 @@ const bytecode = DoppelgangerCompilerOutput.bytecode;
 const abi = DoppelgangerCompilerOutput.abi;
 
 export class Doppelganger extends Contract<Doppelganger> {
-  public static async deploy(
-    signer: Signer,
-    ...args: DoppelgangerArgs
-  ): Promise<Doppelganger> {
+  public static async deploy(signer: Signer, ...args: DoppelgangerArgs): Promise<Doppelganger> {
     const address = constants.AddressZero;
     const contract = new Doppelganger(abi, address, signer);
     const receipt = await deploy(contract, bytecode ?? '0x', ...args);

@@ -8,14 +8,8 @@ export type EthereumMatchers<R> = {
   toBeProperHex(length: number): R;
   toMatchAddress(expected: AddressLike): R;
   toMatchParams(types: utils.ParamType | utils.ParamType[], expected: any): R;
-  toMatchFunctionInput(
-    fragment: string | utils.FunctionFragment,
-    expected: any,
-  ): R;
-  toMatchFunctionOutput(
-    fragment: string | utils.FunctionFragment,
-    expected: any,
-  ): R;
+  toMatchFunctionInput(fragment: string | utils.FunctionFragment, expected: any): R;
+  toMatchFunctionOutput(fragment: string | utils.FunctionFragment, expected: any): R;
   toMatchEventArgs(expected: any): R;
   toBeGtBigNumber(expected: BigNumberish): R;
   toBeLtBigNumber(expected: BigNumberish): R;
@@ -30,9 +24,7 @@ export type EthereumMatchers<R> = {
   toHaveEmitted(event: string | utils.EventFragment): R;
   toHaveEmittedWith(event: string | utils.EventFragment, expected: any): R;
   toHaveBeenCalledOnContract(): R;
-  toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(
-    ...args: TArgs
-  ): Promise<R>;
+  toHaveBeenCalledOnContractWith<TArgs extends any[] = []>(...args: TArgs): Promise<R>;
 };
 
 declare global {

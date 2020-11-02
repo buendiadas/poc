@@ -1,8 +1,4 @@
-import {
-  Fragment,
-  ConstructorFragment,
-  FunctionFragment,
-} from '@ethersproject/abi';
+import { Fragment, ConstructorFragment, FunctionFragment } from '@ethersproject/abi';
 import {
   BigNumber,
   BigNumberish,
@@ -19,35 +15,22 @@ import { AddressLike } from './types';
 import { resolveAddress } from './utils/resolveAddress';
 import { resolveArguments } from './utils/resolveArguments';
 
-export interface ContractReceipt<
-  TFunction extends
-    | SendFunction<any, any>
-    | ConstructorFunction<any> = SendFunction
-> extends EthersContractReceipt {
+export interface ContractReceipt<TFunction extends SendFunction<any, any> | ConstructorFunction<any> = SendFunction>
+  extends EthersContractReceipt {
   function: TFunction;
 }
 
-export interface ContractTransaction<
-  TFunction extends
-    | SendFunction<any, any>
-    | ConstructorFunction<any> = SendFunction
-> extends EthersContractTransaction {
+export interface ContractTransaction<TFunction extends SendFunction<any, any> | ConstructorFunction<any> = SendFunction>
+  extends EthersContractTransaction {
   function: TFunction;
 }
 
-function propertyOf<TOr = any>(
-  property: string,
-  candidates: object[] = [],
-): TOr {
+function propertyOf<TOr = any>(property: string, candidates: object[] = []): TOr {
   const obj = candidates.find((obj) => obj.hasOwnProperty(property));
   return (obj as any)?.[property] ?? undefined;
 }
 
-function enhanceResponse<
-  TFunction extends
-    | SendFunction<any, any>
-    | ConstructorFunction<any> = SendFunction
->(
+function enhanceResponse<TFunction extends SendFunction<any, any> | ConstructorFunction<any> = SendFunction>(
   fn: TFunction,
   response: EthersContractTransaction,
 ): ContractTransaction<TFunction> {
@@ -76,9 +59,7 @@ export interface FunctionOptions<TArgs extends any[] = []> {
 }
 
 // TODO: Use param types to validate this instead.
-export function isFunctionOptions<TArgs extends any[] = []>(
-  value: any,
-): value is FunctionOptions<TArgs> {
+export function isFunctionOptions<TArgs extends any[] = []>(value: any): value is FunctionOptions<TArgs> {
   if (typeof value === 'object' && !Array.isArray(value)) {
     if (BigNumber.isBigNumber(value)) {
       return false;
@@ -93,16 +74,7 @@ export function isFunctionOptions<TArgs extends any[] = []>(
     }
 
     const keys = Object.keys(value);
-    const allowed = [
-      'args',
-      'value',
-      'nonce',
-      'gas',
-      'price',
-      'block',
-      'from',
-      'bytecode',
-    ];
+    const allowed = ['args', 'value', 'nonce', 'gas', 'price', 'block', 'from', 'bytecode'];
 
     if (!keys.every((key) => allowed.includes(key))) {
       throw new Error('Invalid options');
@@ -132,9 +104,7 @@ export class ContractFunction<
 > {
   // @ts-ignore
   protected readonly __TYPE__?: string = 'FUNCTION';
-  public static isContractFunction(
-    fn: any,
-  ): fn is ContractFunction<any, any, any> {
+  public static isContractFunction(fn: any): fn is ContractFunction<any, any, any> {
     return fn?.__TYPE__?.startsWith('FUNCTION');
   }
 
@@ -142,11 +112,7 @@ export class ContractFunction<
     TArgs extends any[] = [],
     TFragment extends Fragment = Fragment,
     TContract extends Contract = Contract
-  >(
-    contract: TContract,
-    fragment: TFragment,
-    ...args: TArgs
-  ): ContractFunction<TArgs, TFragment, TContract>;
+  >(contract: TContract, fragment: TFragment, ...args: TArgs): ContractFunction<TArgs, TFragment, TContract>;
 
   public static create<
     TArgs extends any[] = [],
@@ -162,11 +128,7 @@ export class ContractFunction<
     TArgs extends any[] = [],
     TFragment extends Fragment = Fragment,
     TContract extends Contract = Contract
-  >(
-    contract: TContract,
-    fragment: TFragment,
-    ...args: [FunctionOptions<TArgs>] | TArgs
-  ) {
+  >(contract: TContract, fragment: TFragment, ...args: [FunctionOptions<TArgs>] | TArgs) {
     const options = resolveFunctionOptions(...args) as FunctionOptions<TArgs>;
     if (FunctionFragment.isFunctionFragment(fragment)) {
       if (fragment.constant) {
@@ -265,10 +227,7 @@ export class CallFunction<
 
     const response = await this.contract.provider.call(tx);
     // console.log(typeof this.contract.abi.decodeFunctionResult);
-    const result = this.contract.abi.decodeFunctionResult(
-      this.fragment,
-      response,
-    );
+    const result = this.contract.abi.decodeFunctionResult(this.fragment, response);
 
     if (this.fragment.outputs?.length === 1) {
       return result[0];
@@ -292,10 +251,7 @@ export class CallFunction<
         try {
           const inputs = this.fragment.inputs;
           const args = resolveArguments(inputs, this.options.args);
-          const data = this.contract.abi.encodeFunctionData(
-            this.fragment,
-            args,
-          );
+          const data = this.contract.abi.encodeFunctionData(this.fragment, args);
 
           const from = this.options.from
             ? this.options.from
@@ -352,12 +308,8 @@ export class SendFunction<
     return this.contract.provider.estimateGas(tx);
   }
 
-  public send(
-    wait?: true,
-  ): Promise<ContractReceipt<SendFunction<TArgs, TReturn, TContract>>>;
-  public send(
-    wait?: false,
-  ): Promise<ContractTransaction<SendFunction<TArgs, TReturn, TContract>>>;
+  public send(wait?: true): Promise<ContractReceipt<SendFunction<TArgs, TReturn, TContract>>>;
+  public send(wait?: false): Promise<ContractTransaction<SendFunction<TArgs, TReturn, TContract>>>;
   public async send(
     wait: boolean = true,
   ): Promise<
@@ -376,9 +328,7 @@ export class SendFunction<
       return enhanced;
     }
 
-    return enhanced.wait() as Promise<
-      ContractReceipt<SendFunction<TArgs, TReturn, TContract>>
-    >;
+    return enhanced.wait() as Promise<ContractReceipt<SendFunction<TArgs, TReturn, TContract>>>;
   }
 }
 
@@ -388,9 +338,7 @@ export class ConstructorFunction<
 > extends ContractFunction<TArgs, ConstructorFragment, TContract> {
   // @ts-ignore
   protected readonly __TYPE__?: string = 'FUNCTION:CONSTRUCTOR';
-  public static isConstructorFunction(
-    fn: any,
-  ): fn is ConstructorFunction<any, any> {
+  public static isConstructorFunction(fn: any): fn is ConstructorFunction<any, any> {
     return fn?.__TYPE__ === 'FUNCTION:CONSTRUCTOR';
   }
 
@@ -414,17 +362,12 @@ export class ConstructorFunction<
     return this.contract.provider.estimateGas(tx);
   }
 
-  public send(
-    wait?: true,
-  ): Promise<ContractReceipt<ConstructorFunction<TArgs, TContract>>>;
-  public send(
-    wait?: false,
-  ): Promise<ContractTransaction<ConstructorFunction<TArgs, TContract>>>;
+  public send(wait?: true): Promise<ContractReceipt<ConstructorFunction<TArgs, TContract>>>;
+  public send(wait?: false): Promise<ContractTransaction<ConstructorFunction<TArgs, TContract>>>;
   public async send(
     wait: boolean = true,
   ): Promise<
-    | ContractTransaction<ConstructorFunction<TArgs, TContract>>
-    | ContractReceipt<ConstructorFunction<TArgs, TContract>>
+    ContractTransaction<ConstructorFunction<TArgs, TContract>> | ContractReceipt<ConstructorFunction<TArgs, TContract>>
   > {
     if (!this.contract.signer) {
       throw new Error('Missing signer');
@@ -437,9 +380,7 @@ export class ConstructorFunction<
       return enhanced;
     }
 
-    return enhanced.wait() as Promise<
-      ContractReceipt<ConstructorFunction<TArgs, TContract>>
-    >;
+    return enhanced.wait() as Promise<ContractReceipt<ConstructorFunction<TArgs, TContract>>>;
   }
 
   public async populate(refresh = false) {
@@ -454,12 +395,7 @@ export class ConstructorFunction<
           const args = resolveArguments(inputs, this.options.args);
 
           // Set the data to the bytecode + the encoded constructor arguments
-          const data = utils.hexlify(
-            utils.concat([
-              this.options.bytecode,
-              this.contract.abi.encodeDeploy(args),
-            ]),
-          );
+          const data = utils.hexlify(utils.concat([this.options.bytecode, this.contract.abi.encodeDeploy(args)]));
 
           const from = this.options.from
             ? this.options.from

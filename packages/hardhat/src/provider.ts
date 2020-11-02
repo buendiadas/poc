@@ -11,9 +11,7 @@ export abstract class EthereumTestnetProvider extends providers.StaticJsonRpcPro
 
   public abstract send(method: string, params: any): Promise<any>;
 
-  public async snapshot<TFixture>(
-    create: FixtureCreator<TFixture, this>,
-  ): Promise<TFixture> {
+  public async snapshot<TFixture>(create: FixtureCreator<TFixture, this>): Promise<TFixture> {
     return this.snapshots.snapshot(create);
   }
 
@@ -30,9 +28,7 @@ export class HardhatProvider extends EthereumTestnetProvider {
     super();
 
     if (this.env.network.config.gas !== 'auto') {
-      this.gas = BigNumber.from(this.env.network.config.gas).mul(
-        this.env.network.config.gasMultiplier,
-      );
+      this.gas = BigNumber.from(this.env.network.config.gas).mul(this.env.network.config.gasMultiplier);
     }
 
     if (this.env.network.config.gasPrice !== 'auto') {
@@ -51,9 +47,7 @@ export class HardhatProvider extends EthereumTestnetProvider {
     return this.env.network.provider.send(method, params);
   }
 
-  public async estimateGas(
-    transaction: utils.Deferrable<providers.TransactionRequest>,
-  ): Promise<BigNumber> {
+  public async estimateGas(transaction: utils.Deferrable<providers.TransactionRequest>): Promise<BigNumber> {
     return this.gas ?? super.estimateGas(transaction);
   }
 

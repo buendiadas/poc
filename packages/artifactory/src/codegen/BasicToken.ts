@@ -1,13 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 import { BytesLike, BigNumber, BigNumberish } from 'ethers';
-import {
-  contract,
-  Call,
-  Send,
-  AddressLike,
-  Contract,
-} from '@crestproject/crestproject';
+import { contract, Call, Send, AddressLike, Contract } from '@crestproject/crestproject';
 
 export type BasicTokenArgs = [initialBalance: BigNumberish];
 

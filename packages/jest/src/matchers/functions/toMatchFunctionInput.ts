@@ -41,11 +41,7 @@ export function toMatchFunctionInput(
   const pass = this.equals(receivedParams, expectedMatchers);
   const message = pass
     ? () => matcherHint('.not.toMatchFunctionInput')
-    : () =>
-        `${matcherHint('.toMatchFunctionInput')}\n\n${diff(
-          receivedParams,
-          expectedMatchers,
-        )}`;
+    : () => `${matcherHint('.toMatchFunctionInput')}\n\n${diff(receivedParams, expectedMatchers)}`;
 
   return { pass, message };
 }

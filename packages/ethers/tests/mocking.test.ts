@@ -38,13 +38,9 @@ describe('mocking', () => {
     const signer = await provider.getSignerWithAddress(0);
     const mock = await BasicToken.mock(signer);
 
-    await mock.balanceOf
-      .given(constants.AddressZero)
-      .reverts('YOU SHALL NOT PASS!');
+    await mock.balanceOf.given(constants.AddressZero).reverts('YOU SHALL NOT PASS!');
 
-    await expect(mock.balanceOf(constants.AddressZero)).rejects.toThrowError(
-      'Mock revert: YOU SHALL NOT PASS!',
-    );
+    await expect(mock.balanceOf(constants.AddressZero)).rejects.toThrowError('Mock revert: YOU SHALL NOT PASS!');
   });
 
   it('reverts with function signature on missing mock', async () => {
@@ -71,9 +67,7 @@ describe('mocking', () => {
 
     const spender = randomAddress();
     const amount = utils.parseEther('1');
-    await expect(
-      mock.forward(token.approve, spender, amount),
-    ).resolves.toMatchObject({
+    await expect(mock.forward(token.approve, spender, amount)).resolves.toMatchObject({
       transactionHash: expect.anything(),
       transactionIndex: expect.anything(),
     });
@@ -91,9 +85,7 @@ describe('mocking', () => {
 
     await token.balanceOf.reset();
     result = token.balanceOf(constants.AddressZero);
-    await expect(result).rejects.toThrowError(
-      'Mock not initialized: balanceOf(address)',
-    );
+    await expect(result).rejects.toThrowError('Mock not initialized: balanceOf(address)');
   });
 
   it('can reset previously set mocks with specific args', async () => {
@@ -116,8 +108,6 @@ describe('mocking', () => {
 
     await token.balanceOf.reset();
     result = token.balanceOf(constants.AddressZero);
-    await expect(result).rejects.toThrowError(
-      'Mock not initialized: balanceOf(address)',
-    );
+    await expect(result).rejects.toThrowError('Mock not initialized: balanceOf(address)');
   });
 });

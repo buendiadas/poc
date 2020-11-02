@@ -2,15 +2,8 @@ import { BigNumberish } from 'ethers';
 import { matcherHint, printExpected, printReceived } from 'jest-matcher-utils';
 import { printBigNumber, ensureBigNumbers } from './utils';
 
-export function toBeGteBigNumber(
-  this: jest.MatcherContext,
-  received: BigNumberish,
-  expected: BigNumberish,
-) {
-  return ensureBigNumbers(received, expected, this.isNot, function (
-    received,
-    expected,
-  ) {
+export function toBeGteBigNumber(this: jest.MatcherContext, received: BigNumberish, expected: BigNumberish) {
+  return ensureBigNumbers(received, expected, this.isNot, function (received, expected) {
     const receivedStr = printReceived(printBigNumber(received));
     const expectedStr = printExpected(printBigNumber(expected));
 

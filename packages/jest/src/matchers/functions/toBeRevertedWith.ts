@@ -1,8 +1,4 @@
-export function toBeRevertedWith(
-  this: jest.MatcherContext,
-  received: Error,
-  match: string | RegExp,
-) {
+export function toBeRevertedWith(this: jest.MatcherContext, received: Error, match: string | RegExp) {
   const error = received?.message || JSON.stringify(received);
   const isReverted = error.search('revert') >= 0;
   const isThrown = error.search('invalid opcode') >= 0;

@@ -11,9 +11,7 @@ export function extractEvent<TFunction extends SendFunction<any, any>>(
   const fragment = ensureEvent(event, contract);
   const abi = new utils.Interface([fragment]);
   const topic = abi.getEventTopic(fragment);
-  const matches = (receipt.logs ?? [])
-    .filter((item) => item.topics.includes(topic))
-    .map((log) => abi.parseLog(log));
+  const matches = (receipt.logs ?? []).filter((item) => item.topics.includes(topic)).map((log) => abi.parseLog(log));
 
   return matches;
 }

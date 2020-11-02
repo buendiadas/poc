@@ -6,9 +6,7 @@ export function forceFail(error: string | (() => string), invert: boolean) {
   return { pass, message };
 }
 
-export function isTransactionReceipt(
-  value: any,
-): value is providers.TransactionReceipt {
+export function isTransactionReceipt(value: any): value is providers.TransactionReceipt {
   try {
     expect(value).toMatchObject({
       to: expect.any(String),

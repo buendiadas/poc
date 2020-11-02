@@ -8,9 +8,7 @@ export function toHaveEmitted(
   event: string | utils.EventFragment,
 ): jest.CustomMatcherResult {
   const abi = receipt.function.contract.abi;
-  const fragment = utils.EventFragment.isEventFragment(event)
-    ? event
-    : abi.getEvent(event);
+  const fragment = utils.EventFragment.isEventFragment(event) ? event : abi.getEvent(event);
 
   const matches = extractEvent(receipt, fragment);
   const signature = fragment.format();

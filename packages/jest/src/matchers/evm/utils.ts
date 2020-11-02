@@ -3,9 +3,7 @@ import { Contract, ContractFunction } from '@crestproject/ethers';
 import { EthereumTestnetProvider, History } from '@crestproject/evm';
 import { forceFail } from '../../utils';
 
-export type MatcherCallback<
-  TReturn extends jest.CustomMatcherResult | Promise<jest.CustomMatcherResult>
-> = (
+export type MatcherCallback<TReturn extends jest.CustomMatcherResult | Promise<jest.CustomMatcherResult>> = (
   history: History,
   contract: Contract,
   fragment?: utils.FunctionFragment,
@@ -13,18 +11,11 @@ export type MatcherCallback<
 
 export function ensureParameters<
   TSubject extends Contract | ContractFunction<any> = any,
-  TReturn extends
-    | jest.CustomMatcherResult
-    | Promise<jest.CustomMatcherResult> = jest.CustomMatcherResult
->(
-  subject: TSubject,
-  invert: boolean,
-  callback: MatcherCallback<TReturn>,
-): TReturn {
+  TReturn extends jest.CustomMatcherResult | Promise<jest.CustomMatcherResult> = jest.CustomMatcherResult
+>(subject: TSubject, invert: boolean, callback: MatcherCallback<TReturn>): TReturn {
   const fn = ContractFunction.isContractFunction(subject)
     ? subject
-    : typeof subject === 'function' &&
-      ContractFunction.isContractFunction((subject as ContractFunction)?.ref)
+    : typeof subject === 'function' && ContractFunction.isContractFunction((subject as ContractFunction)?.ref)
     ? (subject as ContractFunction).ref
     : undefined;
 
@@ -35,21 +26,17 @@ export function ensureParameters<
     : undefined;
 
   if (!contract) {
-    const error =
-      'Missing contract instance for contract call history assertion';
+    const error = 'Missing contract instance for contract call history assertion';
     return forceFail(error, invert) as TReturn;
   }
 
   const history = (contract?.provider as EthereumTestnetProvider)?.history;
   if (!history) {
-    const error =
-      'Invalid or unsupported provider for contract call history assertion';
+    const error = 'Invalid or unsupported provider for contract call history assertion';
     return forceFail(error, invert) as TReturn;
   }
 
-  const fragment = ContractFunction.isContractFunction(fn)
-    ? fn.fragment
-    : undefined;
+  const fragment = ContractFunction.isContractFunction(fn) ? fn.fragment : undefined;
 
   return callback(history, contract, fragment);
 }

@@ -6,17 +6,9 @@ export function printBigNumber(value: BigNumberish) {
   return `${bn.toString()} (${bn.toHexString()})`;
 }
 
-export type MatcherCallback = (
-  received: BigNumber,
-  expected: BigNumber,
-) => jest.CustomMatcherResult;
+export type MatcherCallback = (received: BigNumber, expected: BigNumber) => jest.CustomMatcherResult;
 
-export function ensureBigNumbers(
-  received: any,
-  expected: any,
-  invert: boolean,
-  callback: MatcherCallback,
-) {
+export function ensureBigNumbers(received: any, expected: any, invert: boolean, callback: MatcherCallback) {
   let receivedBn: BigNumber;
   let expectedBn: BigNumber;
 

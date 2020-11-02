@@ -11,25 +11,18 @@ export interface SolidityCompilerOutput {
   bytecode?: string;
 }
 
-export interface ContractFactory<
-  TContract extends Contract = Contract,
-  TConstructorArgs extends any[] = []
-> {
+export interface ContractFactory<TContract extends Contract = Contract, TConstructorArgs extends any[] = []> {
   abi: utils.Interface;
   mock(signer: Signer): Promise<MockContract<TContract>>;
   deploy(signer: Signer, ...args: TConstructorArgs): Promise<TContract>;
-  deploy(
-    signer: Signer,
-    options: FunctionOptions<TConstructorArgs>,
-  ): Promise<TContract>;
+  deploy(signer: Signer, options: FunctionOptions<TConstructorArgs>): Promise<TContract>;
   new (address: AddressLike, provider: Signer | providers.Provider): TContract;
 }
 
 // Expose a default contract factory for convenience.
-export function contract<
-  TContract extends Contract = Contract,
-  TConstructorArgs extends any[] = never
->(bytecode?: string) {
+export function contract<TContract extends Contract = Contract, TConstructorArgs extends any[] = never>(
+  bytecode?: string,
+) {
   return (signatures: TemplateStringsArray) => {
     let resolved: utils.Interface;
 
@@ -71,17 +64,11 @@ export function contract<
         super(SpecializedContract.abi, address, provider);
       }
 
-      public clone(
-        address: AddressLike,
-        provider: Signer | providers.Provider,
-      ): TContract {
+      public clone(address: AddressLike, provider: Signer | providers.Provider): TContract {
         return new SpecializedContract(address, provider) as TContract;
       }
     }
 
-    return (SpecializedContract as any) as ContractFactory<
-      TContract,
-      TConstructorArgs
-    >;
+    return (SpecializedContract as any) as ContractFactory<TContract, TConstructorArgs>;
   };
 }

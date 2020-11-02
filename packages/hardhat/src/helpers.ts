@@ -2,11 +2,7 @@
 import type { EthereumProvider } from 'hardhat/types';
 import type { EventEmitter } from 'events';
 
-export function addListener(
-  provider: EthereumProvider,
-  event: string,
-  handler: (...args: any) => void,
-) {
+export function addListener(provider: EthereumProvider, event: string, handler: (...args: any) => void) {
   let inner: any = provider._provider;
   while (inner._wrapped) {
     inner = (inner as any)._wrapped;

@@ -35,9 +35,6 @@ describe('misc', () => {
     const { token, signer } = await provider.snapshot(snapshot);
     const params = token.balanceOf.fragment.outputs!;
     const expected = utils.parseEther('100');
-    await expect(token.balanceOf(signer)).resolves.toMatchParams(
-      params,
-      expected,
-    );
+    await expect(token.balanceOf(signer)).resolves.toMatchParams(params, expected);
   });
 });

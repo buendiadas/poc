@@ -7,9 +7,7 @@ export function resolveFunctionFragment(
 ) {
   const resolved = resolveFragment(subject, fragment);
   if (!utils.FunctionFragment.isFunctionFragment(resolved)) {
-    throw new Error(
-      `Failed to resolve function fragment. Received event fragment ${resolved.format()}`,
-    );
+    throw new Error(`Failed to resolve function fragment. Received event fragment ${resolved.format()}`);
   }
 
   return resolved;
@@ -21,43 +19,28 @@ export function resolveEventFragment(
 ) {
   const resolved = resolveFragment(subject, fragment);
   if (!utils.EventFragment.isEventFragment(resolved)) {
-    throw new Error(
-      `Failed to resolve event fragment. Received function fragment ${resolved.format()}`,
-    );
+    throw new Error(`Failed to resolve event fragment. Received function fragment ${resolved.format()}`);
   }
 
   return resolved;
 }
 
 export function resolveFragment(
-  subject:
-    | Contract<any>
-    | utils.EventFragment
-    | utils.FunctionFragment
-    | string,
+  subject: Contract<any> | utils.EventFragment | utils.FunctionFragment | string,
   fragment?: string | utils.EventFragment | utils.FunctionFragment,
 ): utils.EventFragment | utils.FunctionFragment {
-  if (
-    utils.EventFragment.isEventFragment(subject) ||
-    utils.FunctionFragment.isFunctionFragment(subject)
-  ) {
+  if (utils.EventFragment.isEventFragment(subject) || utils.FunctionFragment.isFunctionFragment(subject)) {
     return subject;
   }
 
-  if (
-    utils.EventFragment.isEventFragment(fragment) ||
-    utils.FunctionFragment.isFunctionFragment(fragment)
-  ) {
+  if (utils.EventFragment.isEventFragment(fragment) || utils.FunctionFragment.isFunctionFragment(fragment)) {
     return fragment;
   }
 
   if (fragment == null && typeof subject === 'string' && subject.indexOf('(')) {
     const fragment = utils.Fragment.fromString(subject);
 
-    if (
-      utils.EventFragment.isEventFragment(fragment) ||
-      utils.FunctionFragment.isFunctionFragment(fragment)
-    ) {
+    if (utils.EventFragment.isEventFragment(fragment) || utils.FunctionFragment.isFunctionFragment(fragment)) {
       return fragment;
     }
   }
@@ -99,10 +82,7 @@ export function resolveFragment(
 
 const asymmetricMatcher = Symbol.for('jest.asymmetricMatcher');
 
-export function resolveParamMatchers(
-  params: utils.ParamType | utils.ParamType[],
-  value: any,
-): any {
+export function resolveParamMatchers(params: utils.ParamType | utils.ParamType[], value: any): any {
   if (typeof value === 'undefined') {
     return expect.anything();
   }

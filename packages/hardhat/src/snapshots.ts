@@ -1,32 +1,22 @@
 import { EthereumTestnetProvider } from './provider';
 
-export type FixtureCreator<
-  TFixture,
-  TProvider extends EthereumTestnetProvider = any
-> = (provider: TProvider) => Promise<TFixture>;
+export type FixtureCreator<TFixture, TProvider extends EthereumTestnetProvider = any> = (
+  provider: TProvider,
+) => Promise<TFixture>;
 
 export interface Snapshot<TFixture> {
   data: TFixture;
   id: string;
 }
 
-export class Snapshots<
-  TProvider extends EthereumTestnetProvider = EthereumTestnetProvider
-> {
-  private readonly snapshots = new Map<
-    FixtureCreator<any, TProvider>,
-    Snapshot<any>
-  >();
+export class Snapshots<TProvider extends EthereumTestnetProvider = EthereumTestnetProvider> {
+  private readonly snapshots = new Map<FixtureCreator<any, TProvider>, Snapshot<any>>();
 
   constructor(private readonly provider: TProvider) {}
 
-  public async snapshot<TFixture>(
-    create: FixtureCreator<TFixture, TProvider>,
-  ): Promise<TFixture> {
+  public async snapshot<TFixture>(create: FixtureCreator<TFixture, TProvider>): Promise<TFixture> {
     const revert = this.snapshots.get(create);
-    const snapshot = revert
-      ? await this.revert<TFixture>(revert, create)
-      : await this.record<TFixture>(create);
+    const snapshot = revert ? await this.revert<TFixture>(revert, create) : await this.record<TFixture>(create);
 
     this.snapshots.set(create, snapshot);
     this.provider.history.clear();
@@ -34,9 +24,7 @@ export class Snapshots<
     return snapshot.data;
   }
 
-  private async record<TFixture>(
-    create: FixtureCreator<TFixture, TProvider>,
-  ): Promise<Snapshot<TFixture>> {
+  private async record<TFixture>(create: FixtureCreator<TFixture, TProvider>): Promise<Snapshot<TFixture>> {
     const data = await create(this.provider);
     const id = await this.provider.send('evm_snapshot', []);
     return { id, data };

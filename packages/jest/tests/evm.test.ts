@@ -40,9 +40,7 @@ describe('evm', () => {
     expect(mock.name).toHaveBeenCalledOnContract();
 
     await mock.transfer.given(someone, '123').returns(true);
-    await expect(
-      mock.transfer.args(someone, '123').call(),
-    ).resolves.toBeTruthy();
+    await expect(mock.transfer.args(someone, '123').call()).resolves.toBeTruthy();
 
     expect(mock.transfer).toHaveBeenCalledOnContract();
     await expect(mock.transfer).toHaveBeenCalledOnContractWith(someone, '123');

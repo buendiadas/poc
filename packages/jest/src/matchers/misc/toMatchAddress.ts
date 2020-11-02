@@ -2,11 +2,7 @@ import { AddressLike, resolveAddress } from '@crestproject/ethers';
 import { matcherHint } from 'jest-matcher-utils';
 import { forceFail } from '../../utils';
 
-export function toMatchAddress(
-  this: jest.MatcherContext,
-  received: AddressLike,
-  expected: AddressLike,
-) {
+export function toMatchAddress(this: jest.MatcherContext, received: AddressLike, expected: AddressLike) {
   const invert = this.isNot;
   let receivedAddress: string;
   let expectedAddress: string;

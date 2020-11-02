@@ -53,9 +53,7 @@ export const handler = async (args: Args) => {
 
   const mutex = throat(workerCount);
   const run = (match: string, destination: string) => {
-    return mutex(async () =>
-      (worker as any).generate(match, destination, format),
-    );
+    return mutex(async () => (worker as any).generate(match, destination, format));
   };
 
   const stdout = worker.getStdout();

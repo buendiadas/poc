@@ -5,10 +5,7 @@ export class SignerWithAddress extends ethers.Signer {
     return new SignerWithAddress(await signer.getAddress(), signer);
   }
 
-  private constructor(
-    public readonly address: string,
-    private readonly signer: ethers.Signer,
-  ) {
+  private constructor(public readonly address: string, private readonly signer: ethers.Signer) {
     super();
     (this as any).provider = signer.provider;
   }
@@ -21,9 +18,7 @@ export class SignerWithAddress extends ethers.Signer {
     return this.signer.signMessage(message);
   }
 
-  public signTransaction(
-    transaction: ethers.utils.Deferrable<ethers.providers.TransactionRequest>,
-  ): Promise<string> {
+  public signTransaction(transaction: ethers.utils.Deferrable<ethers.providers.TransactionRequest>): Promise<string> {
     return this.signer.signTransaction(transaction);
   }
 

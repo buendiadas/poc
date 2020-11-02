@@ -1,14 +1,6 @@
 import { BigNumber, BigNumberish, constants, utils } from 'ethers';
 import { BasicToken } from '@crestproject/artifactory';
-import {
-  randomAddress,
-  contract,
-  Contract,
-  Call,
-  Send,
-  SendFunction,
-  CallFunction,
-} from '@crestproject/ethers';
+import { randomAddress, contract, Contract, Call, Send, SendFunction, CallFunction } from '@crestproject/ethers';
 
 // prettier-ignore
 interface Token extends Contract<Token> {
@@ -67,9 +59,7 @@ describe('construction', () => {
   it('shortcut syntax allows chaining methods', async () => {
     const signer = await provider.getSignerWithAddress(0);
     const token = new Token(constants.AddressZero, signer);
-    expect(token.transfer.args(randomAddress(), 123)).toBeInstanceOf(
-      SendFunction,
-    );
+    expect(token.transfer.args(randomAddress(), 123)).toBeInstanceOf(SendFunction);
   });
 
   it('shortcut syntax returns the first function fragment', async () => {
@@ -92,9 +82,7 @@ describe('construction', () => {
 
     const incompatible = new IncompatibleContract(randomAddress(), provider);
     const allowance = token.allowance;
-    expect(() => allowance.attach(incompatible as any)).toThrow(
-      'Failed to attach function to incompatible contract',
-    );
+    expect(() => allowance.attach(incompatible as any)).toThrow('Failed to attach function to incompatible contract');
   });
 
   it('does allow attaching a function instance to a compatible contract', async () => {
@@ -114,9 +102,7 @@ describe('construction', () => {
     const signer = await provider.getSignerWithAddress(0);
     const token = BasicToken.deploy(signer, utils.parseEther('100'));
 
-    await expect(
-      token.then((contract: BasicToken) => contract.deployment),
-    ).resolves.toMatchObject({
+    await expect(token.then((contract: BasicToken) => contract.deployment)).resolves.toMatchObject({
       contractAddress: expect.stringMatching(/^0x/),
     });
   });

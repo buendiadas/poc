@@ -5,11 +5,7 @@ import { resolveArguments } from '@crestproject/ethers';
 import { forceFail } from '../../utils';
 import { resolveParamMatchers } from '../helpers';
 
-export function toMatchEventArgs(
-  this: jest.MatcherContext,
-  received: utils.LogDescription,
-  expected?: any,
-) {
+export function toMatchEventArgs(this: jest.MatcherContext, received: utils.LogDescription, expected?: any) {
   const invert = this.isNot;
   let receivedParams: any;
   let expectedMatchers: any;
@@ -31,11 +27,7 @@ export function toMatchEventArgs(
   const pass = this.equals(receivedParams, expectedMatchers);
   const message = pass
     ? () => matcherHint('.not.toMatchEventArgs')
-    : () =>
-        `${matcherHint('.toMatchEventArgs')}\n\n${diff(
-          receivedParams,
-          expectedMatchers,
-        )}`;
+    : () => `${matcherHint('.toMatchEventArgs')}\n\n${diff(receivedParams, expectedMatchers)}`;
 
   return { pass, message };
 }

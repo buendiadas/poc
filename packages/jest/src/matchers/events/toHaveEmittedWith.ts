@@ -1,11 +1,7 @@
 import diff from 'jest-diff';
 import { matcherHint } from 'jest-matcher-utils';
 import { utils } from 'ethers';
-import {
-  ContractReceipt,
-  extractEvent,
-  resolveArguments,
-} from '@crestproject/ethers';
+import { ContractReceipt, extractEvent, resolveArguments } from '@crestproject/ethers';
 import { resolveEventFragment, resolveParamMatchers } from '../helpers';
 import { forceFail } from '../../utils';
 
@@ -43,11 +39,7 @@ export function toHaveEmittedWith(
   const signature = resolvedFragment.format();
   const message = pass
     ? () => matcherHint('.not.toHaveEmittedWith', signature)
-    : () =>
-        `${matcherHint('.toHaveEmittedWith', signature)}\n\n${diff(
-          args[args.length - 1],
-          expectedMatchers,
-        )}`;
+    : () => `${matcherHint('.toHaveEmittedWith', signature)}\n\n${diff(args[args.length - 1], expectedMatchers)}`;
 
   return { pass, message };
 }
