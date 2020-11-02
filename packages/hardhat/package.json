@@ -35,11 +35,11 @@
   "devDependencies": {
     "@types/fs-extra": "^9.0.2",
     "ethers": "^5.0.19",
-    "hardhat": "^2.0.4"
+    "hardhat": "^2.0.5"
   },
   "peerDependencies": {
     "ethers": "^5.0.18",
-    "hardhat": "^2.0.0"
+    "hardhat": "^2.0.5"
   },
   "preconstruct": {
     "entrypoints": [
