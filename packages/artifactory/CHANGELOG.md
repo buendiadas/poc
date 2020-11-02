@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 1.0.3
+
+### Patch Changes
+
+- 9cfc042: add build output
+- Updated dependencies [9cfc042]
+  - @crestproject/crestproject@0.1.3
+
 ## 1.0.2
 
 ### Patch Changes
