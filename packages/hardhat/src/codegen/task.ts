@@ -4,6 +4,7 @@ import deepmerge from 'deepmerge';
 import { utils } from 'ethers';
 import { task, extendConfig } from 'hardhat/config';
 import { Artifact } from 'hardhat/types';
+import { generateContract, formatOutput } from '@crestproject/codegen';
 import type { CodeGeneratorConfig } from './types';
 
 export * from './types';
@@ -53,6 +54,7 @@ task('compile', async (_, env, parent) => {
   const dirs = [abi, bytecode, typescript].filter(
     (item, index, array) => !!item && array.indexOf(item) === index,
   ) as string[];
+
   await Promise.all(
     dirs.map(async (dir) => {
       const exists = await fs.pathExists(dir);
@@ -95,12 +97,14 @@ task('compile', async (_, env, parent) => {
     return;
   }
 
-  const artifacts = await Promise.all(
-    paths.map(async (item) => {
-      const artifact = (await fs.readJson(item.path)) as Artifact;
-      return { ...item, artifact };
-    }),
-  );
+  const artifacts = (
+    await Promise.all(
+      paths.map(async (item) => {
+        const artifact = (await fs.readJson(item.path)) as Artifact;
+        return { ...item, artifact };
+      }),
+    )
+  ).filter((item) => !!item.artifact.abi.length);
 
   await Promise.all([
     void (abi && generateAbiFiles(abi, artifacts)),

@@ -10,8 +10,8 @@
     ]
   },
   "scripts": {
-    "postinstall": "preconstruct dev && manypkg check",
-    "compile": "hardhat compile",
+    "postinstall": "preconstruct dev && manypkg check && yarn compile",
+    "compile": "manypkg run @crestproject/artifactory compile",
     "dev": "preconstruct dev",
     "build": "preconstruct build",
     "release": "yarn compile && yarn build && changeset publish",

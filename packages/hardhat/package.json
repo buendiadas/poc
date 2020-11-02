@@ -26,8 +26,8 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.12.1",
+    "@crestproject/codegen": "^0.1.3",
     "@crestproject/ethers": "^0.1.3",
-    "@crestproject/evm": "^0.0.82",
     "deepmerge": "^4.2.2",
     "fs-extra": "^9.0.1",
     "jest-environment-node": "^26.6.1"

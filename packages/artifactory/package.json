@@ -4,9 +4,7 @@
   "private": true,
   "main": "dist/artifactory.cjs.js",
   "scripts": {
-    "compile": "hardhat compile",
-    "postcompile": "yarn codegen",
-    "codegen": "crestproject codegen \"artifacts/contracts/**/!(*.dbg).json\" src/codegen"
+    "compile": "hardhat compile"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.1"
