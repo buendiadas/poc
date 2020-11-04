@@ -1,5 +1,11 @@
 # @crestproject/codegen
 
+## 0.1.7
+
+### Patch Changes
+
+- 9162aaf: adding build output
+
 ## 0.1.6
 
 ### Patch Changes

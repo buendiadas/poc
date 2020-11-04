@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 1.0.7
+
+### Patch Changes
+
+- 9162aaf: adding build output
+- Updated dependencies [9162aaf]
+  - @crestproject/crestproject@0.1.7
+
 ## 1.0.6
 
 ### Patch Changes

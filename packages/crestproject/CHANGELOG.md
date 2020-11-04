@@ -1,5 +1,16 @@
 # @crestproject/crestproject
 
+## 0.1.7
+
+### Patch Changes
+
+- 9162aaf: adding build output
+- Updated dependencies [9162aaf]
+  - @crestproject/codegen@0.1.7
+  - @crestproject/ethers@0.1.7
+  - @crestproject/hardhat@0.1.7
+  - @crestproject/jest@0.1.7
+
 ## 0.1.6
 
 ### Patch Changes
