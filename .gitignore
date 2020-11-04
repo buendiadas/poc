@@ -20,6 +20,7 @@ node_modules/
 artifacts/
 cache/
 dist/
+/coverage/
 
 # ignore generated code
 src/codegen/

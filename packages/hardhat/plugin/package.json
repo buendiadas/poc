@@ -1,6 +1,6 @@
 {
   "main": "dist/hardhat.cjs.js",
   "preconstruct": {
-    "source": "../src/jest"
+    "source": "../src/plugin"
   }
 }

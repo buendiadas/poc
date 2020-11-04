@@ -1,4 +1,9 @@
+require('@crestproject/hardhat/plugin');
+
 module.exports = {
+  solidity: {
+    version: '0.6.8',
+  },
   networks: {
     hardhat: {
       // loggingEnabled: true,
@@ -9,7 +14,23 @@ module.exports = {
       },
     },
   },
-  solidity: {
-    version: '0.6.8',
+  codeGenerator: {
+    enabled: true,
+    clear: true,
+    bytecode: {
+      path: './packages/artifactory/src/bytecode',
+    },
+    abi: {
+      path: './packages/artifactory/src/abi',
+    },
+    typescript: {
+      path: './packages/artifactory/src/codegen',
+    },
+  },
+  codeCoverage: {
+    path: './cache/coverage',
+  },
+  paths: {
+    sources: './contracts',
   },
 };

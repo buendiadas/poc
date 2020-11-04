@@ -1,6 +1,6 @@
 {
   "main": "dist/hardhat.cjs.js",
   "preconstruct": {
-    "source": "../src/codegen/task"
+    "source": "../../src/jest/environment"
   }
 }

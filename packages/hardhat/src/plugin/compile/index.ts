@@ -5,6 +5,7 @@ import { utils } from 'ethers';
 import { task, extendConfig } from 'hardhat/config';
 import { Artifact } from 'hardhat/types';
 import { generateContract, formatOutput } from '@crestproject/codegen';
+import { clearDirectory, createDirectory, validateDir } from '../utils';
 import type { CodeGeneratorConfig } from './types';
 
 export * from './types';
@@ -12,7 +13,7 @@ export * from './types';
 extendConfig((config, userConfig) => {
   const defaults: CodeGeneratorConfig = {
     enabled: false,
-    clear: true,
+    clear: false,
     include: [],
     exclude: [],
     typescript: {
@@ -31,10 +32,17 @@ extendConfig((config, userConfig) => {
 
   const provided = userConfig.codeGenerator ?? {};
   config.codeGenerator = deepmerge<CodeGeneratorConfig>(defaults, provided as any);
+  config.codeGenerator.abi.path = validateDir(config.paths.root, config.codeGenerator.abi.path);
+  config.codeGenerator.bytecode.path = validateDir(config.paths.root, config.codeGenerator.bytecode.path);
+  config.codeGenerator.typescript.path = validateDir(config.paths.root, config.codeGenerator.typescript.path);
 });
 
-task('compile', async (_, env, parent) => {
-  await parent();
+interface Arguments {
+  clear: boolean;
+}
+
+task<Arguments>('compile', async (args, env, parent) => {
+  await parent(args);
 
   const config = env.config.codeGenerator;
   if (!config.enabled) {
@@ -46,27 +54,20 @@ task('compile', async (_, env, parent) => {
   }
 
   const [abi, bytecode, typescript] = [
-    config.abi.enabled && validateDir(env.config.paths.root, config.abi.path),
-    config.bytecode.enabled && validateDir(env.config.paths.root, config.bytecode.path),
-    config.typescript.enabled && validateDir(env.config.paths.root, config.typescript.path),
+    config.abi.enabled && config.abi.path,
+    config.bytecode.enabled && config.bytecode.path,
+    config.typescript.enabled && config.typescript.path,
   ];
 
   const dirs = [abi, bytecode, typescript].filter(
     (item, index, array) => !!item && array.indexOf(item) === index,
   ) as string[];
 
-  await Promise.all(
-    dirs.map(async (dir) => {
-      const exists = await fs.pathExists(dir);
+  if (config.clear || args.clear) {
+    await Promise.all(dirs.map(async (dir) => clearDirectory(dir)));
+  }
 
-      if (config.clear && exists) {
-        await fs.remove(dir);
-        await fs.mkdirp(dir);
-      } else if (!exists) {
-        await fs.mkdirp(dir);
-      }
-    }),
-  );
+  await Promise.all(dirs.map(async (dir) => createDirectory(dir)));
 
   // Flatten the artifacts array (thus remove duplicates). This might eliminate
   // artifacts for identically named contracts that are actually different. For
@@ -74,7 +75,7 @@ task('compile', async (_, env, parent) => {
   let paths = (await env.artifacts.getArtifactPaths())
     .map((artifact) => ({
       path: artifact,
-      name: artifactName(artifact),
+      name: path.basename(artifact, '.json'),
     }))
     .filter((outer, index, array) => {
       return array.findIndex((inner) => inner.name === outer.name) === index;
@@ -100,7 +101,7 @@ task('compile', async (_, env, parent) => {
   const artifacts = (
     await Promise.all(
       paths.map(async (item) => {
-        const artifact = (await fs.readJson(item.path)) as Artifact;
+        const artifact = await env.artifacts.readArtifact(item.name);
         return { ...item, artifact };
       }),
     )
@@ -111,7 +112,7 @@ task('compile', async (_, env, parent) => {
     bytecode && generateBytecodeFiles(bytecode, artifacts),
     typescript && generateTypeScriptFiles(typescript, artifacts),
   ]);
-});
+}).addFlag('clear', 'Clears previous build artifacts.');
 
 interface ArtifactDescriptor {
   name: string;
@@ -153,21 +154,4 @@ async function generateTypeScriptFiles(dir: string, artifacts: ArtifactDescripto
       return await fs.writeFile(destination, formatted);
     }),
   );
-}
-
-function artifactName(artifactPath: string) {
-  return path.basename(artifactPath, '.json');
-}
-
-function validateDir(root: string, relative: string) {
-  const dir = path.resolve(root, relative);
-  if (!dir.startsWith(root)) {
-    throw new Error('@crestproject/hardhat/codegen: resolved path must be inside of project directory');
-  }
-
-  if (dir === root) {
-    throw new Error('@crestproject/hardhat/codegen: resolved path must not be root directory');
-  }
-
-  return dir;
 }

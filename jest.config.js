@@ -4,7 +4,7 @@ function common(package) {
   return {
     roots: ['<rootDir>/tests'],
     rootDir: path.dirname(require.resolve(`${package}/package.json`)),
-    displayName: package,
+    displayName: package.split('/')[1],
     globals: {
       'ts-jest': {
         babelConfig: true,
@@ -34,6 +34,11 @@ module.exports = {
     {
       ...common('@crestproject/hardhat'),
       preset: '@crestproject/hardhat',
+      testEnvironmentOptions: {
+        hardhatTestOptions: {
+          coverage: true,
+        },
+      },
     },
   ],
 };

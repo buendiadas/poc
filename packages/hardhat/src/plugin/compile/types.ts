@@ -6,7 +6,7 @@ export interface CodeGeneratorConfig {
   typescript: {
     enabled: boolean;
     path: string;
-  },
+  };
   abi: {
     enabled: boolean;
     path: string;
@@ -25,7 +25,7 @@ export interface CodeGeneratorUserConfig {
   typescript?: {
     enabled: boolean;
     path: string;
-  },
+  };
   abi?: {
     enabled: boolean;
     path: string;
