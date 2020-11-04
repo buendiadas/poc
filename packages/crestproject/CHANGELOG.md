@@ -1,5 +1,16 @@
 # @crestproject/crestproject
 
+## 0.1.9
+
+### Patch Changes
+
+- 6f37ce8: adding build output
+- Updated dependencies [6f37ce8]
+  - @crestproject/codegen@0.1.9
+  - @crestproject/ethers@0.1.9
+  - @crestproject/hardhat@0.1.9
+  - @crestproject/jest@0.1.9
+
 ## 0.1.8
 
 ### Patch Changes

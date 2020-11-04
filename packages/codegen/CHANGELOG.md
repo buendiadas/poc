@@ -1,5 +1,11 @@
 # @crestproject/codegen
 
+## 0.1.9
+
+### Patch Changes
+
+- 6f37ce8: adding build output
+
 ## 0.1.8
 
 ### Patch Changes

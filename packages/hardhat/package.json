@@ -1,6 +1,6 @@
 {
   "name": "@crestproject/hardhat",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
@@ -26,8 +26,8 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.12.1",
-    "@crestproject/codegen": "^0.1.8",
-    "@crestproject/ethers": "^0.1.8",
+    "@crestproject/codegen": "^0.1.9",
+    "@crestproject/ethers": "^0.1.9",
     "@solidity-parser/parser": "^0.8.1",
     "deepmerge": "^4.2.2",
     "fs-extra": "^9.0.1",
