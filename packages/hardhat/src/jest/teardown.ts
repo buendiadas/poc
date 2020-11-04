@@ -39,8 +39,20 @@ export default async (config: Config.GlobalConfig) => {
       branchMap: metadata.contracts[contract].branches,
       statementMap: metadata.contracts[contract].statements,
       f: {},
-      b: {},
       s: {},
+      b: {},
+    });
+
+    Object.keys(metadata.contracts[contract].functions).map((key) => {
+      file.f[key] = 0;
+    });
+
+    Object.keys(metadata.contracts[contract].statements).map((key) => {
+      file.s[key] = 0;
+    });
+
+    Object.keys(metadata.contracts[contract].branches).map((key) => {
+      file.b[key] = [0, 0];
     });
 
     coverage.addFileCoverage(file);
@@ -93,14 +105,8 @@ export default async (config: Config.GlobalConfig) => {
         file.b[instrumentation.id][1] = before + hits;
         return;
       }
-
-      default: {
-        console.log(instrumentation);
-      }
     }
   });
-
-  console.log(JSON.stringify(coverage.toJSON(), undefined, 4));
 
   const context = Reporter.createContext({
     dir: config.coverageDirectory,

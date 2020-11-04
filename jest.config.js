@@ -35,6 +35,9 @@ module.exports = {
       ...common('@crestproject/hardhat'),
       preset: '@crestproject/hardhat',
       testEnvironmentOptions: {
+        hardhatNetworkOptions: {
+          allowUnlimitedContractSize: true,
+        },
         hardhatTestOptions: {
           coverage: true,
         },
