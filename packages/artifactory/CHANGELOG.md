@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 1.0.6
+
+### Patch Changes
+
+- 599abb0: adding code coverage
+- Updated dependencies [599abb0]
+  - @crestproject/crestproject@0.1.6
+
 ## 1.0.5
 
 ### Patch Changes

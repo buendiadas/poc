@@ -1,5 +1,11 @@
 # @crestproject/ethers
 
+## 0.1.6
+
+### Patch Changes
+
+- 599abb0: adding code coverage
+
 ## 0.1.5
 
 ### Patch Changes

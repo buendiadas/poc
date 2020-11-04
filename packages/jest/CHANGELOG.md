@@ -1,5 +1,14 @@
 # @crestproject/jest
 
+## 0.1.6
+
+### Patch Changes
+
+- 599abb0: adding code coverage
+- Updated dependencies [599abb0]
+  - @crestproject/ethers@0.1.6
+  - @crestproject/hardhat@0.1.6
+
 ## 0.1.5
 
 ### Patch Changes
