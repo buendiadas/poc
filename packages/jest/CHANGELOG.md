@@ -1,5 +1,14 @@
 # @crestproject/jest
 
+## 0.1.8
+
+### Patch Changes
+
+- 5e6393d: fix coverage map initialization
+- Updated dependencies [5e6393d]
+  - @crestproject/ethers@0.1.8
+  - @crestproject/hardhat@0.1.8
+
 ## 0.1.7
 
 ### Patch Changes

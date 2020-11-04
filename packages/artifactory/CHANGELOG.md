@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 1.0.8
+
+### Patch Changes
+
+- 5e6393d: fix coverage map initialization
+- Updated dependencies [5e6393d]
+  - @crestproject/crestproject@0.1.8
+
 ## 1.0.7
 
 ### Patch Changes

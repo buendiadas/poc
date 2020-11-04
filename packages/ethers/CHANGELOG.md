@@ -1,5 +1,11 @@
 # @crestproject/ethers
 
+## 0.1.8
+
+### Patch Changes
+
+- 5e6393d: fix coverage map initialization
+
 ## 0.1.7
 
 ### Patch Changes
