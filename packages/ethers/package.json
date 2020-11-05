@@ -1,14 +1,12 @@
 {
   "name": "@crestproject/ethers",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
   "main": "dist/ethers.cjs.js",
   "module": "dist/ethers.esm.js",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "publishConfig": {
     "access": "public"
   },

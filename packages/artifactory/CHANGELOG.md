@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 1.0.10
+
+### Patch Changes
+
+- a294163: improve code coverage instrumentation
+- Updated dependencies [a294163]
+  - @crestproject/crestproject@0.1.10
+
 ## 1.0.9
 
 ### Patch Changes

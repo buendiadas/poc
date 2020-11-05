@@ -1,5 +1,11 @@
 # @crestproject/ethers
 
+## 0.1.10
+
+### Patch Changes
+
+- a294163: improve code coverage instrumentation
+
 ## 0.1.9
 
 ### Patch Changes

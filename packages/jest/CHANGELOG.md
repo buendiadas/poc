@@ -1,5 +1,14 @@
 # @crestproject/jest
 
+## 0.1.10
+
+### Patch Changes
+
+- a294163: improve code coverage instrumentation
+- Updated dependencies [a294163]
+  - @crestproject/ethers@0.1.10
+  - @crestproject/hardhat@0.1.10
+
 ## 0.1.9
 
 ### Patch Changes
