@@ -1,11 +1,11 @@
-import { RegisteredFunctions, RegisteredStatements, RegisteredBranches, Instrumentations } from '../../coverage';
+import { BranchMapping, FunctionMapping, Range } from 'istanbul-lib-coverage';
+import { Instrumentations } from '../../coverage';
 
 export interface CodeCoverageContractMetadata {
   path: string;
-  functions: RegisteredFunctions;
-  statements: RegisteredStatements;
-  branches: RegisteredBranches;
-  lines: number[];
+  functions: FunctionMapping[];
+  branches: BranchMapping[];
+  statements: Range[];
 }
 
 export interface CodeCoverageMetadata {

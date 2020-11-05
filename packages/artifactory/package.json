@@ -7,7 +7,7 @@
     "compile": "hardhat compile"
   },
   "dependencies": {
-    "@babel/runtime": "^7.12.1"
+    "@babel/runtime": "^7.12.5"
   },
   "peerDependencies": {
     "@crestproject/crestproject": "^0.1.9"

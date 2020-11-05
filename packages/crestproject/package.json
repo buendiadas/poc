@@ -30,13 +30,13 @@
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.12.1",
+    "@babel/runtime": "^7.12.5",
     "@crestproject/codegen": "^0.1.9",
     "@crestproject/ethers": "^0.1.9",
     "@crestproject/hardhat": "^0.1.9",
     "@crestproject/jest": "^0.1.9",
     "glob": "^7.1.6",
-    "jest-worker": "^26.6.1",
+    "jest-worker": "^26.6.2",
     "throat": "^5.0.0",
     "yargs": "^16.1.0"
   },

@@ -5,7 +5,9 @@
   "license": "MIT",
   "homepage": "https://github.com/crestproject",
   "main": "dist/codegen.cjs.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -20,7 +22,7 @@
     "Sebastian Siemssen <fubhy@fubhy.com>"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.12.1"
+    "@babel/runtime": "^7.12.5"
   },
   "devDependencies": {
     "ethers": "^5.0.19"

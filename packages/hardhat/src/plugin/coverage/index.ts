@@ -42,7 +42,12 @@ task<Arguments>('coverage', description, async (args, env) => {
       const source = await fs.readFile(origin, 'utf8');
       const included = config.include.length ? config.include.some((rule) => name.match(rule)) : true;
       const excluded = config.exclude.length ? config.exclude.some((rule) => name.match(rule)) : false;
-      const instrumented = included && !excluded ? await instrument(source, origin) : undefined;
+      let instrumented = included && !excluded ? await instrument(source, origin) : undefined;
+
+      // Remove all files with no instrumentation (e.g. interfaces).
+      if (instrumented && Object.keys(instrumented.instrumentation).length === 0) {
+        instrumented = undefined;
+      }
 
       return {
         file,
@@ -73,19 +78,20 @@ task<Arguments>('coverage', description, async (args, env) => {
   // Write coverage collection metadata to be used by the runtime.
   const metadata = sources.reduce(
     (carry, current) => {
-      if (current.instrumented?.instrumentation) {
-        carry.instrumentation = {
-          ...carry.instrumentation,
-          ...current.instrumented.instrumentation,
-        };
+      if (!current.instrumented) {
+        return carry;
       }
+
+      carry.instrumentation = {
+        ...carry.instrumentation,
+        ...current.instrumented.instrumentation,
+      };
 
       carry.contracts[current.origin] = {
         path: current.origin,
         functions: current.instrumented?.functions ?? [],
         statements: current.instrumented?.statements ?? [],
         branches: current.instrumented?.branches ?? [],
-        lines: current.instrumented?.lines ?? [],
       };
 
       return carry;

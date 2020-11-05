@@ -35,9 +35,9 @@ export default async (config: Config.GlobalConfig) => {
   Object.keys(metadata.contracts).forEach((contract) => {
     const file = createFileCoverage({
       path: contract,
-      fnMap: metadata.contracts[contract].functions,
-      branchMap: metadata.contracts[contract].branches,
-      statementMap: metadata.contracts[contract].statements,
+      fnMap: metadata.contracts[contract].functions as any,
+      branchMap: metadata.contracts[contract].branches as any,
+      statementMap: metadata.contracts[contract].statements as any,
       f: {},
       s: {},
       b: {},
@@ -51,8 +51,8 @@ export default async (config: Config.GlobalConfig) => {
       file.s[key] = 0;
     });
 
-    Object.keys(metadata.contracts[contract].branches).map((key) => {
-      file.b[key] = [0, 0];
+    Object.entries(metadata.contracts[contract].branches).map(([key, branch]) => {
+      file.b[key] = branch.locations.map(() => 0);
     });
 
     coverage.addFileCoverage(file);
@@ -74,35 +74,18 @@ export default async (config: Config.GlobalConfig) => {
 
     switch (instrumentation.type) {
       case 'function': {
-        const before = file.f[instrumentation.id] ?? 0;
-        file.f[instrumentation.id] = before + hits;
+        file.f[instrumentation.id] += hits;
         return;
       }
 
       case 'statement': {
-        const before = file.s[instrumentation.id] ?? 0;
-        file.s[instrumentation.id] = before + hits;
+        file.s[instrumentation.id] += hits;
         return;
       }
 
       case 'branch': {
-        file.b[instrumentation.id] = file.b[instrumentation.id] ?? [0, 0];
-        const before = file.b[instrumentation.id][instrumentation.locationId!];
-        file.b[instrumentation.id][instrumentation.locationId!] = before + hits;
-        return;
-      }
-
-      case 'requirePre': {
-        file.b[instrumentation.id] = file.b[instrumentation.id] ?? [0, 0];
-        const before = file.b[instrumentation.id][0];
-        file.b[instrumentation.id][0] = before + hits;
-        return;
-      }
-
-      case 'requirePost': {
-        file.b[instrumentation.id] = file.b[instrumentation.id] ?? [0, 0];
-        const before = file.b[instrumentation.id][1];
-        file.b[instrumentation.id][1] = before + hits;
+        const before = file.b[instrumentation.id][instrumentation.branch] ?? 0;
+        file.b[instrumentation.id][instrumentation.branch] = before + hits;
         return;
       }
     }

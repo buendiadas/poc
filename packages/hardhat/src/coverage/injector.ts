@@ -3,13 +3,26 @@ import { utils } from 'ethers';
 import { ParseResult } from './parser';
 import { Injections } from './registrar';
 
-export interface Instrumentation {
-  id: number;
+export interface InstrumentationBase {
   type: string;
+  id: number;
   target: string;
-  locationId?: number;
 }
 
+export interface StatementInstrumentation extends InstrumentationBase {
+  type: 'statement';
+}
+
+export interface BranchInstrumentation extends InstrumentationBase {
+  type: 'branch';
+  branch: number;
+}
+
+export interface FunctionInstrumentation extends InstrumentationBase {
+  type: 'function';
+}
+
+export type Instrumentation = StatementInstrumentation | BranchInstrumentation | FunctionInstrumentation;
 export type Instrumentations = Record<string, Instrumentation>;
 
 export interface InjectionBase {
@@ -23,31 +36,21 @@ export interface HashMethodInjection extends InjectionBase {
 
 export interface FunctionInjection extends InjectionBase {
   type: 'Function';
-  functionId: number;
+  id: number;
 }
 
 export interface StatementInjection extends InjectionBase {
   type: 'Statement';
-  statementId: number;
+  id: number;
 }
 
 export interface BranchInjection extends InjectionBase {
-  type: 'Branch' | 'EmptyBranch';
-  branchId: number;
-  locationId: 0 | 1;
+  type: 'Branch';
+  id: number;
+  branch: number;
 }
 
-export interface RequireInjection extends InjectionBase {
-  type: 'RequirePre' | 'RequirePost';
-  branchId: number;
-}
-
-export type Injection =
-  | HashMethodInjection
-  | BranchInjection
-  | RequireInjection
-  | FunctionInjection
-  | StatementInjection;
+export type Injection = HashMethodInjection | BranchInjection | FunctionInjection | StatementInjection;
 
 export interface InjectionResult extends ParseResult {
   file: string;
@@ -65,11 +68,6 @@ export function inject(input: ParseResult) {
 
   const points = ((Object.keys(state.injections) as any) as number[]).sort((a, b) => b - a);
   points.forEach((point) => {
-    state.injections[point].sort((a, b) => {
-      const injections = ['Branch', 'EmptyBranch'];
-      return injections.indexOf(b.type) - injections.indexOf(a.type);
-    });
-
     state.injections[point].forEach((injection) => {
       switch (injection.type) {
         case 'Statement':
@@ -78,12 +76,6 @@ export function inject(input: ParseResult) {
           return injectFunction(state, point, injection);
         case 'Branch':
           return injectBranch(state, point, injection);
-        case 'EmptyBranch':
-          return injectEmptyBranch(state, point, injection);
-        case 'RequirePre':
-          return injectRequirePre(state, point, injection);
-        case 'RequirePost':
-          return injectRequirePost(state, point, injection);
         case 'HashMethod':
           return injectHashMethod(state, point, injection);
       }
@@ -111,11 +103,11 @@ function getMethodIdentifier(id: string) {
 function getHashMethodDefinition(id: string) {
   const hash = utils.id(id).slice(0, 10);
   const method = getMethodIdentifier(id);
-  return `\nfunction ${method}(bytes32 c__${hash}) public pure {}\n`;
+  return `function ${method}(bytes32 c__${hash}) private pure {} /* hash method */`;
 }
 
 function getInjectable(id: string, hash: string, type: string) {
-  return `${getMethodIdentifier(id)}(${hash}); /* ${type} */ \n`;
+  return `${getMethodIdentifier(id)}(${hash});/* ${type} */`;
 }
 
 function getInjectionComponents(state: InjectionResult, point: number, id: string, type: string) {
@@ -138,7 +130,7 @@ function injectStatement(state: InjectionResult, point: number, injection: State
   const { start, end, hash, injectable } = getInjectionComponents(state, point, id, type);
 
   state.instrumentation[hash] = {
-    id: injection.statementId!,
+    id: injection.id!,
     type: type,
     target: state.file,
   };
@@ -153,7 +145,7 @@ function injectFunction(state: InjectionResult, point: number, injection: Functi
   const { start, end, hash, injectable } = getInjectionComponents(state, point, id, type);
 
   state.instrumentation[hash] = {
-    id: injection.functionId!,
+    id: injection.id!,
     type: type,
     target: state.file,
   };
@@ -168,55 +160,9 @@ function injectBranch(state: InjectionResult, point: number, injection: BranchIn
   const { start, end, hash, injectable } = getInjectionComponents(state, point, id, type);
 
   state.instrumentation[hash] = {
-    id: injection.branchId!,
+    id: injection.id!,
     type: type,
-    locationId: injection.locationId,
-    target: state.file,
-  };
-
-  state.instrumented = `${start}${injectable}${end}`;
-}
-
-function injectEmptyBranch(state: InjectionResult, point: number, injection: BranchInjection) {
-  const type = 'branch';
-  const id = `${state.file}:${injection.contract}`;
-
-  const { start, end, hash, injectable } = getInjectionComponents(state, point, id, type);
-
-  state.instrumentation[hash] = {
-    id: injection.branchId!,
-    type: type,
-    locationId: injection.locationId,
-    target: state.file,
-  };
-
-  state.instrumented = `${start}else { ${injectable}}${end}`;
-}
-
-function injectRequirePre(state: InjectionResult, point: number, injection: RequireInjection) {
-  const type = 'requirePre';
-  const id = `${state.file}:${injection.contract}`;
-
-  const { start, end, hash, injectable } = getInjectionComponents(state, point, id, type);
-
-  state.instrumentation[hash] = {
-    id: injection.branchId!,
-    type: type,
-    target: state.file,
-  };
-
-  state.instrumented = `${start}${injectable}${end}`;
-}
-
-function injectRequirePost(state: InjectionResult, point: number, injection: RequireInjection) {
-  const type = 'requirePost';
-  const id = `${state.file}:${injection.contract}`;
-
-  const { start, end, hash, injectable } = getInjectionComponents(state, point, id, type);
-
-  state.instrumentation[hash] = {
-    id: injection.branchId!,
-    type: type,
+    branch: injection.branch,
     target: state.file,
   };
 

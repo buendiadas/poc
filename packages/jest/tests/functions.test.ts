@@ -1,8 +1,8 @@
-import { HardhatProvider } from '@crestproject/hardhat';
+import { EthereumTestnetProvider } from '@crestproject/crestproject';
 import { BasicToken } from '@crestproject/artifactory';
 import { utils } from 'ethers';
 
-async function snapshot(provider: HardhatProvider) {
+async function snapshot(provider: EthereumTestnetProvider) {
   const deployer = await provider.getSignerWithAddress(0);
   const someone = await provider.getSignerWithAddress(1);
   const signer = await provider.getSignerWithAddress(2);
