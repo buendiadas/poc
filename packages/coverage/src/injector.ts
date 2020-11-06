@@ -1,7 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import { utils } from 'ethers';
 import { ParseResult } from './parser';
-import { Injections } from './registrar';
 
 export interface InstrumentationBase {
   type: string;
@@ -23,7 +22,6 @@ export interface FunctionInstrumentation extends InstrumentationBase {
 }
 
 export type Instrumentation = StatementInstrumentation | BranchInstrumentation | FunctionInstrumentation;
-export type Instrumentations = Record<string, Instrumentation>;
 
 export interface InjectionBase {
   type: string;
@@ -50,20 +48,31 @@ export interface BranchInjection extends InjectionBase {
   branch: number;
 }
 
-export type Injection = HashMethodInjection | BranchInjection | FunctionInjection | StatementInjection;
-
-export interface InjectionResult extends ParseResult {
-  file: string;
-  instrumented: string;
-  instrumentation: Instrumentations;
-  injections: Injections;
+export enum BlockDelimiter {
+  OPEN = '{',
+  CLOSE = '}',
 }
 
-export function inject(input: ParseResult) {
-  const state: InjectionResult = {
-    ...input,
-    instrumented: input.source,
-    instrumentation: {},
+export interface BlockDelimiterInjection extends InjectionBase {
+  type: 'BlockDelimiter';
+  delimiter: BlockDelimiter;
+}
+
+export type InstrumentationInjection = FunctionInjection | StatementInjection | BranchInjection;
+export type Injection = InstrumentationInjection | HashMethodInjection | BlockDelimiterInjection;
+
+export interface InstrumentationTarget extends ParseResult {
+  target: string;
+  instrumented: string;
+  instrumentations: Record<string, Instrumentation>;
+}
+
+export function inject(parsed: ParseResult, path: string) {
+  const state: InstrumentationTarget = {
+    ...parsed,
+    target: path,
+    instrumented: parsed.source,
+    instrumentations: {},
   };
 
   const points = ((Object.keys(state.injections) as any) as number[]).sort((a, b) => b - a);
@@ -78,6 +87,8 @@ export function inject(input: ParseResult) {
           return injectBranch(state, point, injection);
         case 'HashMethod':
           return injectHashMethod(state, point, injection);
+        case 'BlockDelimiter':
+          return injectBlockDelimiter(state, point, injection);
       }
     });
   });
@@ -85,7 +96,7 @@ export function inject(input: ParseResult) {
   return state;
 }
 
-function split(state: InjectionResult, point: number) {
+function split(state: InstrumentationTarget, point: number) {
   return {
     start: state.instrumented.slice(0, point),
     end: state.instrumented.slice(point),
@@ -110,7 +121,7 @@ function getInjectable(id: string, hash: string, type: string) {
   return `${getMethodIdentifier(id)}(${hash});/* ${type} */`;
 }
 
-function getInjectionComponents(state: InjectionResult, point: number, id: string, type: string) {
+function getInjectionComponents(state: InstrumentationTarget, point: number, id: string, type: string) {
   const { start, end } = split(state, point);
   const hash = getHash(id);
   const injectable = getInjectable(id, hash, type);
@@ -123,55 +134,59 @@ function getInjectionComponents(state: InjectionResult, point: number, id: strin
   };
 }
 
-function injectStatement(state: InjectionResult, point: number, injection: StatementInjection) {
-  const type = 'statement';
-  const id = `${state.file}:${injection.contract}`;
+function injectStatement(state: InstrumentationTarget, point: number, injection: StatementInjection) {
+  const type = `statement(${injection.id})`;
+  const id = `${state.target}:${injection.contract}`;
 
   const { start, end, hash, injectable } = getInjectionComponents(state, point, id, type);
 
-  state.instrumentation[hash] = {
+  state.instrumentations[hash] = {
     id: injection.id!,
-    type: type,
-    target: state.file,
+    type: 'statement',
+    target: state.target,
   };
 
   state.instrumented = `${start}${injectable}${end}`;
 }
 
-function injectFunction(state: InjectionResult, point: number, injection: FunctionInjection) {
-  const type = 'function';
-  const id = `${state.file}:${injection.contract}`;
+function injectFunction(state: InstrumentationTarget, point: number, injection: FunctionInjection) {
+  const label = `function(${injection.id})`;
+  const id = `${state.target}:${injection.contract}`;
 
-  const { start, end, hash, injectable } = getInjectionComponents(state, point, id, type);
+  const { start, end, hash, injectable } = getInjectionComponents(state, point, id, label);
 
-  state.instrumentation[hash] = {
+  state.instrumentations[hash] = {
     id: injection.id!,
-    type: type,
-    target: state.file,
+    type: 'function',
+    target: state.target,
   };
 
   state.instrumented = `${start}${injectable}${end}`;
 }
 
-function injectBranch(state: InjectionResult, point: number, injection: BranchInjection) {
-  const type = 'branch';
-  const id = `${state.file}:${injection.contract}`;
+function injectBranch(state: InstrumentationTarget, point: number, injection: BranchInjection) {
+  const label = `branch(${injection.id}:${injection.branch})`;
+  const id = `${state.target}:${injection.contract}`;
 
-  const { start, end, hash, injectable } = getInjectionComponents(state, point, id, type);
+  const { start, end, hash, injectable } = getInjectionComponents(state, point, id, label);
 
-  state.instrumentation[hash] = {
+  state.instrumentations[hash] = {
     id: injection.id!,
-    type: type,
+    type: 'branch',
     branch: injection.branch,
-    target: state.file,
+    target: state.target,
   };
 
   state.instrumented = `${start}${injectable}${end}`;
 }
 
-function injectHashMethod(state: InjectionResult, point: number, injection: HashMethodInjection) {
-  const start = state.instrumented.slice(0, point);
-  const end = state.instrumented.slice(point);
-  const id = `${state.file}:${injection.contract}`;
+function injectHashMethod(state: InstrumentationTarget, point: number, injection: HashMethodInjection) {
+  const { start, end } = split(state, point);
+  const id = `${state.target}:${injection.contract}`;
   state.instrumented = `${start}${getHashMethodDefinition(id)}${end}`;
+}
+
+function injectBlockDelimiter(state: InstrumentationTarget, point: number, injection: BlockDelimiterInjection) {
+  const { start, end } = split(state, point);
+  state.instrumented = `${start}${injection.delimiter}${end}`;
 }

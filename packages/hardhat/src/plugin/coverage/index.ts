@@ -1,11 +1,12 @@
+
 import deepmerge from 'deepmerge';
 import glob from 'glob';
 import path from 'path';
 import fs from 'fs-extra';
+import { instrumentSources } from '@crestproject/coverage';
 import { task, extendConfig } from 'hardhat/config';
 import { validateDir } from '../utils';
-import { instrument } from '../../coverage';
-import type { CodeCoverageConfig, CodeCoverageMetadata } from './types';
+import type { CodeCoverageConfig } from './types';
 
 export * from './types';
 
@@ -26,7 +27,7 @@ interface Arguments {
   force: boolean;
 }
 
-const description = 'Add code coverage instrumentation statements during compilation';
+const description = 'Add code coverage instrumentations statements during compilation';
 task<Arguments>('coverage', description, async (args, env) => {
   const config = env.config.codeCoverage;
   const dir = path.resolve(config.path, 'contracts');
@@ -34,6 +35,7 @@ task<Arguments>('coverage', description, async (args, env) => {
     cwd: env.config.paths.sources,
   });
 
+  // First, grab alles files and their source and target locations.
   const sources = await Promise.all(
     files.map(async (file) => {
       const name = path.basename(file, '.sol');
@@ -42,71 +44,47 @@ task<Arguments>('coverage', description, async (args, env) => {
       const source = await fs.readFile(origin, 'utf8');
       const included = config.include.length ? config.include.some((rule) => name.match(rule)) : true;
       const excluded = config.exclude.length ? config.exclude.some((rule) => name.match(rule)) : false;
-      let instrumented = included && !excluded ? await instrument(source, origin) : undefined;
-
-      // Remove all files with no instrumentation (e.g. interfaces).
-      if (instrumented && Object.keys(instrumented.instrumentation).length === 0) {
-        instrumented = undefined;
-      }
+      const instrument = included && !excluded;
 
       return {
-        file,
-        name,
         source,
         origin,
         destination,
-        instrumented,
+        instrument,
       };
     }),
   );
 
-  if (!sources.some((source) => source.instrumented)) {
-    console.warn(`None of the source contract artifacts matched your include/exclude rules for code generation.`);
-  }
+  // Then create the instrumentation metadata for all matched files.
+  const instrumentation = instrumentSources(
+    sources.reduce((carry, current) => {
+      if (!current.instrument) {
+        return carry;
+      }
 
+      return { ...carry, [current.origin]: current.source };
+    }, {} as Record<string, string>),
+  );
+
+  // Prepare the temporary instrumentation source & metadata directory.
   if (config.clear && (await fs.pathExists(config.path))) {
     await fs.remove(config.path);
   }
 
+  // Save each file's instrumented source (or original source if excluded).
   await Promise.all(
     sources.map((file) => {
-      const output = file.instrumented?.instrumented ?? file.source;
+      const output = instrumentation.instrumented[file.origin]?.instrumented ?? file.source;
       return fs.outputFile(file.destination, output, 'utf8');
     }),
   );
 
-  // Write coverage collection metadata to be used by the runtime.
-  const metadata = sources.reduce(
-    (carry, current) => {
-      if (!current.instrumented) {
-        return carry;
-      }
-
-      carry.instrumentation = {
-        ...carry.instrumentation,
-        ...current.instrumented.instrumentation,
-      };
-
-      carry.contracts[current.origin] = {
-        path: current.origin,
-        functions: current.instrumented?.functions ?? [],
-        statements: current.instrumented?.statements ?? [],
-        branches: current.instrumented?.branches ?? [],
-      };
-
-      return carry;
-    },
-    {
-      contracts: {},
-      instrumentation: {},
-    } as CodeCoverageMetadata,
-  );
-
-  await fs.outputJson(path.resolve(config.path, 'metadata.json'), metadata, {
+  // Save the metadata for runtime hit collection.
+  await fs.outputJson(path.resolve(config.path, 'metadata.json'), instrumentation.metadata, {
     spaces: 2,
   });
 
-  // Move the original cache file out of harms way.
+  // Move the original compilation cache file out of harms way.
   const cache = path.join(env.config.paths.cache, 'solidity-files-cache.json');
   if (await fs.pathExists(cache)) {
     await fs.move(cache, `${cache}.bkp`, {
@@ -120,7 +98,7 @@ task<Arguments>('coverage', description, async (args, env) => {
   await env.run('compile', args);
   env.config.paths.sources = original;
 
-  // Restore the original cache file.
+  // Restore the original compilation cache file.
   if (await fs.pathExists(`${cache}.bkp`)) {
     await fs.move(`${cache}.bkp`, cache, {
       overwrite: true,

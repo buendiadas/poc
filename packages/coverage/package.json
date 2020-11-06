@@ -1,0 +1,38 @@
+{
+  "name": "@crestproject/coverage",
+  "version": "0.1.10",
+  "description": "Opinionated utilities for interacting with and testing ethereum smart contracts.",
+  "license": "MIT",
+  "homepage": "https://github.com/crestproject",
+  "main": "dist/coverage.cjs.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crestproject/poc"
+  },
+  "bugs": {
+    "url": "https://github.com/crestproject/poc/issues"
+  },
+  "contributors": [
+    "Sebastian Siemssen <fubhy@fubhy.com>"
+  ],
+  "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "@solidity-parser/parser": "^0.8.1",
+    "istanbul-lib-coverage": "^3.0.0",
+    "uuid": "^8.3.1"
+  },
+  "devDependencies": {
+    "@types/istanbul-lib-coverage": "^2.0.3",
+    "@types/uuid": "^8.3.0",
+    "ethers": "^5.0.19"
+  },
+  "peerDependencies": {
+    "ethers": "^5.0.18"
+  }
+}

@@ -1,53 +1,33 @@
 import {
-  ASTNode,
-  Block,
+  Expression,
   FunctionDefinition,
   IfStatement,
-  LineColumn,
   ModifierDefinition,
+  Statement,
 } from '@solidity-parser/parser';
-import { BranchMapping, FunctionMapping, Range } from 'istanbul-lib-coverage';
 import { Injection } from './injector';
-
-export interface RegisteredStatement {
-  start: LineColumn;
-  end: LineColumn;
-}
-
-export type Injections = Record<number, Injection[]>;
-
-export interface RegistrarStateItem<TRecords> {
-  id: number;
-  map: TRecords;
-}
-
-export interface RegistrarState {
-  ast: ASTNode;
-  source: string;
-  contract: string;
-  injections: Injections;
-  functions: FunctionMapping[];
-  branches: BranchMapping[];
-  statements: Range[];
-}
+import { ParseState } from './parser';
 
 /**
  * Adds injection point to injection points map
  */
-export function createInjection(state: RegistrarState, key: number, value: Partial<Injection>) {
-  value.contract = state.contract;
+export function createInjection(state: ParseState, key: number, value: Partial<Injection>) {
+  const injection = {
+    ...value,
+    contract: state.contract,
+  } as Injection;
 
   if (state.injections[key]) {
-    state.injections[key].push(value as Injection);
+    state.injections[key].push(injection);
   } else {
-    state.injections[key] = [value as Injection];
+    state.injections[key] = [injection];
   }
 }
 
 /**
  * Registers injections for statement measurements
  */
-export function registerStatement(state: RegistrarState, expression: ASTNode) {
+export function registerStatement(state: ParseState, expression: Expression | Statement) {
   const startContract = state.source.slice(0, expression.range![0]);
   const startline = (startContract.match(/\n/g) || []).length + 1;
   const startcol = expression.range![0] - startContract.lastIndexOf('\n') - 1;
@@ -75,18 +55,15 @@ export function registerStatement(state: RegistrarState, expression: ASTNode) {
     }) - 1;
 
   createInjection(state, expression.range![0], {
-    id,
     type: 'Statement',
+    id,
   });
 }
 
 /**
  * Registers injections for function measurements
  */
-export function registerFunctionDeclaration(
-  state: RegistrarState,
-  expression: FunctionDefinition | ModifierDefinition,
-) {
+export function registerFunction(state: ParseState, expression: FunctionDefinition | ModifierDefinition) {
   const name =
     expression.type === 'FunctionDefinition' && expression.isConstructor ? 'constructor' : expression.name ?? '';
 
@@ -102,12 +79,12 @@ export function registerFunctionDeclaration(
     }) - 1;
 
   createInjection(state, expression.body!.range![0] + 1, {
-    id: id,
+    id,
     type: 'Function',
   });
 }
 
-export function registerBranch(state: RegistrarState, expression: IfStatement) {
+export function registerBranch(state: ParseState, expression: IfStatement) {
   const startContract = state.source.slice(0, expression.range![0]);
   const startline = (startContract.match(/\n/g) || []).length + 1;
   const startcol = expression.range![0] - startContract.lastIndexOf('\n') - 1;
@@ -133,13 +110,15 @@ export function registerBranch(state: RegistrarState, expression: IfStatement) {
   return id;
 }
 
-export function registerBranchLocation(state: RegistrarState, expression: Block, id: number) {
-  const branch = state.branches[id].locations.length;
-  createInjection(state, expression.range![0] + 1, {
-    id,
+export function registerBranchLocation(state: ParseState, expression: Statement) {
+  const branch = state.branches[state.branch!].locations.length;
+  const point = expression.range![0] + (expression.type === 'Block' ? 1 : 0);
+
+  createInjection(state, point, {
+    id: state.branch!,
     type: 'Branch',
     branch,
   });
 
-  state.branches[id].locations.push(expression.loc!);
+  state.branches[state.branch!].locations.push(expression.loc!);
 }

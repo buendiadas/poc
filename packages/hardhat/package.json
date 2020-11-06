@@ -27,13 +27,11 @@
   "dependencies": {
     "@babel/runtime": "^7.12.5",
     "@crestproject/codegen": "^0.1.10",
+    "@crestproject/coverage": "^0.1.10",
     "@crestproject/ethers": "^0.1.10",
-    "@solidity-parser/parser": "^0.8.1",
     "deepmerge": "^4.2.2",
     "fs-extra": "^9.0.1",
     "glob": "^7.1.6",
-    "istanbul": "^0.4.5",
-    "istanbul-lib-coverage": "^3.0.0",
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.0.2",
     "jest-environment-node": "^26.6.2",
@@ -41,8 +39,6 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.2",
-    "@types/istanbul-lib-coverage": "^2.0.3",
-    "@types/istanbul-lib-report": "^3.0.0",
     "@types/istanbul-reports": "^3.0.0",
     "@types/uuid": "^8.3.0",
     "ethers": "^5.0.19",
