@@ -1,5 +1,14 @@
 # @crestproject/jest
 
+## 0.1.11
+
+### Patch Changes
+
+- 2ed522a: extract code coverage into separate package
+- Updated dependencies [2ed522a]
+  - @crestproject/ethers@0.1.11
+  - @crestproject/hardhat@0.1.11
+
 ## 0.1.10
 
 ### Patch Changes

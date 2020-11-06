@@ -1,5 +1,13 @@
 # @crestproject/artifactory
 
+## 1.0.11
+
+### Patch Changes
+
+- 2ed522a: extract code coverage into separate package
+- Updated dependencies [2ed522a]
+  - @crestproject/crestproject@0.1.11
+
 ## 1.0.10
 
 ### Patch Changes
